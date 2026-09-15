@@ -13,7 +13,7 @@ def onboarding_agent_node(state: AgentState) -> AgentState:
     experience = state.get("user_experience", "Fresher")
 
     context, sources, confidence = retrieve_verified_context(
-        f"onboarding handbook setup {query}",
+        query,
         department="General",
         top_k=2
     )
@@ -50,14 +50,8 @@ Provide a proactive, organized response guiding the employee on what to prioriti
         )
 
     state["response"] = response
-    state["sources"] = sources if sources else [{
-        "document": "Employee_Handbook.pdf",
-        "section": "Onboarding Milestones",
-        "confidence": "High",
-        "similarity": 0.88,
-        "snippet": "Covers essential day 1-3 tasks, security policies, and manager check-ins."
-    }]
-    state["confidence"] = confidence if confidence != "None" else "High"
-    state["is_verified"] = True
-    state["reasoning"] = f"Actionable onboarding priority synthesized by Onboarding Agent for {role}."
+    state["sources"] = sources
+    state["confidence"] = confidence if sources else "Medium"
+    state["is_verified"] = bool(sources)
+    state["reasoning"] = f"Actionable onboarding roadmap synthesized by Onboarding Agent for {role} ({len(sources)} verified sources)."
     return state

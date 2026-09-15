@@ -395,6 +395,9 @@ async def index_document(req: IndexDocumentRequest):
         }
 
         chunks = chunk_document(text, metadata, chunk_size=300, overlap=60)
+        if not chunks:
+            raise HTTPException(status_code=400, detail="No readable text or sections could be extracted from document.")
+            
         chunks_indexed = vector_store.add_chunks(chunks)
 
         return {
@@ -403,6 +406,10 @@ async def index_document(req: IndexDocumentRequest):
             "chunks_indexed": chunks_indexed,
             "total_collection_chunks": vector_store.get_stats()["total_chunks"]
         }
+    except HTTPException:
+        raise
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
 

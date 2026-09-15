@@ -17,7 +17,7 @@ const getAnalytics = async (req, res) => {
     
     const avgCompletion = progressRecords.length > 0
       ? Math.round(progressRecords.reduce((acc, curr) => acc + curr.overallPercentage, 0) / progressRecords.length)
-      : 76; // Realistic fallback baseline
+      : 0;
 
     const allTasks = await OnboardingTask.find();
     const pendingTasks = allTasks.filter(t => t.status !== 'completed').length;
@@ -57,13 +57,13 @@ const getAnalytics = async (req, res) => {
 
     res.json({
       kpis: {
-        totalEmployees: Math.max(totalEmployees, 1),
-        activeOnboarding: Math.max(activeOnboarding, 1),
+        totalEmployees,
+        activeOnboarding,
         averageCompletion: avgCompletion,
-        pendingTasks: Math.max(pendingTasks, 7),
-        completedTasks: Math.max(completedTasks, 13),
-        documentsCount: Math.max(documentsCount, 5),
-        conversationsCount: Math.max(conversationsCount, 12)
+        pendingTasks,
+        completedTasks,
+        documentsCount,
+        conversationsCount
       },
       departmentStats,
       weeklyActivity,

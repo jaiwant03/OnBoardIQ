@@ -93,6 +93,63 @@ const register = async (req, res) => {
       }
     } catch (lpErr) {
       console.warn('[Register] AI learning path generation fallback:', lpErr.message);
+      const defaultStages = [
+        {
+          stage: 'foundation',
+          stageLabel: 'FOUNDATION',
+          status: 'completed',
+          title: 'Organization Culture & Tooling Essentials',
+          description: 'Understanding corporate communication, version control setup, and workspace orientation.',
+          estimatedHours: 6,
+          modules: [
+            { title: 'Corporate Workstation & Account Setup', completed: true },
+            { title: 'Git & Repository Access Provisioning', completed: true },
+            { title: 'Communication Protocols (Slack, Email, Jira)', completed: true }
+          ]
+        },
+        {
+          stage: 'current',
+          stageLabel: 'CURRENT',
+          status: 'in_progress',
+          title: `Core Competencies for ${user.role}`,
+          description: `Mastering project workflows, development guidelines, and team conventions for ${user.department}.`,
+          estimatedHours: 10,
+          modules: [
+            { title: 'Department Standards & Architecture Overview', completed: true },
+            { title: 'Local Development Environment & Testing', completed: false },
+            { title: 'Security Compliance & Credential Management', completed: false }
+          ]
+        },
+        {
+          stage: 'next',
+          stageLabel: 'NEXT',
+          status: 'upcoming',
+          title: 'End-to-End System Integration & CI/CD',
+          description: 'Deep dive into microservices, containerization, and release pipelines.',
+          estimatedHours: 14,
+          modules: [
+            { title: 'Service Orchestration & API Endpoints', completed: false },
+            { title: 'Automated CI/CD Workflows', completed: false }
+          ]
+        },
+        {
+          stage: 'upcoming',
+          stageLabel: 'UPCOMING',
+          status: 'locked',
+          title: 'Production Readiness & Mentorship',
+          description: 'Sprint planning participation, code review certification, and independent contribution.',
+          estimatedHours: 8,
+          modules: [
+            { title: 'First Sprint Milestone Delivery', completed: false },
+            { title: 'Retrospective & 30-Day Evaluation', completed: false }
+          ]
+        }
+      ];
+      await LearningPath.create({
+        user: user._id,
+        role: user.role,
+        stages: defaultStages
+      });
     }
 
     // Initialize progress record

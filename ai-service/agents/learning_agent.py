@@ -13,7 +13,7 @@ def learning_agent_node(state: AgentState) -> AgentState:
     department = state.get("user_department", "Engineering")
 
     context, sources, confidence = retrieve_verified_context(
-        f"{query} {role} training architecture guidelines",
+        f"{query} training guidelines",
         department=department,
         top_k=2
     )
@@ -44,14 +44,8 @@ Provide an actionable, structured learning recommendation tailored specifically 
         )
 
     state["response"] = response
-    state["sources"] = sources if sources else [{
-        "document": "Engineering_Development_Guide.pdf",
-        "section": "Architecture Overview & Tech Stack",
-        "confidence": "High",
-        "similarity": 0.85,
-        "snippet": "Covers frontend, backend, AI agentic pipeline, CI/CD, and coding conventions."
-    }]
-    state["confidence"] = confidence if confidence != "None" else "High"
-    state["is_verified"] = True
-    state["reasoning"] = f"Curated by Learning Agent for {experience} {role}."
+    state["sources"] = sources
+    state["confidence"] = confidence if sources else "Medium"
+    state["is_verified"] = bool(sources)
+    state["reasoning"] = f"Curated by Learning Agent for {experience} {role} ({len(sources)} verified sources)."
     return state

@@ -17,9 +17,9 @@ def it_agent_node(state: AgentState) -> AgentState:
             context, sources, confidence = retrieve_verified_context(query, department="Engineering", top_k=3)
 
     if not context or not sources:
-        state["response"] = "I couldn't find this information in the available company documents. Please contact the IT Helpdesk via Slack (#it-support) or open a ticket at helpdesk.internal."
+        state["response"] = "I couldn't find reliable information about this in the available company documents. Please contact the IT Helpdesk via Slack (#it-support) or open a ticket at helpdesk.internal."
         state["sources"] = []
-        state["confidence"] = "Low"
+        state["confidence"] = "None"
         state["is_verified"] = False
         state["reasoning"] = "No matching IT guide or security documentation found in ChromaDB."
         return state
@@ -27,7 +27,9 @@ def it_agent_node(state: AgentState) -> AgentState:
     system_prompt = (
         "You are the OnboardIQ Enterprise IT & Security Agent. Guide the employee through required software, "
         "developer tooling, setup procedures, and security protocols strictly using the company documentation provided. "
-        "Be structured, actionable, and state any mandatory steps clearly."
+        "Be structured, actionable, and state any mandatory steps clearly. "
+        "If the information is not present in the provided context, respond with: "
+        "'I couldn't find reliable information about this in the available company documents.'"
     )
 
     user_prompt = f"""
@@ -45,6 +47,16 @@ Provide a clear, step-by-step or structured guide based strictly on the verified
     if not response or not response.strip() or "[AI Agent is currently unavailable" in response:
         top_snippet = sources[0]["snippet"]
         response = f"Based on {sources[0]['document']} ({sources[0]['section']}):\n\n{top_snippet}"
+
+    # If the model indicates the policy or tool is missing from the documents
+    lower_resp = (response or "").lower()
+    if any(phrase in lower_resp for phrase in ["couldn't find", "could not find", "do not address", "does not contain", "not mentioned", "not provided", "no information"]):
+        state["response"] = response
+        state["sources"] = []
+        state["confidence"] = "None"
+        state["is_verified"] = False
+        state["reasoning"] = "Query not found in indexed IT/Security documentation."
+        return state
 
     state["response"] = response
     state["sources"] = sources

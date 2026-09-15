@@ -48,6 +48,16 @@ Provide a concise, direct, and helpful answer for the employee based strictly on
         top_snippet = sources[0]["snippet"]
         response = f"According to {sources[0]['document']} ({sources[0]['section']}):\n\n{top_snippet}"
 
+    # If the model indicates the policy is missing from the documents
+    lower_resp = (response or "").lower()
+    if any(phrase in lower_resp for phrase in ["couldn't find", "could not find", "do not address", "does not contain", "not mentioned", "not provided", "no information"]):
+        state["response"] = response
+        state["sources"] = []
+        state["confidence"] = "None"
+        state["is_verified"] = False
+        state["reasoning"] = "Query not found in indexed company documentation."
+        return state
+
     state["response"] = response
     state["sources"] = sources
     state["confidence"] = confidence

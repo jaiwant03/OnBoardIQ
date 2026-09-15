@@ -147,23 +147,27 @@ const Dashboard = () => {
       {/* 3. Progress & KPI Stats Row */}
       <div className="stats-grid">
         <div className="progress-hero-card">
-          <ProgressRing percentage={progress?.overallPercentage || 65} size={100} />
+          <ProgressRing percentage={progress?.overallPercentage ?? 0} size={100} />
           <div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
               Overall Progress
             </div>
             <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0.2rem 0' }}>
-              {progress?.completedTasks || 13} / {progress?.totalTasks || 20} Done
+              {progress?.completedTasks ?? 0} / {progress?.totalTasks ?? 0} Done
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--accent-primary)' }}>
-              On track for Day 3 milestone
+              {progress?.overallPercentage === 100
+                ? 'All milestones complete! 🎉'
+                : progress?.overallPercentage >= 50
+                ? 'On track for milestone checklist'
+                : 'Getting started with onboarding'}
             </div>
           </div>
         </div>
 
         <StatCard
           title="Completed"
-          value={progress?.completedTasks || 13}
+          value={progress?.completedTasks ?? 0}
           icon={CheckCircle2}
           color="var(--success)"
           subtitle="Tasks finalized"
@@ -171,7 +175,7 @@ const Dashboard = () => {
 
         <StatCard
           title="In Progress"
-          value={progress?.inProgressTasks || 3}
+          value={progress?.inProgressTasks ?? 0}
           icon={Clock}
           color="var(--accent-primary)"
           subtitle="Active today"
@@ -179,7 +183,7 @@ const Dashboard = () => {
 
         <StatCard
           title="Overdue"
-          value={progress?.overdueTasks || 1}
+          value={progress?.overdueTasks ?? 0}
           icon={AlertTriangle}
           color="var(--danger)"
           subtitle="Needs attention"

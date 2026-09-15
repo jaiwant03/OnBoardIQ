@@ -139,7 +139,7 @@ class VectorStoreManager:
                 # In cosine space, distance is 1 - cosine_similarity (range 0 to 2)
                 # Similarity = 1 - distance
                 dist = distances[i]
-                sim = max(0.0, min(1.0, 1.0 - (dist / 2.0)))
+                sim = max(0.0, min(1.0, 1.0 - dist))
                 hits.append({
                     "content": docs[i],
                     "metadata": metas[i],

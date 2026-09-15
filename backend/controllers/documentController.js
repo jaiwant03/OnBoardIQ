@@ -83,14 +83,24 @@ const uploadDocument = async (req, res) => {
         doc_id: doc._id.toString()
       });
 
-      doc.status = 'indexed';
-      doc.chunkCount = indexResult.chunks_indexed || 1;
-      await doc.save();
+      if (indexResult && indexResult.chunks_indexed > 0) {
+        doc.status = 'indexed';
+        doc.chunkCount = indexResult.chunks_indexed;
+        await doc.save();
 
-      res.status(201).json({
-        message: 'Document successfully indexed and ready for AI search',
-        document: doc
-      });
+        return res.status(201).json({
+          message: 'Document successfully indexed and ready for AI search',
+          document: doc
+        });
+      } else {
+        doc.status = 'failed';
+        doc.chunkCount = 0;
+        await doc.save();
+        return res.status(400).json({
+          message: 'Document contains no readable text or sections to index.',
+          document: doc
+        });
+      }
     } catch (aiErr) {
       console.error('[Document Index Error]:', aiErr.message);
       doc.status = 'failed';
