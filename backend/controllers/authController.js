@@ -11,57 +11,71 @@ const generateToken = (id) => {
   });
 };
 
-// @desc    Register a new employee
+// @desc    Register a new user (employee or admin)
 // @route   POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { name, email, password, role, department, experience, skills, preferredLearningStyle } = req.body;
+    const { name, email, password, role, department, experience, skills, preferredLearningStyle, userType } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists with this email address' });
     }
 
+    const accountType = userType === 'admin' ? 'admin' : 'employee';
+
     const user = await User.create({
       name,
       email,
       password,
-      role: role || 'Software Developer',
-      department: department || 'Engineering',
-      experience: experience || 'Fresher',
-      skills: skills || ['JavaScript', 'React', 'Node.js', 'Git'],
+      role: role || (accountType === 'admin' ? 'HR Administrator' : 'Software Developer'),
+      department: department || (accountType === 'admin' ? 'People & HR' : 'Engineering'),
+      experience: experience || (accountType === 'admin' ? 'Senior (5+ yrs)' : 'Fresher'),
+      skills: skills || (accountType === 'admin' ? ['HR Operations', 'People Management', 'Compliance', 'Policy'] : ['JavaScript', 'React', 'Node.js', 'Git']),
       preferredLearningStyle: preferredLearningStyle || 'Hands-on Projects & Code',
-      userType: email.includes('admin') ? 'admin' : 'employee'
+      userType: accountType
     });
 
-    // Generate personalized onboarding tasks via AI service
-    try {
-      const plan = await aiServiceClient.generateOnboardingPlan({
-        role: user.role,
-        department: user.department,
-        experience: user.experience,
-        skills: user.skills
-      });
-
-      if (plan && plan.tasks && plan.tasks.length > 0) {
-        const taskDocs = plan.tasks.map(t => ({
-          ...t,
-          user: user._id
-        }));
-        await OnboardingTask.insertMany(taskDocs);
-      }
-    } catch (planErr) {
-      console.warn('[Register] AI plan generation fallback:', planErr.message);
-      // Fallback default tasks if AI service is offline
-      const defaultTasks = [
-        { user: user._id, dayNumber: 1, title: 'Complete HR Registration & Portal Verification', category: 'HR', priority: 'high', status: 'completed' },
-        { user: user._id, dayNumber: 1, title: 'Review Employee Handbook & Policies', category: 'HR', priority: 'medium', status: 'completed' },
-        { user: user._id, dayNumber: 1, title: 'Configure Company Email & Slack Workspace', category: 'IT', priority: 'high', status: 'completed' },
-        { user: user._id, dayNumber: 1, title: `Install Developer Tooling for ${user.role}`, category: 'IT', priority: 'high', status: 'in_progress' },
-        { user: user._id, dayNumber: 2, title: 'Configure Enterprise Git & SSH Key Signing', category: 'IT', priority: 'high', status: 'in_progress' },
-        { user: user._id, dayNumber: 2, title: 'Complete Security Awareness Training & MFA Setup', category: 'Security', priority: 'high', status: 'not_started' }
+    if (accountType === 'admin') {
+      // Administrative onboarding setup tasks
+      const adminTasks = [
+        { user: user._id, dayNumber: 1, title: 'Review Organization Onboarding Policies & Handbook', category: 'HR', priority: 'high', status: 'completed' },
+        { user: user._id, dayNumber: 1, title: 'Configure Department Milestone Checklists', category: 'HR', priority: 'high', status: 'in_progress' },
+        { user: user._id, dayNumber: 1, title: 'Verify Employee Security Compliance Protocols', category: 'Security', priority: 'high', status: 'in_progress' },
+        { user: user._id, dayNumber: 2, title: 'Audit Vector Knowledge Base Indexing in ChromaDB', category: 'IT', priority: 'medium', status: 'not_started' },
+        { user: user._id, dayNumber: 2, title: 'Review Department Onboarding Analytics & Velocity', category: 'HR', priority: 'medium', status: 'not_started' }
       ];
-      await OnboardingTask.insertMany(defaultTasks);
+      await OnboardingTask.insertMany(adminTasks);
+    } else {
+      // Generate personalized onboarding tasks via AI service for employees
+      try {
+        const plan = await aiServiceClient.generateOnboardingPlan({
+          role: user.role,
+          department: user.department,
+          experience: user.experience,
+          skills: user.skills
+        });
+
+        if (plan && plan.tasks && plan.tasks.length > 0) {
+          const taskDocs = plan.tasks.map(t => ({
+            ...t,
+            user: user._id
+          }));
+          await OnboardingTask.insertMany(taskDocs);
+        }
+      } catch (planErr) {
+        console.warn('[Register] AI plan generation fallback:', planErr.message);
+        // Fallback default tasks if AI service is offline
+        const defaultTasks = [
+          { user: user._id, dayNumber: 1, title: 'Complete HR Registration & Portal Verification', category: 'HR', priority: 'high', status: 'completed' },
+          { user: user._id, dayNumber: 1, title: 'Review Employee Handbook & Policies', category: 'HR', priority: 'medium', status: 'completed' },
+          { user: user._id, dayNumber: 1, title: 'Configure Company Email & Slack Workspace', category: 'IT', priority: 'high', status: 'completed' },
+          { user: user._id, dayNumber: 1, title: `Install Developer Tooling for ${user.role}`, category: 'IT', priority: 'high', status: 'in_progress' },
+          { user: user._id, dayNumber: 2, title: 'Configure Enterprise Git & SSH Key Signing', category: 'IT', priority: 'high', status: 'in_progress' },
+          { user: user._id, dayNumber: 2, title: 'Complete Security Awareness Training & MFA Setup', category: 'Security', priority: 'high', status: 'not_started' }
+        ];
+        await OnboardingTask.insertMany(defaultTasks);
+      }
     }
 
     // Generate learning path via AI service

@@ -19,18 +19,17 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const userData = await login(email, password);
+      if (userData?.userType === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid login credentials');
+      setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDemoLogin = (demoEmail, demoPassword) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
   };
 
   return (
@@ -41,33 +40,7 @@ const Login = () => {
             <Sparkles size={26} />
           </div>
           <h1 className="auth-title">Welcome to OnboardIQ</h1>
-          <p className="auth-subtitle">Autonomous AI Employee Onboarding Platform</p>
-        </div>
-
-        {/* 1-Click Demo Login Box */}
-        <div className="auth-demo-box">
-          <div className="auth-demo-label">
-            <Sparkles size={13} />
-            <span>Hackathon Quick Demo Logins</span>
-          </div>
-          <div className="auth-demo-btns">
-            <button
-              type="button"
-              className="demo-fill-btn"
-              onClick={() => handleDemoLogin('rahul@company.com', 'password123')}
-            >
-              <User size={13} style={{ display: 'inline', marginRight: 4 }} />
-              Rahul Kumar (Employee)
-            </button>
-            <button
-              type="button"
-              className="demo-fill-btn"
-              onClick={() => handleDemoLogin('admin@company.com', 'admin123')}
-            >
-              <Shield size={13} style={{ display: 'inline', marginRight: 4 }} />
-              Sarah (HR Admin)
-            </button>
-          </div>
+          <p className="auth-subtitle">Enterprise Autonomous AI Onboarding Platform</p>
         </div>
 
         {error && (
@@ -85,7 +58,7 @@ const Login = () => {
               className="form-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. rahul@company.com"
+              placeholder="name@company.com"
               required
             />
           </div>
@@ -116,7 +89,7 @@ const Login = () => {
         <div className="auth-footer">
           Don't have an account yet?
           <Link to="/signup" className="auth-link">
-            Create Onboarding Profile
+            Register as Employee or Admin
           </Link>
         </div>
       </div>
