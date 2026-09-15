@@ -56,6 +56,16 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`[OnboardIQ Backend] Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n[OnboardIQ Backend Error] Port ${PORT} is already in use by another running process.`);
+    console.error(`To release port ${PORT} in PowerShell, run:\n  taskkill /F /PID (Get-NetTCPConnection -LocalPort ${PORT}).OwningProcess\n`);
+    process.exit(1);
+  } else {
+    throw err;
+  }
 });

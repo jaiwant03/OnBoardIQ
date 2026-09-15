@@ -69,7 +69,7 @@ const Profile = () => {
   }
 
   const u = profileData?.user || user;
-  const progress = profileData?.progress || { overallPercentage: 65, completedTasks: 13, totalTasks: 20 };
+  const progress = profileData?.progress || { overallPercentage: 0, completedTasks: 0, totalTasks: 0 };
 
   return (
     <div className="page-container" style={{ maxWidth: 1000 }}>
