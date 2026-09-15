@@ -15,7 +15,8 @@ def route_intent(state: AgentState) -> AgentState:
     it_keywords = [
         "software", "install", "setup", "git", "github", "docker", "vscode",
         "ide", "python", "node", "npm", "vpn", "password", "1password", "hardware",
-        "laptop", "ssh", "key", "tools", "access", "credentials", "jumpcloud", "okta"
+        "laptop", "ssh", "key", "tools", "access", "credentials", "jumpcloud", "okta",
+        "security", "mfa", "phishing", "wireguard", "compliance", "authenticator", "firewall"
     ]
     
     hr_keywords = [
@@ -32,7 +33,8 @@ def route_intent(state: AgentState) -> AgentState:
     
     onboarding_keywords = [
         "task", "tasks", "next", "action", "progress", "day 1", "day 2", "day 3",
-        "roadmap", "pending", "complete", "milestone", "overdue", "todo", "checklist", "what should i do"
+        "roadmap", "pending", "complete", "milestone", "overdue", "todo", "checklist",
+        "what should i do", "today", "finish"
     ]
 
     # Evaluate matches
@@ -41,15 +43,19 @@ def route_intent(state: AgentState) -> AgentState:
     learn_score = sum(1 for k in learning_keywords if k in query)
     onboard_score = sum(1 for k in onboarding_keywords if k in query)
 
+    # If query is specifically about security policy, favor IT/Security Agent
+    if "security" in query:
+        it_score += 2
+
     max_score = max(it_score, hr_score, learn_score, onboard_score)
 
     if max_score > 0:
-        if max_score == hr_score:
-            assigned = "hr_agent"
-            intent = "hr_inquiry"
-        elif max_score == it_score:
+        if max_score == it_score:
             assigned = "it_agent"
             intent = "it_inquiry"
+        elif max_score == hr_score:
+            assigned = "hr_agent"
+            intent = "hr_inquiry"
         elif max_score == onboard_score:
             assigned = "onboarding_agent"
             intent = "onboarding_inquiry"
@@ -57,13 +63,14 @@ def route_intent(state: AgentState) -> AgentState:
             assigned = "learning_agent"
             intent = "learning_inquiry"
     else:
-        # Default based on query style
-        if any(w in query for w in ["how", "what", "policy", "who"]):
-            assigned = "hr_agent"
-            intent = "general_policy_inquiry"
-        else:
+        # If user explicitly asks about roadmap, tasks, or what to do next
+        if any(w in query for w in ["task", "today", "next", "do", "plan", "start"]):
             assigned = "onboarding_agent"
             intent = "general_onboarding_inquiry"
+        else:
+            # Default to HR/Handbook Agent which searches general knowledge and prevents hallucination
+            assigned = "hr_agent"
+            intent = "general_policy_inquiry"
 
     state["intent"] = intent
     state["assigned_agent"] = assigned

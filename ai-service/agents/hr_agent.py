@@ -15,9 +15,9 @@ def hr_agent_node(state: AgentState) -> AgentState:
         context, sources, confidence = retrieve_verified_context(query, department="General", top_k=3)
 
     if not context or not sources:
-        state["response"] = "I couldn't find this information in the available company documents. Please check with your HR representative or consult the official HR portal."
+        state["response"] = "I couldn't find reliable information about this in the available company documents. Please check with your HR representative or consult the official HR portal."
         state["sources"] = []
-        state["confidence"] = "Low"
+        state["confidence"] = "None"
         state["is_verified"] = False
         state["reasoning"] = "No relevant HR policies or handbook clauses matched the query in ChromaDB."
         return state
@@ -26,6 +26,8 @@ def hr_agent_node(state: AgentState) -> AgentState:
         "You are the OnboardIQ Enterprise HR Agent. Your responsibility is to answer the employee's HR question "
         "ACCURATELY and FACTUALLY based ONLY on the provided verified company documents. "
         "Strictly adhere to the facts in the text. Do not make up or assume policies. "
+        "If the answer is not clearly present in the verified context, reply: "
+        "'I couldn't find reliable information about this in the available company documents.' "
         "Cite numbers, days, and rules precisely as stated in the sources."
     )
 
