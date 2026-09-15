@@ -1,0 +1,114 @@
+.learning-header {
+  margin-bottom: 2rem;
+}
+
+.learning-stages-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.learning-stage-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  transition: var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.learning-stage-card:hover {
+  border-color: rgba(255, 87, 34, 0.25);
+  box-shadow: var(--shadow-md);
+}
+
+.learning-stage-card.is-active {
+  border-color: rgba(255, 87, 34, 0.4);
+  box-shadow: 0 4px 24px rgba(255, 87, 34, 0.12);
+}
+
+.learning-stage-card.is-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #FF5722 0%, #E11D48 100%);
+}
+
+.stage-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.stage-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stage-indicator-pill {
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.stage-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.stage-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+  max-width: 800px;
+}
+
+.modules-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+  background: #F8FAFC;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.module-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.module-item:hover {
+  background: rgba(255, 87, 34, 0.06);
+}
+
+.module-title {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.module-title.completed {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+

@@ -1,0 +1,104 @@
+.onboarding-page-header {
+  margin-bottom: 2rem;
+}
+
+.roadmap-timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+.roadmap-timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  bottom: 2rem;
+  left: 24px;
+  width: 2px;
+  background: linear-gradient(180deg, #FF5722 0%, #E11D48 50%, #E2E8F0 100%);
+}
+
+.roadmap-day-section {
+  display: flex;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.day-marker-node {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  background: #FFFFFF;
+  border: 2px solid #FF5722;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: #FF5722;
+  font-size: 0.9rem;
+  z-index: 2;
+  box-shadow: 0 0 15px rgba(255, 87, 34, 0.3);
+  flex-shrink: 0;
+}
+
+.day-marker-node.completed {
+  border-color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.day-content-card {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.day-content-card:hover {
+  border-color: rgba(255, 87, 34, 0.25);
+  box-shadow: var(--shadow-md);
+}
+
+.day-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.day-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.day-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 650px) {
+  .roadmap-timeline-container::before {
+    left: 16px;
+  }
+  .day-marker-node {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
+  .roadmap-day-section {
+    gap: 0.75rem;
+  }
+  .day-tasks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
