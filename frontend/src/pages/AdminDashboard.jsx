@@ -154,8 +154,8 @@ const AdminDashboard = () => {
                   }}
                 />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="tasksCompleted" name="Tasks Completed" fill="#FF5722" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="aiQueries" name="AI RAG Queries" fill="#EF4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="tasksCompleted" name="Tasks Completed" fill="#0284C7" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="aiQueries" name="AI RAG Queries" fill="#7C3AED" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -185,7 +185,7 @@ const AdminDashboard = () => {
                     style={{
                       width: `${cat.completed}%`,
                       height: '100%',
-                      background: 'linear-gradient(90deg, #FF5722 0%, #EF4444 100%)',
+                      background: 'linear-gradient(90deg, #0284C7 0%, #0D9488 100%)',
                       borderRadius: 999
                     }}
                   />

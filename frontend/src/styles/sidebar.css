@@ -26,13 +26,13 @@
 .sidebar-logo-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #FF5722 0%, #E11D48 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #0D9488 50%, #7C3AED 100%);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.35);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
 }
 
 .sidebar-title-group {
@@ -45,7 +45,7 @@
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  background: linear-gradient(135deg, #0F172A 30%, #EA580C 100%);
+  background: linear-gradient(135deg, #0F172A 30%, #0284C7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -53,7 +53,7 @@
 .sidebar-subtitle {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #EA580C;
+  color: #0D9488;
   letter-spacing: 0.12em;
 }
 
@@ -90,13 +90,13 @@
 
 .nav-link:hover {
   color: var(--text-primary);
-  background: rgba(255, 87, 34, 0.06);
+  background: rgba(2, 132, 199, 0.06);
 }
 
 .nav-link.active {
-  color: #EA580C;
-  background: linear-gradient(90deg, rgba(255, 87, 34, 0.12) 0%, rgba(225, 29, 72, 0.04) 100%);
-  border-left: 3px solid #FF5722;
+  color: #0284C7;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.12) 0%, rgba(13, 148, 136, 0.04) 100%);
+  border-left: 3px solid #0284C7;
   font-weight: 600;
 }
 
@@ -124,7 +124,7 @@
   width: 36px;
   height: 36px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, #FF5722 0%, #E11D48 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,7 @@
   color: #FFF;
   font-size: 0.9rem;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
 }
 
 .user-info-text {

@@ -117,7 +117,7 @@ const Onboarding = () => {
                           background: isDone
                             ? 'rgba(16, 185, 129, 0.05)'
                             : isInProgress
-                            ? 'rgba(255, 87, 34, 0.05)'
+                            ? 'rgba(2, 132, 199, 0.05)'
                             : 'var(--bg-surface)'
                         }}
                       >

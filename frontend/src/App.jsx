@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: 40, height: 40, border: '3px solid rgba(255, 87, 34, 0.2)', borderTopColor: '#FF5722', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <div style={{ width: 40, height: 40, border: '3px solid rgba(2, 132, 199, 0.2)', borderTopColor: '#0284C7', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
           <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Loading workspace...</span>
         </div>
       </div>

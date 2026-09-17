@@ -10,7 +10,7 @@
 /* Upload Dropzone */
 .dropzone-container {
   background: #FFFFFF;
-  border: 2px dashed rgba(255, 87, 34, 0.4);
+  border: 2px dashed rgba(2, 132, 199, 0.4);
   border-radius: var(--radius-xl);
   padding: 3rem 2rem;
   text-align: center;
@@ -26,8 +26,8 @@
 }
 
 .dropzone-container:hover, .dropzone-container.is-dragover {
-  border-color: #E11D48;
-  background: #FFFBF9;
+  border-color: #0284C7;
+  background: #F0F9FF;
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -36,11 +36,11 @@
   width: 64px;
   height: 64px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(255, 87, 34, 0.15) 0%, rgba(225, 29, 72, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(13, 148, 136, 0.12) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FF5722;
+  color: #0284C7;
 }
 
 .dropzone-text h3 {
@@ -90,7 +90,7 @@
 }
 
 .indexing-stage-step.active {
-  color: #EA580C;
+  color: #0284C7;
   font-weight: 600;
 }
 
@@ -106,8 +106,8 @@
 }
 
 .indexing-stage-step.active .stage-step-dot {
-  background: #FF5722;
-  box-shadow: 0 0 8px rgba(255, 87, 34, 0.8);
+  background: #0284C7;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.8);
 }
 
 .indexing-stage-step.completed .stage-step-dot {
@@ -148,7 +148,7 @@
 }
 
 .docs-table tr:hover td {
-  background: #FFFBF9;
+  background: #F0F9FF;
   color: var(--text-primary);
 }
 
@@ -164,8 +164,8 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 87, 34, 0.12);
-  color: #FF5722;
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284C7;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: radial-gradient(circle at 50% 20%, rgba(255, 87, 34, 0.08) 0%, transparent 60%), #F8FAFC;
+  background: radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.06) 0%, rgba(124, 58, 237, 0.03) 40%, transparent 65%), #FFFFFF;
   position: relative;
 }
 
@@ -15,7 +15,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: 2.5rem;
-  box-shadow: 0 20px 40px -15px rgba(255, 87, 34, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 40px -15px rgba(2, 132, 199, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04);
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -34,14 +34,14 @@
 .auth-logo-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #FF5722 0%, #E11D48 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #0D9488 50%, #7C3AED 100%);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFF;
   margin-bottom: 1rem;
-  box-shadow: 0 8px 20px rgba(255, 87, 34, 0.35);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.32);
 }
 
 .auth-title {
@@ -59,7 +59,7 @@
 
 .auth-demo-box {
   background: #F8FAFC;
-  border: 1px solid rgba(255, 87, 34, 0.25);
+  border: 1px solid rgba(2, 132, 199, 0.25);
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -68,7 +68,7 @@
 .auth-demo-label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #EA580C;
+  color: #0284C7;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 0.6rem;
@@ -97,9 +97,9 @@
 }
 
 .demo-fill-btn:hover {
-  background: #FFFBF9;
-  border-color: #FF5722;
-  color: #EA580C;
+  background: #F0F9FF;
+  border-color: #0284C7;
+  color: #0284C7;
 }
 
 .auth-error-alert {
@@ -128,7 +128,7 @@
 }
 
 .auth-link {
-  color: #FF5722;
+  color: #0284C7;
   font-weight: 600;
   cursor: pointer;
   margin-left: 0.35rem;
@@ -136,7 +136,7 @@
 
 .auth-link:hover {
   text-decoration: underline;
-  color: #EA580C;
+  color: #0369A1;
 }
 
 /* Account Type Selector for Real-Time Role Registration */
@@ -161,14 +161,14 @@
 }
 
 .account-type-card:hover {
-  border-color: rgba(255, 87, 34, 0.4);
-  background: #FFFBF9;
+  border-color: rgba(2, 132, 199, 0.4);
+  background: #F0F9FF;
 }
 
 .account-type-card.active {
-  border-color: #FF5722;
-  background: linear-gradient(135deg, rgba(255, 87, 34, 0.08) 0%, rgba(225, 29, 72, 0.04) 100%), #FFFFFF;
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.15);
+  border-color: #0284C7;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(13, 148, 136, 0.04) 100%), #FFFFFF;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
 }
 
 .account-type-header {
@@ -182,7 +182,7 @@
 }
 
 .account-type-card.active .account-type-header {
-  color: #EA580C;
+  color: #0284C7;
 }
 
 .account-type-desc {

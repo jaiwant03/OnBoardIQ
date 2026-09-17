@@ -389,7 +389,7 @@ const Assistant = () => {
             </div>
           </div>
 
-          <div style={{ marginTop: 'auto', background: 'rgba(255, 87, 34, 0.06)', border: '1px solid rgba(255, 87, 34, 0.2)', borderRadius: 'var(--radius-md)', padding: '0.75rem' }}>
+          <div style={{ marginTop: 'auto', background: 'rgba(2, 132, 199, 0.06)', border: '1px solid rgba(2, 132, 199, 0.2)', borderRadius: 'var(--radius-md)', padding: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '0.2rem' }}>
               <Info size={13} />
               <span>Anti-Hallucination Guard</span>

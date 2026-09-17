@@ -49,7 +49,7 @@
 }
 
 .employee-roster-table tr:hover td {
-  background: #FFFBF9;
+  background: #F0F9FF;
   color: var(--text-primary);
 }
 
@@ -64,7 +64,7 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #FF5722 0%, #E11D48 100%);
+  background: linear-gradient(90deg, #0284C7 0%, #0D9488 50%, #7C3AED 100%);
   border-radius: var(--radius-full);
 }
 

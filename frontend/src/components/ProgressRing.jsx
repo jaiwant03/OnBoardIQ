@@ -32,8 +32,9 @@ const ProgressRing = ({ percentage = 0, size = 110, strokeWidth = 10 }) => {
         />
         <defs>
           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FF5722" />
-            <stop offset="100%" stopColor="#E11D48" />
+            <stop offset="0%" stopColor="#0284C7" />
+            <stop offset="50%" stopColor="#0D9488" />
+            <stop offset="100%" stopColor="#7C3AED" />
           </linearGradient>
         </defs>
       </svg>

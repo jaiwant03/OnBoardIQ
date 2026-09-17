@@ -86,7 +86,7 @@ const LearningPath = () => {
                       background: isDone
                         ? 'rgba(16, 185, 129, 0.1)'
                         : isActive
-                        ? 'rgba(255, 87, 34, 0.1)'
+                        ? 'rgba(2, 132, 199, 0.1)'
                         : 'rgba(0, 0, 0, 0.03)',
                       color: isDone
                         ? 'var(--success)'
@@ -97,7 +97,7 @@ const LearningPath = () => {
                         isDone
                           ? 'rgba(16, 185, 129, 0.25)'
                           : isActive
-                          ? 'rgba(255, 87, 34, 0.25)'
+                          ? 'rgba(2, 132, 199, 0.25)'
                           : 'var(--border-subtle)'
                       }`
                     }}

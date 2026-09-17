@@ -98,7 +98,7 @@ const Signup = () => {
             tabIndex={0}
           >
             <div className="account-type-header">
-              <User size={16} color={userType === 'employee' ? '#FF5722' : 'var(--text-secondary)'} />
+              <User size={16} color={userType === 'employee' ? '#0284C7' : 'var(--text-secondary)'} />
               <span>Employee Account</span>
             </div>
             <div className="account-type-desc">
@@ -113,7 +113,7 @@ const Signup = () => {
             tabIndex={0}
           >
             <div className="account-type-header">
-              <ShieldCheck size={16} color={userType === 'admin' ? '#FF5722' : 'var(--text-secondary)'} />
+              <ShieldCheck size={16} color={userType === 'admin' ? '#7C3AED' : 'var(--text-secondary)'} />
               <span>Administrator Account</span>
             </div>
             <div className="account-type-desc">
@@ -295,8 +295,8 @@ const Signup = () => {
                 </div>
               </div>
 
-              <div style={{ background: 'rgba(255, 87, 34, 0.05)', border: '1px solid rgba(255, 87, 34, 0.2)', borderRadius: 'var(--radius-md)', padding: '0.85rem 1rem', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: '#EA580C', marginBottom: '0.2rem' }}>
+              <div style={{ background: 'rgba(124, 58, 237, 0.05)', border: '1px solid rgba(124, 58, 237, 0.2)', borderRadius: 'var(--radius-md)', padding: '0.85rem 1rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: '#7C3AED', marginBottom: '0.2rem' }}>
                   <CheckCircle2 size={14} />
                   <span>Full Administrative Privileges</span>
                 </div>
