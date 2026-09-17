@@ -4,35 +4,36 @@
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border-subtle);
+  background: #FFFFFF;
+  border-right: 1px solid #E2E8F0;
   display: flex;
   flex-direction: column;
   z-index: 100;
   transition: width 0.3s ease;
   user-select: none;
-  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
 }
 
 .sidebar-header {
   height: var(--navbar-height);
-  padding: 0 1.5rem;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.sidebar-brand-link {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
 }
 
-.sidebar-logo-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
-  border-radius: var(--radius-md);
+.sidebar-leaf-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(0, 168, 132, 0.35);
+  flex-shrink: 0;
 }
 
 .sidebar-title-group {
@@ -42,24 +43,28 @@
 
 .sidebar-title {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
-  background: linear-gradient(135deg, #0F172A 20%, #0284C7 70%, #00A884 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #0F172A;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.sidebar-title-iq {
+  color: #00A884;
 }
 
 .sidebar-subtitle {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: #00A884;
   letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 0.85rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -67,76 +72,155 @@
 }
 
 .sidebar-section-title {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #94A3B8;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 0.75rem 0.75rem 0.35rem;
+  padding: 0.4rem 0.6rem;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.7rem 0.85rem;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
   border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: #475569;
+  font-size: 0.88rem;
   font-weight: 500;
   transition: var(--transition-normal);
-  position: relative;
+  text-decoration: none;
 }
 
-.nav-link:hover {
-  color: #007791;
-  background: rgba(0, 168, 132, 0.06);
-}
-
-.nav-link.active {
-  color: #007791;
-  background: linear-gradient(90deg, rgba(0, 168, 132, 0.12) 0%, rgba(2, 132, 199, 0.05) 100%);
-  border-left: 3.5px solid #00A884;
-  font-weight: 600;
-}
-
-.nav-link.active .nav-icon {
-  color: #00A884;
+.nav-link-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .nav-icon {
   width: 18px;
   height: 18px;
+  color: #64748B;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.nav-arrow {
+  display: none;
   flex-shrink: 0;
 }
 
-.sidebar-footer {
+.nav-link:hover {
+  color: #008769;
+  background: #F0FDF9;
+}
+
+.nav-link:hover .nav-icon {
+  color: #00A884;
+}
+
+.nav-link.active {
+  color: #FFFFFF;
+  background: linear-gradient(90deg, #00A884 0%, #008769 100%);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.28);
+}
+
+.nav-link.active .nav-icon {
+  color: #FFFFFF;
+}
+
+.nav-link.active .nav-arrow {
+  display: block;
+  color: #FFFFFF;
+}
+
+/* Botanical Promo Card */
+.sidebar-promo-card {
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  border: 1px solid rgba(0, 168, 132, 0.22);
+  border-radius: 14px;
   padding: 1rem;
-  border-top: 1px solid var(--border-subtle);
-  background: #FAFAFA;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.06);
+}
+
+.promo-card-content {
+  z-index: 2;
+}
+
+.promo-headline {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #064E3B;
+  line-height: 1.15;
+}
+
+.promo-subtext {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #047857;
+  margin-top: 0.35rem;
+  line-height: 1.3;
+}
+
+.promo-card-image {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 168, 132, 0.15);
+  flex-shrink: 0;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid #F1F5F9;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .user-profile-preview {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border-radius: var(--radius-md);
+  gap: 0.65rem;
+  cursor: pointer;
+  min-width: 0;
+  padding: 0.25rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.user-profile-preview:hover {
+  background: #F8FAFC;
 }
 
 .user-avatar-circle {
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
+  border-radius: 50%;
+  background: #00A884;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #FFF;
-  font-size: 0.9rem;
+  color: #FFFFFF;
+  font-size: 0.85rem;
   flex-shrink: 0;
-  box-shadow: 0 2px 10px rgba(0, 168, 132, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 168, 132, 0.25);
 }
 
 .user-info-text {
@@ -145,9 +229,9 @@
 }
 
 .user-name-text {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F172A;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -155,24 +239,31 @@
 
 .user-role-text {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: #64748B;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.logout-btn {
+.user-profile-arrow {
+  color: #94A3B8;
+  flex-shrink: 0;
+}
+
+.sidebar-logout-btn {
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: #94A3B8;
   cursor: pointer;
   padding: 0.4rem;
   border-radius: var(--radius-sm);
   transition: var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logout-btn:hover {
+.sidebar-logout-btn:hover {
   color: var(--danger);
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.08);
 }
-

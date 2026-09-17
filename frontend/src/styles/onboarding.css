@@ -16,7 +16,7 @@
   bottom: 2rem;
   left: 24px;
   width: 2px;
-  background: linear-gradient(180deg, #0284C7 0%, #00A884 50%, #7C3AED 85%, #E2E8F0 100%);
+  background: linear-gradient(180deg, #00A884 0%, #0284C7 50%, #008769 100%);
 }
 
 .roadmap-day-section {
@@ -39,30 +39,30 @@
   color: #008769;
   font-size: 0.9rem;
   z-index: 2;
-  box-shadow: 0 0 16px rgba(0, 168, 132, 0.3);
+  box-shadow: 0 0 14px rgba(0, 168, 132, 0.25);
   flex-shrink: 0;
 }
 
 .day-marker-node.completed {
-  border-color: var(--success);
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--success);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+  border-color: #00A884;
+  background: #00A884;
+  color: #FFFFFF;
+  box-shadow: 0 0 16px rgba(0, 168, 132, 0.4);
 }
 
 .day-content-card {
   flex: 1;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
   transition: var(--transition-normal);
 }
 
 .day-content-card:hover {
   border-color: rgba(0, 168, 132, 0.35);
-  box-shadow: 0 10px 25px -5px rgba(0, 168, 132, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.08);
 }
 
 .day-header-row {
@@ -75,8 +75,8 @@
 .day-title {
   font-family: var(--font-heading);
   font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: #0F172A;
 }
 
 .day-tasks-grid {
@@ -101,4 +101,3 @@
     grid-template-columns: 1fr;
   }
 }
-

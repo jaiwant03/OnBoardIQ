@@ -1,40 +1,39 @@
 import React from 'react';
 
-const ProgressRing = ({ percentage = 0, size = 110, strokeWidth = 10 }) => {
+const ProgressRing = ({ percentage = 0, size = 96, strokeWidth = 9 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div style={{ position: 'relative', width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'relative', width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
         {/* Background track */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#F1F5F9"
+          stroke="#E2E8F0"
           strokeWidth={strokeWidth}
           fill="transparent"
         />
-        {/* Progress gradient stroke */}
+        {/* Progress stroke */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="url(#progressGradient)"
+          stroke="url(#progressRamaGradient)"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           fill="transparent"
-          style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+          style={{ transition: 'stroke-dashoffset 0.8s ease' }}
         />
         <defs>
-          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0284C7" />
-            <stop offset="50%" stopColor="#00A884" />
-            <stop offset="100%" stopColor="#7C3AED" />
+          <linearGradient id="progressRamaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#00A884" />
+            <stop offset="100%" stopColor="#008769" />
           </linearGradient>
         </defs>
       </svg>
@@ -47,7 +46,7 @@ const ProgressRing = ({ percentage = 0, size = 110, strokeWidth = 10 }) => {
           justifyContent: 'center'
         }}
       >
-        <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+        <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 800, color: '#0F172A' }}>
           {percentage}%
         </span>
       </div>
