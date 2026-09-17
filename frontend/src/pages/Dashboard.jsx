@@ -308,8 +308,8 @@ const Dashboard = () => {
                       <stop offset="95%" stopColor="#0284C7" stopOpacity={0.0} />
                     </linearGradient>
                     <linearGradient id="colorCompleted" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="5%" stopColor="#0D9488" stopOpacity={0.35} />
-                      <stop offset="95%" stopColor="#0D9488" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#00A884" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#00A884" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
@@ -337,7 +337,7 @@ const Dashboard = () => {
                   <Area
                     type="monotone"
                     dataKey="completed"
-                    stroke="#0D9488"
+                    stroke="#00A884"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#colorCompleted)"

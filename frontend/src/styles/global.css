@@ -10,30 +10,30 @@
   --border-subtle: #E2E8F0;
   --border-focus: rgba(2, 132, 199, 0.5);
   
-  /* Peacock Blue (Primary Anchor) */
+  /* Peacock Blue (Primary Sapphire / Ocean Cyan) */
   --accent-primary: #0284C7;
   --accent-primary-hover: #0369A1;
   --accent-primary-glow: rgba(2, 132, 199, 0.22);
   
-  /* Rama Green (Teal / Emerald Elegance) */
-  --accent-rama: #0D9488;
-  --accent-rama-hover: #0F766E;
-  --accent-rama-glow: rgba(13, 148, 136, 0.2);
+  /* Rama Green (Brilliant Peacock Feather Green) */
+  --accent-rama: #00A884;
+  --accent-rama-hover: #008769;
+  --accent-rama-glow: rgba(0, 168, 132, 0.25);
 
-  /* Purple (Royal Accent) */
+  /* Royal Purple (Amethyst Eye) */
   --accent-purple: #7C3AED;
   --accent-purple-hover: #6D28D9;
-  --accent-purple-glow: rgba(124, 58, 237, 0.2);
+  --accent-purple-glow: rgba(124, 58, 237, 0.22);
 
-  /* Signature Peacock Trio Gradients */
-  --accent-gradient: linear-gradient(135deg, #0284C7 0%, #0D9488 50%, #7C3AED 100%);
-  --accent-gradient-hover: linear-gradient(135deg, #0369A1 0%, #0F766E 50%, #6D28D9 100%);
+  /* Signature Peacock Feather Tri-Color Gradients */
+  --accent-gradient: linear-gradient(135deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #0369A1 0%, #008769 50%, #6D28D9 100%);
   
   --gradient-peacock-purple: linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);
   --gradient-peacock-purple-hover: linear-gradient(135deg, #0369A1 0%, #6D28D9 100%);
   
-  --gradient-peacock-rama: linear-gradient(135deg, #0284C7 0%, #0D9488 100%);
-  --gradient-peacock-rama-hover: linear-gradient(135deg, #0369A1 0%, #0F766E 100%);
+  --gradient-rama-peacock: linear-gradient(135deg, #00A884 0%, #0284C7 100%);
+  --gradient-rama-peacock-hover: linear-gradient(135deg, #008769 0%, #0369A1 100%);
 
   --accent-cyan: #0284C7;
   --accent-cyan-hover: #0369A1;
@@ -60,9 +60,9 @@
   --radius-full: 9999px;
   
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 14px -1px rgba(2, 132, 199, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 12px 28px -4px rgba(2, 132, 199, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 22px rgba(2, 132, 199, 0.22);
+  --shadow-md: 0 4px 16px -1px rgba(0, 168, 132, 0.08), 0 2px 6px -1px rgba(2, 132, 199, 0.04);
+  --shadow-lg: 0 12px 28px -4px rgba(0, 168, 132, 0.12), 0 4px 12px -2px rgba(2, 132, 199, 0.06);
+  --shadow-glow: 0 0 24px rgba(0, 168, 132, 0.25);
   
   --sidebar-width: 260px;
   --navbar-height: 70px;
@@ -126,7 +126,10 @@ button, input, select, textarea {
   flex-direction: column;
   min-height: 100vh;
   transition: margin-left 0.3s ease;
-  background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.04) 0%, rgba(124, 58, 237, 0.02) 40%, transparent 60%), var(--bg-primary);
+  background: radial-gradient(circle at 10% 10%, rgba(2, 132, 199, 0.04) 0%, transparent 40%),
+              radial-gradient(circle at 90% 15%, rgba(0, 168, 132, 0.05) 0%, transparent 45%),
+              radial-gradient(circle at 50% 90%, rgba(124, 58, 237, 0.03) 0%, transparent 40%),
+              #FFFFFF;
 }
 
 .page-container {
@@ -148,8 +151,8 @@ button, input, select, textarea {
 }
 
 .card:hover {
-  border-color: rgba(2, 132, 199, 0.28);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(0, 168, 132, 0.35);
+  box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08), 0 8px 10px -6px rgba(0, 168, 132, 0.05);
 }
 
 .card-clickable {
@@ -158,8 +161,8 @@ button, input, select, textarea {
 
 .card-clickable:hover {
   transform: translateY(-2px);
-  border-color: rgba(2, 132, 199, 0.4);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(0, 168, 132, 0.45);
+  box-shadow: 0 12px 28px -4px rgba(2, 132, 199, 0.12), 0 6px 14px -3px rgba(0, 168, 132, 0.08);
 }
 
 /* Buttons */
@@ -170,7 +173,7 @@ button, input, select, textarea {
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
@@ -179,14 +182,14 @@ button, input, select, textarea {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0284C7 0%, #7C3AED 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
   color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 168, 132, 0.28), 0 2px 6px rgba(2, 132, 199, 0.2);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #0369A1 0%, #6D28D9 100%);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+  background: linear-gradient(135deg, #0369A1 0%, #008769 50%, #6D28D9 100%);
+  box-shadow: 0 6px 22px rgba(0, 168, 132, 0.38), 0 3px 8px rgba(2, 132, 199, 0.28);
   transform: translateY(-1px);
 }
 
@@ -202,15 +205,16 @@ button, input, select, textarea {
 }
 
 .btn-cyan {
-  background: linear-gradient(135deg, #0284C7 0%, #0D9488 100%);
+  background: linear-gradient(135deg, #00A884 0%, #0284C7 100%);
   color: #FFFFFF;
   font-weight: 600;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 4px 15px rgba(0, 168, 132, 0.28);
 }
 
 .btn-cyan:hover {
-  background: linear-gradient(135deg, #0369A1 0%, #0F766E 100%);
+  background: linear-gradient(135deg, #008769 0%, #0369A1 100%);
   color: #FFF;
+  box-shadow: 0 6px 20px rgba(0, 168, 132, 0.38);
   transform: translateY(-1px);
 }
 
@@ -242,39 +246,39 @@ button, input, select, textarea {
 }
 
 .badge-hr {
-  background: rgba(13, 148, 136, 0.1);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(0, 168, 132, 0.1);
+  color: #008769;
+  border: 1px solid rgba(0, 168, 132, 0.28);
 }
 
 .badge-it {
   background: rgba(124, 58, 237, 0.1);
   color: #7C3AED;
-  border: 1px solid rgba(124, 58, 237, 0.25);
+  border: 1px solid rgba(124, 58, 237, 0.28);
 }
 
 .badge-security {
   background: rgba(2, 132, 199, 0.1);
   color: #0284C7;
-  border: 1px solid rgba(2, 132, 199, 0.25);
+  border: 1px solid rgba(2, 132, 199, 0.28);
 }
 
 .badge-engineering {
   background: rgba(2, 132, 199, 0.1);
   color: #0284C7;
-  border: 1px solid rgba(2, 132, 199, 0.25);
+  border: 1px solid rgba(2, 132, 199, 0.28);
 }
 
 .badge-training {
-  background: rgba(13, 148, 136, 0.1);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(0, 168, 132, 0.1);
+  color: #008769;
+  border: 1px solid rgba(0, 168, 132, 0.28);
 }
 
 .badge-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(0, 168, 132, 0.1);
+  color: #008769;
+  border: 1px solid rgba(0, 168, 132, 0.28);
 }
 
 .badge-high {

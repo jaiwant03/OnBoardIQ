@@ -6,8 +6,8 @@
 
 /* Welcome Section */
 .welcome-card {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(13, 148, 136, 0.04) 50%, rgba(124, 58, 237, 0.03) 100%), #FFFFFF;
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(0, 168, 132, 0.05) 50%, rgba(124, 58, 237, 0.03) 100%), #FFFFFF;
+  border: 1px solid rgba(0, 168, 132, 0.25);
   border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
@@ -15,7 +15,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 30px -10px rgba(2, 132, 199, 0.1);
+  box-shadow: 0 10px 30px -10px rgba(0, 168, 132, 0.12);
 }
 
 .welcome-card::after {
@@ -25,7 +25,7 @@
   right: -20%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(2, 132, 199, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 168, 132, 0.14) 0%, rgba(2, 132, 199, 0.08) 50%, transparent 70%);
   pointer-events: none;
 }
 
@@ -54,15 +54,15 @@
 
 /* Next Best Action Card */
 .next-action-banner {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.06) 0%, rgba(13, 148, 136, 0.04) 100%), #FFFFFF;
-  border: 1px solid rgba(2, 132, 199, 0.25);
+  background: linear-gradient(135deg, rgba(0, 168, 132, 0.06) 0%, rgba(2, 132, 199, 0.04) 100%), #FFFFFF;
+  border: 1px solid rgba(0, 168, 132, 0.3);
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 168, 132, 0.1);
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -76,19 +76,19 @@
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #0284C7 0%, #0D9488 100%);
+  background: linear-gradient(135deg, #00A884 0%, #0284C7 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 168, 132, 0.3);
 }
 
 .next-action-label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #0D9488;
+  color: #008769;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 0.25rem;
@@ -225,8 +225,8 @@
 }
 
 .task-compact-item:hover {
-  border-color: rgba(2, 132, 199, 0.3);
-  background: #F0F9FF;
+  border-color: rgba(0, 168, 132, 0.35);
+  background: #F0FDF9;
 }
 
 .task-compact-left {

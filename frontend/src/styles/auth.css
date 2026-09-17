@@ -4,7 +4,10 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.06) 0%, rgba(124, 58, 237, 0.03) 40%, transparent 65%), #FFFFFF;
+  background: radial-gradient(circle at 15% 20%, rgba(2, 132, 199, 0.05) 0%, transparent 45%),
+              radial-gradient(circle at 85% 25%, rgba(0, 168, 132, 0.06) 0%, transparent 45%),
+              radial-gradient(circle at 50% 85%, rgba(124, 58, 237, 0.03) 0%, transparent 40%),
+              #FFFFFF;
   position: relative;
 }
 
@@ -15,8 +18,20 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: 2.5rem;
-  box-shadow: 0 20px 40px -15px rgba(2, 132, 199, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 25px 50px -12px rgba(2, 132, 199, 0.12), 0 8px 24px -4px rgba(0, 168, 132, 0.08);
   animation: fadeIn 0.4s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
 }
 
 .auth-card-wide {
@@ -34,14 +49,14 @@
 .auth-logo-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #0284C7 0%, #0D9488 50%, #7C3AED 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFF;
   margin-bottom: 1rem;
-  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.32);
+  box-shadow: 0 8px 22px rgba(0, 168, 132, 0.35);
 }
 
 .auth-title {
@@ -161,14 +176,14 @@
 }
 
 .account-type-card:hover {
-  border-color: rgba(2, 132, 199, 0.4);
-  background: #F0F9FF;
+  border-color: rgba(0, 168, 132, 0.4);
+  background: #F0FDF9;
 }
 
 .account-type-card.active {
-  border-color: #0284C7;
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(13, 148, 136, 0.04) 100%), #FFFFFF;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+  border-color: #00A884;
+  background: linear-gradient(135deg, rgba(0, 168, 132, 0.08) 0%, rgba(2, 132, 199, 0.04) 100%), #FFFFFF;
+  box-shadow: 0 4px 14px rgba(0, 168, 132, 0.16);
 }
 
 .account-type-header {
@@ -182,7 +197,7 @@
 }
 
 .account-type-card.active .account-type-header {
-  color: #0284C7;
+  color: #008769;
 }
 
 .account-type-desc {

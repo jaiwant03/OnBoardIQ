@@ -20,13 +20,13 @@
 }
 
 .learning-stage-card:hover {
-  border-color: rgba(2, 132, 199, 0.25);
+  border-color: rgba(0, 168, 132, 0.35);
   box-shadow: var(--shadow-md);
 }
 
 .learning-stage-card.is-active {
-  border-color: rgba(2, 132, 199, 0.4);
-  box-shadow: 0 4px 24px rgba(2, 132, 199, 0.12);
+  border-color: rgba(0, 168, 132, 0.45);
+  box-shadow: 0 6px 25px rgba(0, 168, 132, 0.15);
 }
 
 .learning-stage-card.is-active::before {
@@ -36,7 +36,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, #0284C7 0%, #0D9488 50%, #7C3AED 100%);
+  background: linear-gradient(180deg, #0284C7 0%, #00A884 50%, #7C3AED 100%);
 }
 
 .stage-top-bar {
