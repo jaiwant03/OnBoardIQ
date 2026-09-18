@@ -10,10 +10,10 @@ import {
   User,
   BarChart3,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Sprout
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import plantSproutImg from '../assets/plant_sprout.jpg';
 import '../styles/sidebar.css';
 
 const Sidebar = () => {
@@ -44,16 +44,16 @@ const Sidebar = () => {
           <div className="sidebar-leaf-logo">
             <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* Seed / Sprout Dot */}
-              <circle cx="18" cy="7" r="2.8" fill="#00A884" />
+              <circle cx="18" cy="7" r="2.8" fill="#00E599" />
               {/* Left Leaf - Peacock Blue */}
               <path
                 d="M17.5 10C17.5 10 9 12.5 7.5 21C6.2 27.8 13.2 29.5 17.5 27.5C17.5 24 17.5 14 17.5 10Z"
-                fill="#0284C7"
+                fill="#00C49F"
               />
               {/* Right Leaf - Rama Green */}
               <path
                 d="M18.5 10C18.5 10 27 12.5 28.5 21C29.8 27.8 22.8 29.5 18.5 27.5C18.5 24 18.5 14 18.5 10Z"
-                fill="#00A884"
+                fill="#00E599"
               />
             </svg>
           </div>
@@ -73,7 +73,6 @@ const Sidebar = () => {
             <LayoutDashboard className="nav-icon" />
             <span>Dashboard</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <NavLink to="/assistant" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -81,7 +80,6 @@ const Sidebar = () => {
             <MessageSquare className="nav-icon" />
             <span>AI Assistant</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <NavLink to="/onboarding" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -89,7 +87,6 @@ const Sidebar = () => {
             <Map className="nav-icon" />
             <span>My Onboarding</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <NavLink to="/tasks" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -97,7 +94,6 @@ const Sidebar = () => {
             <CheckSquare className="nav-icon" />
             <span>Tasks</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <NavLink to="/learning" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -105,7 +101,6 @@ const Sidebar = () => {
             <GraduationCap className="nav-icon" />
             <span>Learning Path</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <NavLink to="/documents" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -113,7 +108,6 @@ const Sidebar = () => {
             <FileText className="nav-icon" />
             <span>Documents</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <NavLink to="/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
@@ -121,7 +115,6 @@ const Sidebar = () => {
             <User className="nav-icon" />
             <span>Profile</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
         <span className="sidebar-section-title" style={{ marginTop: '0.85rem' }}>ADMIN</span>
@@ -131,24 +124,21 @@ const Sidebar = () => {
             <BarChart3 className="nav-icon" />
             <span>Admin Dashboard</span>
           </div>
-          <ChevronRight className="nav-arrow" size={16} />
         </NavLink>
 
-        {/* Botanical Promo Card */}
+        {/* Deep Pine Green Botanical Promo Card */}
         <div className="sidebar-promo-card">
+          <div className="promo-sprout-icon-wrap">
+            <Sprout size={20} color="#00E599" />
+          </div>
           <div className="promo-card-content">
             <h4 className="promo-headline">
-              Grow<br />Learn<br />Belong
+              Build<br />Grow<br />Belong
             </h4>
             <p className="promo-subtext">
-              Your journey.<br />Our AI support.
+              Your journey<br />matters here.
             </p>
           </div>
-          <img
-            src={plantSproutImg}
-            alt="Growth Sprout"
-            className="promo-card-image"
-          />
         </div>
       </nav>
 
@@ -164,9 +154,6 @@ const Sidebar = () => {
           </div>
           <ChevronRight size={16} className="user-profile-arrow" />
         </div>
-        <button className="sidebar-logout-btn" onClick={handleLogout} title="Logout">
-          <LogOut size={15} />
-        </button>
       </div>
     </aside>
   );

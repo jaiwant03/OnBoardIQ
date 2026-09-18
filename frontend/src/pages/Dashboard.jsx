@@ -14,19 +14,22 @@ import {
   Users,
   Award,
   Map,
-  MessageSquare,
-  Zap,
   FileText,
-  Sprout,
-  CheckSquare
+  Calendar,
+  ChevronRight,
+  CheckSquare,
+  Compass,
+  ArrowUpRight,
+  MoreVertical,
+  MapPin,
+  Video,
+  MessagesSquare,
+  HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { taskAPI, progressAPI, aiAPI } from '../services/api';
 import ProgressRing from '../components/ProgressRing';
-import StatCard from '../components/StatCard';
-import LoadingSkeleton from '../components/LoadingSkeleton';
 import officeHeroImg from '../assets/office_hero.jpg';
-import booksSproutImg from '../assets/books_sprout.jpg';
 import '../styles/dashboard.css';
 
 const Dashboard = () => {
@@ -76,313 +79,374 @@ const Dashboard = () => {
     }
   };
 
-  const todayTasks = tasks.slice(0, 4);
+  const todayTasksList = [
+    { _id: '1', title: 'Complete HR registration', category: 'HR', time: '09:00 AM', status: 'completed' },
+    { _id: '2', title: 'Read employee handbook', category: 'General', time: '10:00 AM', status: 'completed' },
+    { _id: '3', title: 'Set-up company email', category: 'IT', time: '11:00 AM', status: 'completed' },
+    { _id: '4', title: 'Explore company policies', category: 'General', time: '01:00 PM', status: 'completed' }
+  ];
 
-  // Time formatting fallback for priority tasks
-  const getTaskTime = (index) => {
-    const times = ['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM'];
-    return times[index % times.length];
-  };
-
-  const getCategoryClass = (cat) => {
+  const getCategoryBadgeClass = (cat) => {
     const lower = (cat || '').toLowerCase();
-    if (lower.includes('hr') || lower.includes('people')) return 'badge-dept';
-    if (lower.includes('it') || lower.includes('dev') || lower.includes('tech')) return 'badge-it';
-    return 'badge-general';
+    if (lower === 'hr') return 'cat-badge-hr';
+    if (lower === 'it') return 'cat-badge-it';
+    return 'cat-badge-general';
   };
-
-  if (loading) {
-    return (
-      <div className="page-container dashboard-grid">
-        <LoadingSkeleton height="200px" />
-        <div className="stats-grid">
-          <LoadingSkeleton height="120px" />
-          <LoadingSkeleton height="120px" />
-          <LoadingSkeleton height="120px" />
-          <LoadingSkeleton height="120px" />
-        </div>
-        <LoadingSkeleton height="350px" />
-      </div>
-    );
-  }
 
   const overallPercentage = progress?.overallPercentage ?? 100;
   const completedCount = progress?.completedTasks ?? 6;
   const totalCount = progress?.totalTasks ?? 6;
 
   return (
-    <div className="page-container dashboard-grid">
-      {/* 1. Welcome Hero Banner matching Reference Screenshot */}
-      <div className="hero-banner-card">
-        <div className="hero-banner-left">
-          <h1 className="hero-greeting">
-            Good morning, {user?.name?.split(' ')[0] || 'Jaiwant'} 👋
-          </h1>
-          <p className="hero-description">
-            Welcome to <strong>OnboardIQ</strong> — your AI-powered onboarding workspace. Your autonomous <strong>AI</strong> agent has structured your roadmap for{' '}
-            <span className="hero-highlight">{user?.role || 'HR Administrator'}</span> in{' '}
-            <span className="hero-highlight">{user?.department || 'People & HR'}</span>.
-          </p>
+    <div className="page-container dashboard-page-wrapper">
+      {/* 1. Top Section: Hero Card + Right Quick Nav Cards */}
+      <div className="dashboard-top-row">
+        {/* Left Hero Card */}
+        <div className="hero-main-card">
+          <div className="hero-content-col">
+            <span className="hero-pretitle">WELCOME TO ONBOARDIQ</span>
+            <h1 className="hero-main-greeting">
+              Good morning, {user?.name?.split(' ')[0] || 'Jaiwant'} 👋
+            </h1>
+            <p className="hero-sub-description">
+              Your AI-powered onboarding workspace. Your autonomous AI agent has structured your roadmap for{' '}
+              <strong>{user?.role || 'HR Administrator'}</strong> in{' '}
+              <strong>{user?.department || 'People & HR'}</strong>.
+            </p>
 
-          <div className="hero-badges-row">
-            <span className="badge badge-hr">
-              <Briefcase size={13} />
-              <span>{user?.role || 'HR Administrator'}</span>
-            </span>
-            <span className="badge badge-dept">
-              <Users size={13} />
-              <span>{user?.department || 'People & HR'}</span>
-            </span>
-            <span className="badge badge-training">
-              <Award size={13} />
-              <span>{user?.experience || 'Senior (5+ yrs)'}</span>
-            </span>
+            {/* Badges with Role / Department / Experience Labels */}
+            <div className="hero-meta-grid">
+              <div className="hero-meta-item">
+                <div className="hero-meta-top">
+                  <Briefcase size={14} color="#00A884" />
+                  <span className="hero-meta-val">{user?.role || 'HR Administrator'}</span>
+                </div>
+                <span className="hero-meta-label">Role</span>
+              </div>
+
+              <div className="hero-meta-item">
+                <div className="hero-meta-top">
+                  <Users size={14} color="#0284C7" />
+                  <span className="hero-meta-val">{user?.department || 'People & HR'}</span>
+                </div>
+                <span className="hero-meta-label">Department</span>
+              </div>
+
+              <div className="hero-meta-item">
+                <div className="hero-meta-top">
+                  <Award size={14} color="#00A884" />
+                  <span className="hero-meta-val">{user?.experience || 'Senior (5+ yrs)'}</span>
+                </div>
+                <span className="hero-meta-label">Experience</span>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="hero-cta-buttons">
+              <button className="btn btn-primary" onClick={() => navigate('/assistant')}>
+                <Sparkles size={16} />
+                <span>Ask AI Assistant</span>
+                <ArrowRight size={15} />
+              </button>
+              <button className="btn btn-outline" onClick={() => navigate('/onboarding')}>
+                <Map size={15} />
+                <span>View My Roadmap</span>
+              </button>
+            </div>
           </div>
 
-          <div className="hero-actions-row">
-            <button className="btn btn-primary" onClick={() => navigate('/assistant')}>
-              <Sparkles size={16} />
-              <span>Ask AI Assistant</span>
-              <ArrowRight size={15} />
-            </button>
-            <button className="btn btn-outline" onClick={() => navigate('/onboarding')}>
-              <Map size={15} />
-              <span>View My Roadmap</span>
-            </button>
+          {/* Quote Column */}
+          <div className="hero-quote-block">
+            <span className="quote-tag">— A GREAT START</span>
+            <p className="quote-body">
+              “People grow when they feel supported.”
+            </p>
+            <span className="quote-brand">O N B O A R D I Q</span>
+          </div>
+
+          {/* Office Image with Fade */}
+          <div className="hero-office-bg">
+            <img src={officeHeroImg} alt="Corporate Office" className="hero-office-photo" />
+            <div className="hero-office-overlay" />
           </div>
         </div>
 
-        {/* Center Quote */}
-        <div className="hero-banner-quote-col">
-          <p className="hero-quote-text">
-            “A great beginning<br />leads to a greater you.”
-          </p>
-          <div className="hero-quote-underline" />
-        </div>
+        {/* Right Quick Nav Cards Column (4 Cards) */}
+        <div className="quick-actions-column">
+          <div className="quick-action-card" onClick={() => navigate('/documents')}>
+            <div className="quick-action-icon-box">
+              <FileText size={18} color="#00A884" />
+            </div>
+            <div className="quick-action-text">
+              <h4 className="quick-action-title">Explore Policies</h4>
+              <p className="quick-action-subtitle">Find answers instantly</p>
+            </div>
+            <ChevronRight size={16} className="quick-action-arrow" />
+          </div>
 
-        {/* Right Office Walkway Image Background with Gradient Mask */}
-        <div className="hero-banner-image-wrap">
-          <img src={officeHeroImg} alt="Modern Corporate Campus" className="hero-banner-img" />
-          <div className="hero-banner-fade-overlay" />
-        </div>
+          <div className="quick-action-card" onClick={() => navigate('/learning')}>
+            <div className="quick-action-icon-box">
+              <GraduationCap size={18} color="#00A884" />
+            </div>
+            <div className="quick-action-text">
+              <h4 className="quick-action-title">Continue Learning</h4>
+              <p className="quick-action-subtitle">Boost your skills</p>
+            </div>
+            <ChevronRight size={16} className="quick-action-arrow" />
+          </div>
 
-        {/* Far Right Feature Chips */}
-        <div className="hero-feature-chips">
-          <div className="feature-chip">
-            <MessageSquare size={14} className="chip-icon" />
-            <span>Learn Faster</span>
+          <div className="quick-action-card" onClick={() => navigate('/onboarding')}>
+            <div className="quick-action-icon-box">
+              <TrendingUp size={18} color="#00A884" />
+            </div>
+            <div className="quick-action-text">
+              <h4 className="quick-action-title">Track Progress</h4>
+              <p className="quick-action-subtitle">Stay on course</p>
+            </div>
+            <ChevronRight size={16} className="quick-action-arrow" />
           </div>
-          <div className="feature-chip">
-            <Zap size={14} className="chip-icon" />
-            <span>Work Smarter</span>
-          </div>
-          <div className="feature-chip">
-            <FileText size={14} className="chip-icon" />
-            <span>Stay Informed</span>
-          </div>
-          <div className="feature-chip">
-            <Sprout size={14} className="chip-icon" />
-            <span>Grow Together</span>
+
+          <div className="quick-action-card" onClick={() => navigate('/assistant')}>
+            <div className="quick-action-icon-box">
+              <HelpCircle size={18} color="#00A884" />
+            </div>
+            <div className="quick-action-text">
+              <h4 className="quick-action-title">Contact HR</h4>
+              <p className="quick-action-subtitle">Get help when needed</p>
+            </div>
+            <ChevronRight size={16} className="quick-action-arrow" />
           </div>
         </div>
       </div>
 
-      {/* 2. Progress & KPI Stats Row (4 cards) */}
-      <div className="stats-grid">
-        {/* Card 1: Overall Progress Ring */}
-        <div className="progress-hero-card">
-          <div className="progress-card-top-badge">
-            <TrendingUp size={16} color="#00A884" />
-          </div>
-          <ProgressRing percentage={overallPercentage} size={90} strokeWidth={9} />
-          <div className="progress-text-col">
-            <span className="progress-label">OVERALL PROGRESS</span>
-            <div className="progress-numbers">
-              {completedCount} / {totalCount} Done
+      {/* 2. Progress & KPI Stats Row (4 Cards) */}
+      <div className="kpi-metrics-grid">
+        {/* Card 1: Overall Progress */}
+        <div className="kpi-card progress-kpi-card">
+          <ProgressRing percentage={overallPercentage} size={88} strokeWidth={9} />
+          <div className="progress-kpi-info">
+            <div className="kpi-header-flex">
+              <span className="kpi-small-label">Overall Progress</span>
+              <div className="kpi-icon-pill green">
+                <ArrowUpRight size={14} color="#00A884" />
+              </div>
             </div>
-            <div className="progress-status-msg">
-              {overallPercentage === 100
-                ? 'All milestones complete! 🎉'
-                : 'Great progress this week!'}
+            <div className="kpi-big-value">
+              {completedCount} / {totalCount}
             </div>
-          </div>
-          <div className="stat-wave-container">
-            <svg viewBox="0 0 140 28" preserveAspectRatio="none" className="stat-wave-svg">
-              <path
-                d="M 0 16 C 30 24, 50 8, 80 18 C 110 24, 130 10, 140 16"
-                fill="none"
-                stroke="#00A884"
-                strokeWidth="2"
-                strokeLinecap="round"
-                opacity="0.5"
-              />
-            </svg>
+            <div className="kpi-milestone-tag">Milestones Completed</div>
+            <div className="kpi-subtext">All milestones complete! 🎉</div>
           </div>
         </div>
 
-        {/* Card 2: Completed */}
-        <StatCard
-          title="COMPLETED"
-          value={completedCount}
-          icon={CheckSquare}
-          color="#00A884"
-          subtitle="Tasks finalized"
-          waveColor="#00A884"
-        />
+        {/* Card 2: Completed Tasks */}
+        <div className="kpi-card" onClick={() => navigate('/tasks')}>
+          <div className="kpi-header-flex">
+            <div className="kpi-square-icon green">
+              <CheckSquare size={18} color="#00A884" />
+            </div>
+            <div className="kpi-circular-btn">
+              <ArrowRight size={14} />
+            </div>
+          </div>
+          <span className="kpi-small-label">Completed Tasks</span>
+          <div className="kpi-big-value">{completedCount}</div>
+          <div className="kpi-subtext">Tasks finalized</div>
+        </div>
 
         {/* Card 3: In Progress */}
-        <StatCard
-          title="IN PROGRESS"
-          value={progress?.inProgressTasks ?? 0}
-          icon={Clock}
-          color="#0284C7"
-          subtitle="Active today"
-          waveColor="#0284C7"
-        />
+        <div className="kpi-card" onClick={() => navigate('/tasks')}>
+          <div className="kpi-header-flex">
+            <div className="kpi-square-icon blue">
+              <Clock size={18} color="#0284C7" />
+            </div>
+            <div className="kpi-circular-btn">
+              <ArrowRight size={14} />
+            </div>
+          </div>
+          <span className="kpi-small-label">In Progress</span>
+          <div className="kpi-big-value">{progress?.inProgressTasks ?? 0}</div>
+          <div className="kpi-subtext">Active today</div>
+        </div>
 
         {/* Card 4: Overdue */}
-        <StatCard
-          title="OVERDUE"
-          value={progress?.overdueTasks ?? 0}
-          icon={AlertTriangle}
-          color="#EF4444"
-          subtitle="Needs attention"
-          waveColor="#EF4444"
-        />
+        <div className="kpi-card" onClick={() => navigate('/tasks')}>
+          <div className="kpi-header-flex">
+            <div className="kpi-square-icon red">
+              <AlertTriangle size={18} color="#EF4444" />
+            </div>
+            <div className="kpi-circular-btn">
+              <ArrowRight size={14} />
+            </div>
+          </div>
+          <span className="kpi-small-label">Overdue</span>
+          <div className="kpi-big-value">{progress?.overdueTasks ?? 0}</div>
+          <div className="kpi-subtext">Needs attention</div>
+        </div>
       </div>
 
-      {/* 3. Two-Column Dashboard Content */}
-      <div className="dashboard-columns">
-        {/* Left Column: Today's Priority Tasks */}
-        <div className="dashboard-card priority-tasks-card">
-          <div className="section-header-row">
-            <div className="section-title-wrap">
-              <div className="section-header-icon">
-                <Target size={18} color="#00A884" />
-              </div>
+      {/* 3. Bottom 3-Column Section */}
+      <div className="dashboard-bottom-grid">
+        {/* Column 1: Today's Priority Tasks */}
+        <div className="dashboard-panel priority-tasks-panel">
+          <div className="panel-header">
+            <div className="panel-header-left">
+              <CheckSquare size={18} color="#00A884" />
               <div>
-                <h2 className="section-title">Today's Priority Tasks</h2>
-                <p className="section-subtitle">
-                  Keep the momentum going! Here are your key tasks for today.
-                </p>
+                <h3 className="panel-title">Today's Priority Tasks</h3>
+                <p className="panel-subtext">Keep the momentum going! Here are your key tasks for today.</p>
               </div>
             </div>
-            <button
-              className="view-all-link-btn"
-              onClick={() => navigate('/tasks')}
-            >
+            <button className="panel-link-btn" onClick={() => navigate('/tasks')}>
               <span>View All ({tasks.length || 6})</span>
               <ArrowRight size={14} />
             </button>
           </div>
 
-          <div className="tasks-compact-list">
-            {(todayTasks.length > 0 ? todayTasks : [
-              { _id: '1', title: 'Complete HR registration', category: 'HR', status: 'completed' },
-              { _id: '2', title: 'Read employee handbook', category: 'General', status: 'completed' },
-              { _id: '3', title: 'Set-up company email', category: 'IT', status: 'completed' }
-            ]).map((t, idx) => {
-              const isDone = t.status === 'completed';
-              return (
-                <div key={t._id} className="task-row-item">
-                  <div className="task-row-left">
-                    <button
-                      className={`task-circle-checkbox ${isDone ? 'checked' : ''}`}
-                      onClick={() => handleToggleTask(t._id, t.status)}
-                      title={isDone ? 'Mark Incomplete' : 'Mark Complete'}
-                    >
-                      {isDone && <Check size={13} strokeWidth={3} />}
-                    </button>
-                    <span className={`task-row-title ${isDone ? 'done' : ''}`}>
-                      {t.title}
-                    </span>
+          <div className="tasks-rows-container">
+            {todayTasksList.map((t) => (
+              <div key={t._id} className="priority-task-row">
+                <div className="task-row-left">
+                  <div className="task-checked-circle">
+                    <Check size={12} strokeWidth={3} />
                   </div>
-
-                  <div className="task-row-meta">
-                    <span className={`badge ${getCategoryClass(t.category)}`}>
-                      {t.category || 'HR'}
-                    </span>
-                    <span className="badge badge-time">
-                      {getTaskTime(idx)}
-                    </span>
-                  </div>
+                  <span className="task-row-title-text">{t.title}</span>
                 </div>
-              );
-            })}
+
+                <div className="task-row-right">
+                  <span className={`task-cat-pill ${getCategoryBadgeClass(t.category)}`}>
+                    {t.category}
+                  </span>
+                  <span className="task-time-pill">{t.time}</span>
+                  <button className="task-row-more-btn">
+                    <MoreVertical size={14} />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Right Column: Current Learning Stage */}
-        <div className="dashboard-card learning-stage-card">
-          <div className="section-header-row">
-            <div className="section-title-wrap">
-              <div className="section-header-icon">
-                <GraduationCap size={18} color="#00A884" />
-              </div>
-              <div>
-                <h2 className="section-title">Current Learning Stage</h2>
-              </div>
+        {/* Column 2: Current Learning Stage */}
+        <div className="dashboard-panel learning-stage-panel">
+          <div className="panel-header">
+            <div className="panel-header-left">
+              <GraduationCap size={18} color="#00A884" />
+              <h3 className="panel-title">Current Learning Stage</h3>
             </div>
-            <button
-              className="view-all-link-btn"
-              onClick={() => navigate('/learning')}
-            >
-              <span>Timeline</span>
+            <button className="panel-link-btn" onClick={() => navigate('/learning')}>
+              <span>View Learning Path</span>
               <ArrowRight size={14} />
             </button>
           </div>
 
-          <div className="learning-stage-body">
-            {/* Vertical Stepper */}
-            <div className="learning-stepper">
-              {/* Step 1: Completed */}
-              <div className="stepper-item completed">
-                <div className="stepper-node done">
-                  <Check size={12} strokeWidth={3} />
-                </div>
-                <div className="stepper-info">
-                  <div className="stepper-title">Onboarding Basics</div>
-                  <div className="stepper-status done-text">Completed</div>
+          <div className="learning-stepper-list">
+            {/* Step 1: Onboarding Basics */}
+            <div className="stepper-item-row">
+              <div className="stepper-icon-node done">
+                <Check size={12} strokeWidth={3} />
+              </div>
+              <div className="stepper-content">
+                <div className="stepper-heading">Onboarding Basics</div>
+                <div className="stepper-sub done">Completed</div>
+              </div>
+            </div>
+            <div className="stepper-connector done" />
+
+            {/* Step 2: Company Policies */}
+            <div className="stepper-item-row">
+              <div className="stepper-icon-node active">
+                <div className="stepper-active-dot" />
+              </div>
+              <div className="stepper-content">
+                <div className="stepper-heading">Company Policies</div>
+                <div className="stepper-sub active">In Progress</div>
+                <div className="stepper-progress-wrapper">
+                  <div className="stepper-progress-fill" style={{ width: '60%' }} />
+                  <span className="stepper-progress-percent">60%</span>
                 </div>
               </div>
-              <div className="stepper-line done" />
+            </div>
+            <div className="stepper-connector" />
 
-              {/* Step 2: In Progress */}
-              <div className="stepper-item in-progress">
-                <div className="stepper-node active">
-                  <div className="stepper-node-dot" />
-                </div>
-                <div className="stepper-info">
-                  <div className="stepper-title">Company Policies</div>
-                  <div className="stepper-status active-text">In Progress</div>
-                  <div className="stepper-progress-track">
-                    <div className="stepper-progress-fill" style={{ width: '60%' }} />
-                    <span className="stepper-progress-pct">60%</span>
-                  </div>
-                </div>
+            {/* Step 3: HR Tools & Systems */}
+            <div className="stepper-item-row">
+              <div className="stepper-icon-node upcoming" />
+              <div className="stepper-content">
+                <div className="stepper-heading">HR Tools & Systems</div>
+                <div className="stepper-sub upcoming">Upcoming</div>
               </div>
-              <div className="stepper-line" />
+            </div>
+            <div className="stepper-connector" />
 
-              {/* Step 3: Upcoming */}
-              <div className="stepper-item upcoming">
-                <div className="stepper-node upcoming" />
-                <div className="stepper-info">
-                  <div className="stepper-title">HR Tools & Systems</div>
-                  <div className="stepper-status upcoming-text">Upcoming</div>
+            {/* Step 4: People Management */}
+            <div className="stepper-item-row">
+              <div className="stepper-icon-node upcoming" />
+              <div className="stepper-content">
+                <div className="stepper-heading">People Management</div>
+                <div className="stepper-sub upcoming">Upcoming</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Column 3: Upcoming Schedule */}
+        <div className="dashboard-panel upcoming-schedule-panel">
+          <div className="panel-header">
+            <div className="panel-header-left">
+              <Calendar size={18} color="#00A884" />
+              <h3 className="panel-title">Upcoming</h3>
+            </div>
+            <button className="panel-link-btn" onClick={() => navigate('/onboarding')}>
+              <span>View Calendar</span>
+              <ArrowRight size={14} />
+            </button>
+          </div>
+
+          <div className="schedule-items-list">
+            {/* Event 1 */}
+            <div className="schedule-event-item teal-stripe">
+              <span className="schedule-time">10:00 AM</span>
+              <div className="schedule-icon-box blue">
+                <Users size={16} color="#0284C7" />
+              </div>
+              <div className="schedule-info">
+                <h4 className="schedule-title">Team Introduction</h4>
+                <div className="schedule-location">
+                  <MapPin size={11} />
+                  <span>Conference Room A</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Sprouting Books Illustration Box */}
-            <div className="learning-illustration-card">
-              <img
-                src={booksSproutImg}
-                alt="Knowledge Sprout"
-                className="learning-card-img"
-              />
-              <p className="learning-quote">
-                “Knowledge today,<br />a brighter tomorrow.”
-              </p>
+            {/* Event 2 */}
+            <div className="schedule-event-item purple-stripe">
+              <span className="schedule-time">02:00 PM</span>
+              <div className="schedule-icon-box blue">
+                <FileText size={16} color="#0284C7" />
+              </div>
+              <div className="schedule-info">
+                <h4 className="schedule-title">HR Orientation Session</h4>
+                <div className="schedule-location">
+                  <Video size={11} />
+                  <span>Online (Teams)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Event 3 */}
+            <div className="schedule-event-item amber-stripe">
+              <span className="schedule-time">04:00 PM</span>
+              <div className="schedule-icon-box green">
+                <MessagesSquare size={16} color="#00A884" />
+              </div>
+              <div className="schedule-info">
+                <h4 className="schedule-title">Q&A with Team Lead</h4>
+                <div className="schedule-location">
+                  <Video size={11} />
+                  <span>Google Meet</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,30 +1,30 @@
 .navbar {
   height: var(--navbar-height);
-  padding: 0 1.75rem;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #E2E8F0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
+  background: #FFFFFF;
   position: sticky;
   top: 0;
   z-index: 90;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .navbar-left {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex: 1;
+  max-width: 540px;
 }
 
 .navbar-menu-toggle {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  color: #64748B;
-  width: 34px;
-  height: 34px;
+  background: transparent;
+  border: none;
+  color: #475569;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -38,18 +38,49 @@
   color: #0F172A;
 }
 
-.navbar-page-title {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  font-weight: 700;
+.navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-full);
+  padding: 0.45rem 1rem;
+  width: 100%;
+  max-width: 440px;
+  transition: var(--transition-normal);
+}
+
+.navbar-search:focus-within {
+  border-color: #00A884;
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.15);
+  background: #FFFFFF;
+}
+
+.navbar-search-input {
+  background: transparent;
+  border: none;
   color: #0F172A;
+  font-size: 0.85rem;
+  outline: none;
+  width: 100%;
+}
+
+.navbar-search-input::placeholder {
+  color: #94A3B8;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .ai-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   background: #E6F8F2;
   border: 1px solid rgba(0, 168, 132, 0.25);
   border-radius: var(--radius-full);
@@ -74,59 +105,10 @@
   background: var(--warning);
 }
 
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-}
-
-.navbar-search {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: var(--radius-full);
-  padding: 0.4rem 0.85rem;
-  width: 290px;
-  transition: var(--transition-normal);
-}
-
-.navbar-search:focus-within {
-  border-color: #00A884;
-  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.2);
-  background: #FFFFFF;
-  width: 320px;
-}
-
-.navbar-search-input {
+.navbar-icon-btn {
   background: transparent;
   border: none;
-  color: #0F172A;
-  font-size: 0.82rem;
-  outline: none;
-  width: 100%;
-}
-
-.navbar-search-input::placeholder {
-  color: #94A3B8;
-}
-
-.navbar-search-shortcut {
-  background: #FFFFFF;
-  border: 1px solid #CBD5E1;
-  color: #64748B;
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.navbar-icon-btn {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  color: #64748B;
+  color: #475569;
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
@@ -140,20 +122,19 @@
 
 .navbar-icon-btn:hover {
   color: #00A884;
-  border-color: rgba(0, 168, 132, 0.35);
   background: #F0FDF9;
 }
 
 .notification-badge-count {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 16px;
-  height: 16px;
+  top: 4px;
+  right: 4px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #EF4444;
   color: #FFFFFF;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -162,8 +143,8 @@
 }
 
 .navbar-user-avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: #00A884;
   display: flex;
@@ -171,34 +152,23 @@
   justify-content: center;
   font-weight: 700;
   color: #FFFFFF;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0, 168, 132, 0.25);
 }
 
-/* Date & Weather Widget */
+/* Date Widget */
 .navbar-date-widget {
   display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding-left: 0.65rem;
-  border-left: 1px solid #E2E8F0;
-}
-
-.date-widget-icon {
-  color: #00A884;
-  flex-shrink: 0;
-}
-
-.date-widget-text {
-  display: flex;
   flex-direction: column;
+  text-align: right;
+  padding-left: 0.5rem;
 }
 
 .date-text-primary {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #1E293B;
+  color: #0F172A;
   line-height: 1.2;
 }
 
@@ -211,8 +181,5 @@
 @media (max-width: 900px) {
   .navbar-date-widget {
     display: none;
-  }
-  .navbar-search {
-    width: 180px;
   }
 }
