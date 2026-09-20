@@ -11,6 +11,7 @@ from rag.vector_store import vector_store
 from rag.document_loader import extract_text_from_file
 from rag.text_splitter import chunk_document
 from utils.seed_documents import seed_sample_policies
+from utils.document_extractor import extract_onboarding_data_from_document
 from agents.graph import agent_graph
 from agents.state import AgentState
 
@@ -28,16 +29,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Startup event to auto-seed initial policies
+# Startup event: initialize cleanly without auto-seeding sample policies
 @app.on_event("startup")
 async def on_startup():
     print("[OnboardIQ AI Service] Starting up...")
     stats = vector_store.get_stats()
-    if stats["total_chunks"] == 0:
-        print("[OnboardIQ AI Service] ChromaDB is empty. Seeding initial company policies...")
-        seed_sample_policies()
-    else:
-        print(f"[OnboardIQ AI Service] ChromaDB initialized with {stats['total_chunks']} chunks.")
+    print(f"[OnboardIQ AI Service] ChromaDB initialized with {stats['total_chunks']} chunks.")
 
 # Request Models
 class ChatRequest(BaseModel):
@@ -128,130 +125,12 @@ async def chat_endpoint(req: ChatRequest):
 @app.post("/api/ai/onboarding-plan")
 async def generate_onboarding_plan(req: PlanRequest):
     """
-    Generates customized day-by-day onboarding roadmap based on role,
-    experience level, department, and skills.
+    Returns onboarding tasks. In accordance with user policy, tasks are only
+    provided when documents are uploaded to the system.
     """
-    # Pre-crafted dynamic plans for common profiles with fallback
     role = req.role or "Software Developer"
     level = req.experience or "Fresher"
-
-    tasks = [
-        # Day 1: Foundation & Setup
-        {
-            "dayNumber": 1,
-            "title": "Complete HR Registration & Portal Verification",
-            "description": "Upload ID proof, emergency contacts, and complete tax verification in the HR portal.",
-            "category": "HR",
-            "priority": "high",
-            "status": "completed",
-            "estimatedMinutes": 30
-        },
-        {
-            "dayNumber": 1,
-            "title": "Review Employee Handbook & Policies",
-            "description": "Read core company values, attendance rules, and communication etiquette.",
-            "category": "HR",
-            "priority": "medium",
-            "status": "completed",
-            "estimatedMinutes": 45
-        },
-        {
-            "dayNumber": 1,
-            "title": "Configure Company Email & Slack Workspace",
-            "description": "Set up Google Workspace/Outlook, join #general, #announcements, and your department channel.",
-            "category": "IT",
-            "priority": "high",
-            "status": "completed",
-            "estimatedMinutes": 30
-        },
-        {
-            "dayNumber": 1,
-            "title": f"Install Developer Tooling for {role}",
-            "description": "Install Node.js, Python, Docker, Git CLI, and Visual Studio Code with standard extensions.",
-            "category": "IT",
-            "priority": "high",
-            "status": "in_progress",
-            "estimatedMinutes": 60
-        },
-        # Day 2: Security & Workflow
-        {
-            "dayNumber": 2,
-            "title": "Configure Enterprise Git & SSH Key Signing",
-            "description": "Generate Ed25519 SSH keys, configure corporate Git profile, and request repo access.",
-            "category": "IT",
-            "priority": "high",
-            "status": "in_progress",
-            "estimatedMinutes": 45
-        },
-        {
-            "dayNumber": 2,
-            "title": "Complete Security Awareness Training & MFA Setup",
-            "description": "Configure authenticator app (1Password/Google Authenticator) and complete phishing simulator.",
-            "category": "Security",
-            "priority": "high",
-            "status": "not_started",
-            "estimatedMinutes": 40
-        },
-        {
-            "dayNumber": 2,
-            "title": "Review Engineering Development Guidelines",
-            "description": "Understand PR review checklist, branch naming standards, and CI/CD pipelines.",
-            "category": "Engineering",
-            "priority": "medium",
-            "status": "not_started",
-            "estimatedMinutes": 50
-        },
-        # Day 3: Architecture & Deep Dive
-        {
-            "dayNumber": 3,
-            "title": "Understand Project Architecture & Services",
-            "description": "Explore frontend Vite app, Node.js backend services, and Python LangGraph multi-agent pipeline.",
-            "category": "Engineering",
-            "priority": "high",
-            "status": "not_started",
-            "estimatedMinutes": 90
-        },
-        {
-            "dayNumber": 3,
-            "title": "Run Local Services & Verify ChromaDB RAG",
-            "description": "Clone repositories, launch backend and AI services, and execute initial smoke test query.",
-            "category": "Engineering",
-            "priority": "high",
-            "status": "not_started",
-            "estimatedMinutes": 60
-        },
-        # Day 4: 1-on-1 & Starter Issue
-        {
-            "dayNumber": 4,
-            "title": "Schedule 1-on-1 with Engineering Mentor",
-            "description": "Discuss sprint goals, team ceremonies, and align on initial starter ticket expectations.",
-            "category": "Training",
-            "priority": "medium",
-            "status": "not_started",
-            "estimatedMinutes": 30
-        },
-        {
-            "dayNumber": 4,
-            "title": "Pick Up First 'Good First Issue' Starter Ticket",
-            "description": "Create a feature branch, implement minor enhancement or test case, and submit your first PR.",
-            "category": "Engineering",
-            "priority": "medium",
-            "status": "not_started",
-            "estimatedMinutes": 120
-        },
-        # Day 5: Graduation & Review
-        {
-            "dayNumber": 5,
-            "title": "Complete First Week Onboarding Retrospective",
-            "description": "Review progress metrics, complete the onboarding feedback survey, and meet with HR.",
-            "category": "HR",
-            "priority": "low",
-            "status": "not_started",
-            "estimatedMinutes": 30
-        }
-    ]
-
-    return {"role": role, "experience": level, "tasks": tasks}
+    return {"role": role, "experience": level, "tasks": []}
 
 @app.post("/api/ai/next-action")
 async def get_next_best_action(req: NextActionRequest):
@@ -311,72 +190,17 @@ async def get_next_best_action(req: NextActionRequest):
 @app.post("/api/ai/learning-path")
 async def generate_learning_path(req: PlanRequest):
     """
-    Generates a 4-stage personalized learning roadmap:
-    Foundation -> Current -> Next -> Upcoming
+    Returns learning path stages. In accordance with user policy, learning paths
+    are only generated when documents are uploaded to the system.
     """
     role = req.role or "Software Developer"
-
-    stages = [
-        {
-            "stage": "foundation",
-            "stageLabel": "FOUNDATION",
-            "status": "completed",
-            "title": "Git Basics & Development Environment",
-            "description": "Mastering local dev tools, corporate Git workflow, branch hygiene, and terminal tooling.",
-            "estimatedHours": 8,
-            "modules": [
-                {"title": "Local Environment Setup (Node.js & Python)", "completed": True},
-                {"title": "Git & SSH Key Signing", "completed": True},
-                {"title": "Company Code Formatting & Linters", "completed": True}
-            ]
-        },
-        {
-            "stage": "current",
-            "stageLabel": "CURRENT",
-            "status": "in_progress",
-            "title": "Company Development Workflow & CI/CD",
-            "description": "Understanding branch protection, Pull Request lifecycle, GitHub Actions, and containerized testing.",
-            "estimatedHours": 12,
-            "modules": [
-                {"title": "Conventional Commits & PR Etiquette", "completed": True},
-                {"title": "Docker Local Container Stacks", "completed": False},
-                {"title": "Automated Testing & Lint Checks", "completed": False}
-            ]
-        },
-        {
-            "stage": "next",
-            "stageLabel": "NEXT",
-            "status": "upcoming",
-            "title": "Full-Stack Microservices & AI RAG Pipeline",
-            "description": "Deep-dive into LangGraph multi-agent orchestration, ChromaDB vector indexing, and Express REST APIs.",
-            "estimatedHours": 16,
-            "modules": [
-                {"title": "Node.js REST Services & JWT Auth", "completed": False},
-                {"title": "LangGraph StateGraph & Node Routing", "completed": False},
-                {"title": "ChromaDB Semantic Search & Source Verification", "completed": False}
-            ]
-        },
-        {
-            "stage": "upcoming",
-            "stageLabel": "UPCOMING",
-            "status": "locked",
-            "title": "Production Deployment & Observability",
-            "description": "Zero-downtime releases, metrics monitoring, structured JSON logging, and incident response.",
-            "estimatedHours": 10,
-            "modules": [
-                {"title": "Staging vs Production Deployment Cycle", "completed": False},
-                {"title": "Service Health Monitoring & Grafana", "completed": False},
-                {"title": "Production Security Compliance", "completed": False}
-            ]
-        }
-    ]
-
-    return {"role": role, "stages": stages}
+    return {"role": role, "stages": []}
 
 @app.post("/api/ai/index-document")
 async def index_document(req: IndexDocumentRequest):
     """
-    Extracts text from file (or accepts raw text), chunks it, and indexes into ChromaDB.
+    Extracts text from file, chunks & indexes into ChromaDB,
+    and dynamically extracts actionable onboarding tasks and learning curriculum stages.
     """
     try:
         if req.raw_text:
@@ -400,11 +224,21 @@ async def index_document(req: IndexDocumentRequest):
             
         chunks_indexed = vector_store.add_chunks(chunks)
 
+        # Extract real onboarding tasks and curriculum derived directly from this document!
+        extracted_data = extract_onboarding_data_from_document(
+            text=text,
+            filename=req.filename,
+            department=req.department,
+            category=req.category
+        )
+
         return {
             "status": "indexed",
             "filename": req.filename,
             "chunks_indexed": chunks_indexed,
-            "total_collection_chunks": vector_store.get_stats()["total_chunks"]
+            "total_collection_chunks": vector_store.get_stats()["total_chunks"],
+            "extracted_tasks": extracted_data.get("tasks", []),
+            "extracted_learning_path": extracted_data.get("learning_path", {"stages": []})
         }
     except HTTPException:
         raise
@@ -412,6 +246,15 @@ async def index_document(req: IndexDocumentRequest):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
+
+@app.post("/api/ai/clear-vector-store")
+async def clear_vector_store_endpoint():
+    """Clears all chunks from ChromaDB so no sample or orphaned vector data persists."""
+    success = vector_store.clear_all()
+    return {
+        "status": "cleared" if success else "failed",
+        "total_chunks": vector_store.get_stats()["total_chunks"]
+    }
 
 @app.post("/api/ai/seed-documents")
 async def trigger_seed():

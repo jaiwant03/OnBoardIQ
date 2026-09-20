@@ -48,6 +48,10 @@ const OnboardingTaskSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  sourceDocument: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now

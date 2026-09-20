@@ -166,5 +166,20 @@ class VectorStoreManager:
         except Exception:
             return False
 
+    def clear_all(self) -> bool:
+        """Deletes all chunks and resets the knowledge collection for a clean state."""
+        try:
+            self.client.delete_collection("onboardiq_knowledge")
+            self.collection = self.client.get_or_create_collection(
+                name="onboardiq_knowledge",
+                metadata={"hnsw:space": "cosine"}
+            )
+            print("[VectorStore] Knowledge collection reset. 0 chunks remaining.")
+            return True
+        except Exception as e:
+            print(f"[VectorStore] Error clearing collection: {e}")
+            return False
+
 # Global instance
 vector_store = VectorStoreManager()
+

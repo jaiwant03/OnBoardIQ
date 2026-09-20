@@ -1,51 +1,37 @@
 const fs = require('fs');
 const path = require('path');
 const Document = require('../models/Document');
+const OnboardingTask = require('../models/OnboardingTask');
+const LearningPath = require('../models/LearningPath');
+const OnboardingProgress = require('../models/OnboardingProgress');
+const User = require('../models/User');
 const aiServiceClient = require('../services/aiServiceClient');
 
-// Sample policies metadata for programmatic seed
-const SAMPLE_DOCS = [
-  {
-    title: 'Employee Leave & Attendance Policy',
-    filename: 'Employee_Leave_Policy.pdf',
-    department: 'HR',
-    category: 'HR',
-    fileSize: 45200,
-    chunkCount: 5
-  },
-  {
-    title: 'Company Employee Handbook',
-    filename: 'Employee_Handbook.pdf',
-    department: 'General',
-    category: 'General',
-    fileSize: 58900,
-    chunkCount: 5
-  },
-  {
-    title: 'IT Equipment & Developer Setup Guide',
-    filename: 'IT_Setup_Guide.pdf',
-    department: 'IT',
-    category: 'IT',
-    fileSize: 51200,
-    chunkCount: 5
-  },
-  {
-    title: 'Corporate Information Security Policy',
-    filename: 'Information_Security_Policy.pdf',
-    department: 'Security',
-    category: 'Security',
-    fileSize: 48300,
-    chunkCount: 5
-  },
-  {
-    title: 'Software Engineering Guidelines',
-    filename: 'Engineering_Development_Guide.pdf',
-    department: 'Engineering',
-    category: 'Engineering',
-    fileSize: 64100,
-    chunkCount: 5
-  }
-];
+// Helper to recalculate user's progress
+const recalculateProgress = async (userId) => {
+  const tasks = await OnboardingTask.find({ user: userId });
+  const total = tasks.length;
+  const completed = tasks.filter((t) => t.status === 'completed').length;
+  const inProgress = tasks.filter((t) => t.status === 'in_progress').length;
+  const remaining = total - completed;
+  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  const progress = await OnboardingProgress.findOneAndUpdate(
+    { user: userId },
+    {
+      overallPercentage: percentage,
+      totalTasks: total,
+      completedTasks: completed,
+      remainingTasks: remaining,
+      inProgressTasks: inProgress,
+      overdueTasks: 0,
+      updatedAt: new Date()
+    },
+    { new: true, upsert: true }
+  );
+
+  return progress;
+};
 
 // @desc    Upload & index a new company document
 // @route   POST /api/documents/upload
@@ -67,10 +53,11 @@ const uploadDocument = async (req, res) => {
       department: department || 'General',
       category: category || 'General',
       status: 'extracting',
-      uploadedBy: req.user._id
+      uploadedBy: req.user ? req.user._id : null
     });
 
-    // Send to Python AI Service for text extraction, chunking, and ChromaDB indexing
+    // Send to Python AI Service for text extraction, chunking, ChromaDB indexing,
+    // AND dynamic extraction of onboarding tasks & learning curriculum
     try {
       doc.status = 'embedding';
       await doc.save();
@@ -88,9 +75,62 @@ const uploadDocument = async (req, res) => {
         doc.chunkCount = indexResult.chunks_indexed;
         await doc.save();
 
+        // 1. DYNAMIC ONBOARDING TASKS GENERATION FROM UPLOADED DOCUMENT
+        const extractedTasks = indexResult.extracted_tasks || [];
+        let createdTasksCount = 0;
+
+        if (extractedTasks.length > 0 && req.user) {
+          // Find all users who should receive these document-derived tasks (the uploader and all active employees)
+          const targetUsers = await User.find({
+            $or: [{ _id: req.user._id }, { userType: 'employee' }]
+          });
+
+          for (const targetUser of targetUsers) {
+            const taskDocs = extractedTasks.map((t) => ({
+              user: targetUser._id,
+              title: t.title,
+              description: t.description || `Action item from ${doc.originalName}`,
+              category: t.category || doc.category || 'General',
+              dayNumber: Number(t.dayNumber) || 1,
+              priority: t.priority || 'medium',
+              status: 'not_started',
+              estimatedMinutes: Number(t.estimatedMinutes) || 30,
+              sourceDocument: doc.originalName
+            }));
+
+            await OnboardingTask.insertMany(taskDocs);
+            await recalculateProgress(targetUser._id);
+            createdTasksCount += taskDocs.length;
+          }
+        }
+
+        // 2. DYNAMIC LEARNING PATH GENERATION FROM UPLOADED DOCUMENT
+        const extractedLP = indexResult.extracted_learning_path;
+        if (extractedLP && extractedLP.stages && extractedLP.stages.length > 0 && req.user) {
+          const targetUsers = await User.find({
+            $or: [{ _id: req.user._id }, { userType: 'employee' }]
+          });
+
+          for (const targetUser of targetUsers) {
+            const existingLP = await LearningPath.findOne({ user: targetUser._id });
+            if (existingLP) {
+              // Append or update stages derived from this document
+              existingLP.stages = extractedLP.stages;
+              await existingLP.save();
+            } else {
+              await LearningPath.create({
+                user: targetUser._id,
+                role: targetUser.role,
+                stages: extractedLP.stages
+              });
+            }
+          }
+        }
+
         return res.status(201).json({
-          message: 'Document successfully indexed and ready for AI search',
-          document: doc
+          message: `Document indexed successfully. Generated ${extractedTasks.length} onboarding tasks and updated learning curriculum.`,
+          document: doc,
+          tasksGenerated: extractedTasks.length
         });
       } else {
         doc.status = 'failed';
@@ -131,7 +171,7 @@ const getDocuments = async (req, res) => {
   }
 };
 
-// @desc    Delete a document
+// @desc    Delete a document and its associated generated tasks/chunks
 // @route   DELETE /api/documents/:id
 const deleteDocument = async (req, res) => {
   try {
@@ -140,7 +180,7 @@ const deleteDocument = async (req, res) => {
       return res.status(404).json({ message: 'Document not found' });
     }
 
-    // Attempt to delete physical file if exists
+    // Remove associated physical file if exists
     if (doc.filePath && fs.existsSync(doc.filePath)) {
       try {
         fs.unlinkSync(doc.filePath);
@@ -149,38 +189,39 @@ const deleteDocument = async (req, res) => {
       }
     }
 
-    await Document.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Document removed successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    // Remove tasks generated from this specific document
+    await OnboardingTask.deleteMany({ sourceDocument: doc.originalName });
 
-// @desc    Seed sample company documents into database
-// @route   POST /api/documents/seed
-const seedDocuments = async (req, res) => {
-  try {
-    for (const d of SAMPLE_DOCS) {
-      const exists = await Document.findOne({ filename: d.filename });
-      if (!exists) {
-        await Document.create({
-          title: d.title,
-          filename: d.filename,
-          originalName: d.filename,
-          department: d.department,
-          category: d.category,
-          fileSize: d.fileSize,
-          status: 'indexed',
-          chunkCount: d.chunkCount,
-          uploadedBy: req.user ? req.user._id : null
-        });
-      }
+    // Recalculate progress for users
+    if (req.user) {
+      await recalculateProgress(req.user._id);
     }
-    const all = await Document.find().sort({ uploadDate: -1 });
-    res.json({ message: 'Sample documents seeded successfully', documents: all });
+
+    // If no documents remain in the database, clear learning paths and tasks
+    const remainingDocsCount = await Document.countDocuments({ _id: { $ne: doc._id } });
+    if (remainingDocsCount === 0) {
+      await OnboardingTask.deleteMany({});
+      await LearningPath.deleteMany({});
+      await OnboardingProgress.updateMany(
+        {},
+        {
+          overallPercentage: 0,
+          totalTasks: 0,
+          completedTasks: 0,
+          remainingTasks: 0,
+          inProgressTasks: 0,
+          overdueTasks: 0
+        }
+      );
+      // Also clear ChromaDB vector store
+      await aiServiceClient.clearVectorStore();
+    }
+
+    await Document.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Document and its associated onboarding data removed successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { uploadDocument, getDocuments, deleteDocument, seedDocuments };
+module.exports = { uploadDocument, getDocuments, deleteDocument };

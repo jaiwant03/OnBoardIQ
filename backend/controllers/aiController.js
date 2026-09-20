@@ -106,26 +106,7 @@ const getNextAction = async (req, res) => {
 // @route   GET /api/ai/learning-path
 const getLearningPath = async (req, res) => {
   try {
-    let lp = await LearningPath.findOne({ user: req.user._id });
-
-    if (!lp) {
-      try {
-        const generated = await aiServiceClient.generateLearningPath({
-          role: req.user.role,
-          experience: req.user.experience
-        });
-        if (generated && generated.stages) {
-          lp = await LearningPath.create({
-            user: req.user._id,
-            role: req.user.role,
-            stages: generated.stages
-          });
-        }
-      } catch (err) {
-        console.warn('[LearningPath] fallback:', err.message);
-      }
-    }
-
+    const lp = await LearningPath.findOne({ user: req.user._id });
     res.json(lp || { stages: [] });
   } catch (error) {
     res.status(500).json({ message: error.message });

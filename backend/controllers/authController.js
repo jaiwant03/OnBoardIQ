@@ -47,126 +47,68 @@ const register = async (req, res) => {
       userType: accountType
     });
 
-    if (accountType === 'admin') {
-      // Administrative onboarding setup tasks
-      const adminTasks = [
-        { user: user._id, dayNumber: 1, title: 'Review Organization Onboarding Policies & Handbook', category: 'HR', priority: 'high', status: 'completed' },
-        { user: user._id, dayNumber: 1, title: 'Configure Department Milestone Checklists', category: 'HR', priority: 'high', status: 'in_progress' },
-        { user: user._id, dayNumber: 1, title: 'Verify Employee Security Compliance Protocols', category: 'Security', priority: 'high', status: 'in_progress' },
-        { user: user._id, dayNumber: 2, title: 'Audit Vector Knowledge Base Indexing in ChromaDB', category: 'IT', priority: 'medium', status: 'not_started' },
-        { user: user._id, dayNumber: 2, title: 'Review Department Onboarding Analytics & Velocity', category: 'HR', priority: 'medium', status: 'not_started' }
-      ];
-      await OnboardingTask.insertMany(adminTasks);
-    } else {
-      // Generate personalized onboarding tasks via AI service for employees
-      try {
-        const plan = await aiServiceClient.generateOnboardingPlan({
-          role: user.role,
-          department: user.department,
-          experience: user.experience,
-          skills: user.skills
-        });
+const Document = require('../models/Document');
 
-        if (plan && plan.tasks && plan.tasks.length > 0) {
-          const taskDocs = plan.tasks.map(t => ({
-            ...t,
-            user: user._id
-          }));
-          await OnboardingTask.insertMany(taskDocs);
+    // Only assign tasks and learning path if company documents have actually been uploaded!
+    const existingDocs = await Document.find({ status: 'indexed' });
+    if (existingDocs.length > 0) {
+      const templateTasks = await OnboardingTask.find({ sourceDocument: { $ne: '' } });
+      const uniqueMap = new Map();
+      for (const t of templateTasks) {
+        if (!uniqueMap.has(t.title)) {
+          uniqueMap.set(t.title, t);
         }
-      } catch (planErr) {
-        console.warn('[Register] AI plan generation fallback:', planErr.message);
-        // Fallback default tasks if AI service is offline
-        const defaultTasks = [
-          { user: user._id, dayNumber: 1, title: 'Complete HR Registration & Portal Verification', category: 'HR', priority: 'high', status: 'completed' },
-          { user: user._id, dayNumber: 1, title: 'Review Employee Handbook & Policies', category: 'HR', priority: 'medium', status: 'completed' },
-          { user: user._id, dayNumber: 1, title: 'Configure Company Email & Slack Workspace', category: 'IT', priority: 'high', status: 'completed' },
-          { user: user._id, dayNumber: 1, title: `Install Developer Tooling for ${user.role}`, category: 'IT', priority: 'high', status: 'in_progress' },
-          { user: user._id, dayNumber: 2, title: 'Configure Enterprise Git & SSH Key Signing', category: 'IT', priority: 'high', status: 'in_progress' },
-          { user: user._id, dayNumber: 2, title: 'Complete Security Awareness Training & MFA Setup', category: 'Security', priority: 'high', status: 'not_started' }
-        ];
-        await OnboardingTask.insertMany(defaultTasks);
       }
-    }
+      if (uniqueMap.size > 0) {
+        const userTasks = Array.from(uniqueMap.values()).map((t) => ({
+          user: user._id,
+          title: t.title,
+          description: t.description,
+          category: t.category,
+          dayNumber: t.dayNumber,
+          priority: t.priority,
+          status: 'not_started',
+          estimatedMinutes: t.estimatedMinutes,
+          sourceDocument: t.sourceDocument
+        }));
+        await OnboardingTask.insertMany(userTasks);
+      }
 
-    // Generate learning path via AI service
-    try {
-      const lp = await aiServiceClient.generateLearningPath({
-        role: user.role,
-        experience: user.experience
-      });
-      if (lp && lp.stages) {
+      const existingLP = await LearningPath.findOne({ stages: { $exists: true, $not: { $size: 0 } } });
+      if (existingLP && existingLP.stages && existingLP.stages.length > 0) {
         await LearningPath.create({
           user: user._id,
           role: user.role,
-          stages: lp.stages
+          stages: existingLP.stages.map((s) => ({
+            stage: s.stage,
+            stageLabel: s.stageLabel,
+            status: s.status,
+            title: s.title,
+            description: s.description,
+            estimatedHours: s.estimatedHours,
+            modules: (s.modules || []).map((m) => ({ title: m.title, completed: false }))
+          }))
+        });
+      } else {
+        await LearningPath.create({
+          user: user._id,
+          role: user.role,
+          stages: []
         });
       }
-    } catch (lpErr) {
-      console.warn('[Register] AI learning path generation fallback:', lpErr.message);
-      const defaultStages = [
-        {
-          stage: 'foundation',
-          stageLabel: 'FOUNDATION',
-          status: 'completed',
-          title: 'Organization Culture & Tooling Essentials',
-          description: 'Understanding corporate communication, version control setup, and workspace orientation.',
-          estimatedHours: 6,
-          modules: [
-            { title: 'Corporate Workstation & Account Setup', completed: true },
-            { title: 'Git & Repository Access Provisioning', completed: true },
-            { title: 'Communication Protocols (Slack, Email, Jira)', completed: true }
-          ]
-        },
-        {
-          stage: 'current',
-          stageLabel: 'CURRENT',
-          status: 'in_progress',
-          title: `Core Competencies for ${user.role}`,
-          description: `Mastering project workflows, development guidelines, and team conventions for ${user.department}.`,
-          estimatedHours: 10,
-          modules: [
-            { title: 'Department Standards & Architecture Overview', completed: true },
-            { title: 'Local Development Environment & Testing', completed: false },
-            { title: 'Security Compliance & Credential Management', completed: false }
-          ]
-        },
-        {
-          stage: 'next',
-          stageLabel: 'NEXT',
-          status: 'upcoming',
-          title: 'End-to-End System Integration & CI/CD',
-          description: 'Deep dive into microservices, containerization, and release pipelines.',
-          estimatedHours: 14,
-          modules: [
-            { title: 'Service Orchestration & API Endpoints', completed: false },
-            { title: 'Automated CI/CD Workflows', completed: false }
-          ]
-        },
-        {
-          stage: 'upcoming',
-          stageLabel: 'UPCOMING',
-          status: 'locked',
-          title: 'Production Readiness & Mentorship',
-          description: 'Sprint planning participation, code review certification, and independent contribution.',
-          estimatedHours: 8,
-          modules: [
-            { title: 'First Sprint Milestone Delivery', completed: false },
-            { title: 'Retrospective & 30-Day Evaluation', completed: false }
-          ]
-        }
-      ];
+    } else {
+      // 100% clean zero state: No documents uploaded yet, so 0 tasks and empty learning path!
       await LearningPath.create({
         user: user._id,
         role: user.role,
-        stages: defaultStages
+        stages: []
       });
     }
 
-    // Initialize progress record
+    // Initialize clean progress record
     const allTasks = await OnboardingTask.find({ user: user._id });
-    const completed = allTasks.filter(t => t.status === 'completed').length;
-    const inProgress = allTasks.filter(t => t.status === 'in_progress').length;
+    const completed = allTasks.filter((t) => t.status === 'completed').length;
+    const inProgress = allTasks.filter((t) => t.status === 'in_progress').length;
     const remaining = allTasks.length - completed;
     const percentage = allTasks.length > 0 ? Math.round((completed / allTasks.length) * 100) : 0;
 

@@ -90,11 +90,23 @@ const indexDocument = async (docData) => {
   }
 };
 
+const clearVectorStore = async () => {
+  try {
+    const res = await aiClient.post('/api/ai/clear-vector-store', {}, { timeout: 10000 });
+    return res.data;
+  } catch (error) {
+    console.error('[AI Client] Clear vector store error:', error.message);
+    return { status: 'failed', error: error.message };
+  }
+};
+
 module.exports = {
   checkHealth,
   sendChatMessage,
   generateOnboardingPlan,
   getNextBestAction,
   generateLearningPath,
-  indexDocument
+  indexDocument,
+  clearVectorStore
 };
+
