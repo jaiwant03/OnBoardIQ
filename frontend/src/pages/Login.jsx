@@ -215,14 +215,18 @@ const Login = () => {
             {/* Big Headline with Spatial Motion & Cursive Elegance */}
             <h1 className="exact-hero-headline">
               <span className="exact-headline-line">
-                People <span className="exact-headline-cursive-accent">grow</span>
+                People{' '}
+                <span className="handwriting-wrap">
+                  <span className="exact-headline-cursive-accent">grow</span>
+                  <span className="handwriting-pen pen-grow" aria-hidden="true" />
+                </span>
               </span>
               <br />
               <span className="exact-headline-line">when they feel</span>
               <br />
-              <span className="exact-spatial-word">
+              <span className="handwriting-wrap exact-spatial-word">
                 <span className="exact-spatial-cursive">supported.</span>
-                <span className="exact-spatial-aura" />
+                <span className="handwriting-pen pen-supported" aria-hidden="true" />
               </span>
             </h1>
 
@@ -280,7 +284,7 @@ const Login = () => {
               <div className="exact-quote-mark">“</div>
               <div className="exact-quote-body">
                 <p className="exact-quote-text">
-                  “A great onboarding experience builds a brighter tomorrow.”
+                  “A great onboarding experience builds a <span className="exact-quote-cursive">brighter tomorrow.</span>”
                 </p>
                 <div className="exact-quote-author">— ONBOARDIQ</div>
               </div>
