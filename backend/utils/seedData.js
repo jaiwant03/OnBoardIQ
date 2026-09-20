@@ -51,7 +51,7 @@ const seedDatabase = async () => {
     });
 
     // 3. Create Additional Employees for realistic Admin KPI views
-    const otherEmployees = await User.insertMany([
+    const otherEmployeesData = [
       {
         name: 'Elena Rostova',
         email: 'elena@company.com',
@@ -82,7 +82,8 @@ const seedDatabase = async () => {
         skills: ['Figma', 'UI/UX', 'Design Systems'],
         userType: 'employee'
       }
-    ]);
+    ];
+    const otherEmployees = await Promise.all(otherEmployeesData.map((emp) => User.create(emp)));
 
     // 4. Create Onboarding Tasks for Rahul Kumar matching 65% progress (13 completed, 7 remaining, 3 in progress, 1 overdue)
     const rahulTasks = [
