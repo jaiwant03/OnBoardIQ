@@ -102,11 +102,17 @@ const Login = () => {
     document.documentElement.style.overscrollBehavior = 'none';
     document.body.style.overscrollBehavior = 'none';
 
+    document.documentElement.classList.add('hide-scrollbar');
+    document.body.classList.add('hide-scrollbar');
+
     return () => {
       document.documentElement.style.backgroundColor = originalHtmlBg;
       document.body.style.backgroundColor = originalBodyBg;
       document.documentElement.style.overscrollBehavior = originalOverscroll;
       document.body.style.overscrollBehavior = originalOverscroll;
+
+      document.documentElement.classList.remove('hide-scrollbar');
+      document.body.classList.remove('hide-scrollbar');
     };
   }, []);
 

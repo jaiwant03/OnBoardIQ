@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Sparkles,
@@ -6,7 +6,6 @@ import {
   AlertCircle,
   User,
   Shield,
-  CheckCircle2,
   Eye,
   EyeOff,
   Mail,
@@ -17,7 +16,8 @@ import {
   BookOpen,
   Code2,
   Users,
-  Check
+  Check,
+  ChevronDown
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import officeHeroImg from '../assets/office_hero.jpg';
@@ -71,7 +71,59 @@ const SproutLogo = ({ size = 38, variant = 'white' }) => (
   </div>
 );
 
+// Custom Luxury Dropdown Component ("New Model Design - Options")
+const ModernSelect = ({
+  label,
+  value,
+  options,
+  name,
+  icon: Icon,
+  isOpen,
+  onToggle,
+  onSelect
+}) => (
+  <div className="signup-field-group">
+    <label className="signup-input-label">{label}</label>
+    <div className="signup-custom-dropdown-wrap">
+      <button
+        type="button"
+        className={`signup-dropdown-trigger ${isOpen ? 'open' : ''}`}
+        onClick={onToggle}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+      >
+        <div className="signup-dropdown-left">
+          {Icon && <Icon size={16} className="signup-input-icon-modern" />}
+          <span className="signup-dropdown-value">{value}</span>
+        </div>
+        <ChevronDown
+          size={16}
+          className={`signup-dropdown-chevron ${isOpen ? 'rotate' : ''}`}
+        />
+      </button>
 
+      {isOpen && (
+        <div className="signup-dropdown-menu" role="listbox">
+          {options.map((option) => {
+            const isSelected = option === value;
+            return (
+              <div
+                key={option}
+                className={`signup-dropdown-item ${isSelected ? 'selected' : ''}`}
+                onClick={() => onSelect(name, option)}
+                role="option"
+                aria-selected={isSelected}
+              >
+                <span>{option}</span>
+                {isSelected && <Check size={14} className="signup-dropdown-item-check" />}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </div>
+);
 
 const Signup = () => {
   const [userType, setUserType] = useState('employee'); // 'employee' | 'admin'
@@ -81,7 +133,7 @@ const Signup = () => {
     password: '',
     role: 'Software Developer',
     department: 'Engineering',
-    experience: 'Fresher',
+    experience: 'Fresher / Graduate',
     skills: 'JavaScript, React, Node.js, Git',
     preferredLearningStyle: 'Hands-on Projects & Code'
   });
@@ -91,12 +143,50 @@ const Signup = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null); // 'role' | 'department' | 'experience' | 'learningStyle' | null
 
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  // Ensure right-side scrollbar is hidden and background is anchored to theme dark green
+  useEffect(() => {
+    const originalHtmlBg = document.documentElement.style.backgroundColor;
+    const originalBodyBg = document.body.style.backgroundColor;
+    const originalOverscroll = document.body.style.overscrollBehavior;
+
+    document.documentElement.style.backgroundColor = '#021c14';
+    document.body.style.backgroundColor = '#021c14';
+    document.documentElement.style.overscrollBehavior = 'none';
+    document.body.style.overscrollBehavior = 'none';
+
+    document.documentElement.classList.add('hide-scrollbar');
+    document.body.classList.add('hide-scrollbar');
+
+    return () => {
+      document.documentElement.style.backgroundColor = originalHtmlBg;
+      document.body.style.backgroundColor = originalBodyBg;
+      document.documentElement.style.overscrollBehavior = originalOverscroll;
+      document.body.style.overscrollBehavior = originalOverscroll;
+
+      document.documentElement.classList.remove('hide-scrollbar');
+      document.body.classList.remove('hide-scrollbar');
+    };
+  }, []);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.signup-custom-dropdown-wrap')) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleUserTypeChange = (type) => {
     setUserType(type);
+    setOpenDropdown(null);
     if (type === 'admin') {
       setFormData((prev) => ({
         ...prev,
@@ -111,7 +201,7 @@ const Signup = () => {
         ...prev,
         role: 'Software Developer',
         department: 'Engineering',
-        experience: 'Fresher',
+        experience: 'Fresher / Graduate',
         skills: 'JavaScript, React, Node.js, Git',
         preferredLearningStyle: 'Hands-on Projects & Code'
       }));
@@ -120,6 +210,15 @@ const Signup = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSelectOption = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setOpenDropdown(null);
+  };
+
+  const toggleDropdown = (name) => {
+    setOpenDropdown((prev) => (prev === name ? null : name));
   };
 
   const handleSubmit = async (e) => {
@@ -174,6 +273,54 @@ const Signup = () => {
     }
   };
 
+  // Modern Dropdown Options
+  const roleOptions =
+    userType === 'admin'
+      ? [
+          'HR Administrator',
+          'People Operations Lead',
+          'IT & Security Administrator',
+          'Compliance Officer',
+          'Executive Director'
+        ]
+      : [
+          'Software Developer',
+          'Product Manager',
+          'UI/UX Designer',
+          'Data Scientist',
+          'Marketing Specialist',
+          'Sales Executive',
+          'HR Specialist',
+          'Financial Analyst'
+        ];
+
+  const departmentOptions = [
+    'Engineering',
+    'Product',
+    'Design',
+    'Marketing',
+    'Sales',
+    'People & HR',
+    'Finance',
+    'Operations'
+  ];
+
+  const experienceOptions = [
+    'Fresher / Graduate',
+    'Junior (1-2 yrs)',
+    'Mid-Level (3-5 yrs)',
+    'Senior (5+ yrs)',
+    'Lead / Executive'
+  ];
+
+  const learningStyleOptions = [
+    'Hands-on Projects & Code',
+    'Visual & Interactive Diagrams',
+    'Reading Documentation & Guides',
+    'Video Walkthroughs & Demos',
+    'Audio / Conversational AI'
+  ];
+
   return (
     <div
       className="exact-signup-page"
@@ -200,18 +347,18 @@ const Signup = () => {
       {/* MAIN CONTENT GRID (HERO LEFT + SIGNUP FORM RIGHT) */}
       <div className="exact-signup-main-container">
         {/* LEFT COLUMN: HERO VALUE PROPOSITION */}
-        <div className="exact-hero-panel">
-          <div className="exact-hero-body">
+        <div className="exact-hero-panel exact-signup-hero-panel">
+          {/* Main Hero Body: Vertically centered on the left side, exactly like login page */}
+          <div className="exact-hero-body exact-signup-hero-body">
             {/* Tracking Header */}
             <div className="exact-signup-tracking">
-              BUILD &nbsp; LEARN &nbsp; GROW &nbsp; BELONG
+              <span className="exact-pill-line" />
+              <span>BUILD &nbsp; LEARN &nbsp; GROW &nbsp; BELONG</span>
             </div>
 
             {/* Big Headline with Handwriting Motion on "Starts Here." */}
             <h1 className="exact-hero-headline exact-signup-headline">
-              <span className="exact-headline-line">Your</span>
-              <br />
-              <span className="exact-headline-line">Journey</span>
+              <span className="exact-headline-line">Your Journey</span>
               <br />
               <span className="handwriting-wrap exact-spatial-word">
                 <span className="exact-signup-accent-word">Starts Here.</span>
@@ -220,13 +367,13 @@ const Signup = () => {
             </h1>
 
             {/* Subtitle Paragraph */}
-            <p className="exact-hero-subtext">
+            <p className="exact-hero-subtext exact-signup-subtext">
               Join a workplace where people, technology and opportunities come together. Create
               your account and experience an AI-powered onboarding journey designed for your growth.
             </p>
 
             {/* 4 Feature Items */}
-            <div className="exact-features-list">
+            <div className="exact-features-list exact-signup-features-list">
               <div className="exact-feature-item">
                 <div className="exact-feature-icon-wrap">
                   <User size={18} color="#00E599" />
@@ -269,7 +416,7 @@ const Signup = () => {
             </div>
 
             {/* Testimonial Quote Box */}
-            <div className="exact-quote-card">
+            <div className="exact-quote-card exact-signup-quote-card">
               <div className="exact-quote-mark">“</div>
               <div className="exact-quote-content">
                 <p className="exact-quote-text">
@@ -278,38 +425,57 @@ const Signup = () => {
                 <span className="exact-quote-author">— ONBOARDIQ</span>
               </div>
             </div>
+          </div>
 
-            {/* Metrics Row */}
-            <div className="exact-hero-footer exact-signup-footer">
-              <div className="exact-stats-group">
-                <div className="exact-stat-item">
-                  <span className="exact-stat-number">500+</span>
-                  <span className="exact-stat-label">Companies</span>
-                </div>
-                <div className="exact-stat-item">
-                  <span className="exact-stat-number">50K+</span>
-                  <span className="exact-stat-label">Employees</span>
-                </div>
-                <div className="exact-stat-item">
-                  <span className="exact-stat-number">98%</span>
-                  <span className="exact-stat-label">Satisfaction</span>
-                </div>
+          {/* Bottom Indicators & Metrics Footer - Positioned at bottom of left panel like Login page */}
+          <div className="exact-hero-footer exact-signup-footer">
+            <div className="exact-carousel-indicators">
+              <span className="exact-indicator-dash active" />
+              <span className="exact-indicator-dot" />
+              <span className="exact-indicator-dot" />
+            </div>
+
+            <div className="exact-stats-group">
+              <div className="exact-stat-item">
+                <span className="exact-stat-number">500+</span>
+                <span className="exact-stat-label">Companies</span>
               </div>
+              <div className="exact-stat-item">
+                <span className="exact-stat-number">50K+</span>
+                <span className="exact-stat-label">Employees</span>
+              </div>
+              <div className="exact-stat-item">
+                <span className="exact-stat-number">98%</span>
+                <span className="exact-stat-label">Satisfaction</span>
+              </div>
+            </div>
+
+            <div className="exact-ai-label-group">
+              <div className="exact-three-dots">•••</div>
+              <div className="exact-ai-title">
+                Human Potential<br />
+                Powered by AI
+              </div>
+              <div className="exact-ai-underline" />
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: FLOATING WHITE SIGNUP CARD */}
+        {/* RIGHT COLUMN: NEW MODEL WHITE SIGNUP CARD */}
         <div className="exact-signup-card">
-          {/* Card Header */}
+          {/* Card Header with Modern Pill Badge */}
           <div className="signup-card-header">
+            <div className="signup-pill-badge">
+              <Sparkles size={12} />
+              <span>Enterprise Registration</span>
+            </div>
             <h2 className="signup-card-title">Create Your OnboardIQ Account</h2>
             <p className="signup-card-subtitle">
               Enterprise AI-Driven Employee Onboarding &amp; Compliance Management
             </p>
           </div>
 
-          {/* Account Type Selector (Employee vs Administrator) */}
+          {/* Account Type Selector (New Model Cards) */}
           <div className="signup-account-selector">
             <div
               className={`signup-type-card ${userType === 'employee' ? 'active' : ''}`}
@@ -325,8 +491,8 @@ const Signup = () => {
                 <div className="signup-type-desc">Join as a new team member with autonomous AI onboarding.</div>
               </div>
               {userType === 'employee' && (
-                <div className="signup-type-check">
-                  <CheckCircle2 size={16} />
+                <div className="signup-type-check-badge">
+                  <Check size={12} strokeWidth={3} />
                 </div>
               )}
             </div>
@@ -345,8 +511,8 @@ const Signup = () => {
                 <div className="signup-type-desc">Manage organization onboarding, analytics and policy health.</div>
               </div>
               {userType === 'admin' && (
-                <div className="signup-type-check">
-                  <CheckCircle2 size={16} />
+                <div className="signup-type-check-badge">
+                  <Check size={12} strokeWidth={3} />
                 </div>
               )}
             </div>
@@ -360,14 +526,14 @@ const Signup = () => {
             </div>
           )}
 
-          {/* Registration Form */}
+          {/* Registration Form with New Model Inputs & Floating Dropdowns */}
           <form onSubmit={handleSubmit}>
             <div className="signup-form-grid">
               {/* Row 1: Full Name & Corporate Email */}
               <div className="signup-field-group">
                 <label className="signup-input-label">Full Name</label>
                 <div className="signup-input-wrap">
-                  <User size={15} className="signup-input-icon" />
+                  <User size={16} className="signup-input-icon" />
                   <input
                     type="text"
                     name="name"
@@ -383,7 +549,7 @@ const Signup = () => {
               <div className="signup-field-group">
                 <label className="signup-input-label">Corporate Email Address</label>
                 <div className="signup-input-wrap">
-                  <Mail size={15} className="signup-input-icon" />
+                  <Mail size={16} className="signup-input-icon" />
                   <input
                     type="email"
                     name="email"
@@ -400,7 +566,7 @@ const Signup = () => {
               <div className="signup-field-group">
                 <label className="signup-input-label">Password</label>
                 <div className="signup-input-wrap">
-                  <Lock size={15} className="signup-input-icon" />
+                  <Lock size={16} className="signup-input-icon" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
@@ -424,7 +590,7 @@ const Signup = () => {
               <div className="signup-field-group">
                 <label className="signup-input-label">Confirm Password</label>
                 <div className="signup-input-wrap">
-                  <Lock size={15} className="signup-input-icon" />
+                  <Lock size={16} className="signup-input-icon" />
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
@@ -445,109 +611,57 @@ const Signup = () => {
                 </div>
               </div>
 
-              {/* Row 3: Role & Department */}
-              <div className="signup-field-group">
-                <label className="signup-input-label">
-                  {userType === 'admin' ? 'Administrator Role' : 'Employee Role'}
-                </label>
-                <div className="signup-input-wrap">
-                  <Briefcase size={15} className="signup-input-icon" />
-                  <select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="signup-select"
-                  >
-                    {userType === 'admin' ? (
-                      <>
-                        <option value="HR Administrator">HR Administrator</option>
-                        <option value="People Operations Lead">People Operations Lead</option>
-                        <option value="IT & Security Administrator">IT & Security Administrator</option>
-                        <option value="Compliance Officer">Compliance Officer</option>
-                        <option value="Executive Director">Executive Director</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="Software Developer">Software Developer</option>
-                        <option value="Product Manager">Product Manager</option>
-                        <option value="UI/UX Designer">UI/UX Designer</option>
-                        <option value="Data Scientist">Data Scientist</option>
-                        <option value="Marketing Specialist">Marketing Specialist</option>
-                        <option value="Sales Executive">Sales Executive</option>
-                        <option value="HR Specialist">HR Specialist</option>
-                        <option value="Financial Analyst">Financial Analyst</option>
-                      </>
-                    )}
-                  </select>
-                </div>
-              </div>
+              {/* Row 3: Role & Department (Custom Floating Dropdowns) */}
+              <ModernSelect
+                label={userType === 'admin' ? 'Administrator Role' : 'Employee Role'}
+                value={formData.role}
+                options={roleOptions}
+                name="role"
+                icon={Briefcase}
+                isOpen={openDropdown === 'role'}
+                onToggle={() => toggleDropdown('role')}
+                onSelect={handleSelectOption}
+              />
 
-              <div className="signup-field-group">
-                <label className="signup-input-label">Department</label>
-                <div className="signup-input-wrap">
-                  <Network size={15} className="signup-input-icon" />
-                  <select
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    className="signup-select"
-                  >
-                    <option value="Engineering">Engineering</option>
-                    <option value="Product">Product</option>
-                    <option value="Design">Design</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Sales">Sales</option>
-                    <option value="People & HR">People &amp; HR</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Operations">Operations</option>
-                  </select>
-                </div>
-              </div>
+              <ModernSelect
+                label="Department"
+                value={formData.department}
+                options={departmentOptions}
+                name="department"
+                icon={Network}
+                isOpen={openDropdown === 'department'}
+                onToggle={() => toggleDropdown('department')}
+                onSelect={handleSelectOption}
+              />
 
-              {/* Row 4: Experience Level & Preferred Learning Style */}
-              <div className="signup-field-group">
-                <label className="signup-input-label">Experience Level</label>
-                <div className="signup-input-wrap">
-                  <BarChart2 size={15} className="signup-input-icon" />
-                  <select
-                    name="experience"
-                    value={formData.experience}
-                    onChange={handleChange}
-                    className="signup-select"
-                  >
-                    <option value="Fresher">Fresher / Graduate</option>
-                    <option value="Junior (1-2 yrs)">Junior (1-2 yrs)</option>
-                    <option value="Mid-Level (3-5 yrs)">Mid-Level (3-5 yrs)</option>
-                    <option value="Senior (5+ yrs)">Senior (5+ yrs)</option>
-                    <option value="Lead / Executive">Lead / Executive</option>
-                  </select>
-                </div>
-              </div>
+              {/* Row 4: Experience Level & Preferred Learning Style (Custom Floating Dropdowns) */}
+              <ModernSelect
+                label="Experience Level"
+                value={formData.experience}
+                options={experienceOptions}
+                name="experience"
+                icon={BarChart2}
+                isOpen={openDropdown === 'experience'}
+                onToggle={() => toggleDropdown('experience')}
+                onSelect={handleSelectOption}
+              />
 
-              <div className="signup-field-group">
-                <label className="signup-input-label">Preferred Learning Style</label>
-                <div className="signup-input-wrap">
-                  <BookOpen size={15} className="signup-input-icon" />
-                  <select
-                    name="preferredLearningStyle"
-                    value={formData.preferredLearningStyle}
-                    onChange={handleChange}
-                    className="signup-select"
-                  >
-                    <option value="Hands-on Projects & Code">Hands-on Projects &amp; Code</option>
-                    <option value="Visual & Interactive Diagrams">Visual &amp; Interactive Diagrams</option>
-                    <option value="Reading Documentation & Guides">Reading Documentation &amp; Guides</option>
-                    <option value="Video Walkthroughs & Demos">Video Walkthroughs &amp; Demos</option>
-                    <option value="Audio / Conversational AI">Audio / Conversational AI</option>
-                  </select>
-                </div>
-              </div>
+              <ModernSelect
+                label="Preferred Learning Style"
+                value={formData.preferredLearningStyle}
+                options={learningStyleOptions}
+                name="preferredLearningStyle"
+                icon={BookOpen}
+                isOpen={openDropdown === 'preferredLearningStyle'}
+                onToggle={() => toggleDropdown('preferredLearningStyle')}
+                onSelect={handleSelectOption}
+              />
 
               {/* Row 5: Primary Skills (Full Width) */}
               <div className="signup-field-group signup-field-span-2">
                 <label className="signup-input-label">Primary Skills (comma-separated)</label>
                 <div className="signup-input-wrap">
-                  <Code2 size={15} className="signup-input-icon" />
+                  <Code2 size={16} className="signup-input-icon" />
                   <input
                     type="text"
                     name="skills"
@@ -560,7 +674,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Terms of Service Checkbox */}
+            {/* Agreement Checkbox */}
             <div className="signup-agreement-row">
               <label className="signup-checkbox-label">
                 <input
@@ -572,7 +686,7 @@ const Signup = () => {
                 <span className="signup-checkbox-custom">
                   {agreedToTerms && <Check size={12} strokeWidth={3} />}
                 </span>
-                <span className="signup-terms-text">
+                <span>
                   I agree to the{' '}
                   <a href="#terms" className="signup-green-link" onClick={(e) => e.preventDefault()}>
                     Terms of Service
@@ -585,7 +699,7 @@ const Signup = () => {
               </label>
             </div>
 
-            {/* Primary Submit Button */}
+            {/* New Model Primary Submit Button */}
             <button
               type="submit"
               className="signup-submit-button"
@@ -596,7 +710,7 @@ const Signup = () => {
               ) : (
                 <>
                   <span>Create {userType === 'admin' ? 'Administrator' : 'Employee'} Account &amp; Start</span>
-                  <ArrowRight size={17} />
+                  <ArrowRight size={17} className="submit-arrow" />
                 </>
               )}
             </button>
@@ -604,11 +718,6 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* BOTTOM RIGHT CORNER TAGLINE */}
-      <div className="exact-signup-bottom-tagline">
-        <div>Smarter Onboarding.</div>
-        <div>Brighter Careers.</div>
-      </div>
     </div>
   );
 };
