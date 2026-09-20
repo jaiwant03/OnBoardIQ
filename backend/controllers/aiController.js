@@ -39,14 +39,31 @@ const chat = async (req, res) => {
       timestamp: new Date()
     });
 
-    // Call Python AI Service
+    // Fetch employee onboarding state from MongoDB
+    const tasks = await OnboardingTask.find({ user: req.user._id }).sort({ dayNumber: 1 });
+    const completedTasks = tasks.filter(t => t.status === 'completed').map(t => t.title);
+    const pendingTasks = tasks.filter(t => t.status !== 'completed').map(t => ({
+      _id: t._id,
+      title: t.title,
+      category: t.category,
+      priority: t.priority,
+      dayNumber: t.dayNumber,
+      status: t.status
+    }));
+    const progress = await OnboardingProgress.findOne({ user: req.user._id });
+
+    // Call Python AI Service with complete employee context
     const aiResult = await aiServiceClient.sendChatMessage({
       query,
       user_name: req.user.name,
       user_role: req.user.role,
       user_department: req.user.department,
       user_experience: req.user.experience,
-      conversation_history: history
+      conversation_history: history,
+      completed_tasks: completedTasks,
+      pending_tasks: pendingTasks,
+      progress_percentage: progress ? progress.overallPercentage : 0,
+      skills: req.user.skills || []
     });
 
     // Record assistant response

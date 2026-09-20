@@ -153,6 +153,24 @@ const Tasks = () => {
           <LoadingSkeleton height="85px" />
           <LoadingSkeleton height="85px" />
         </div>
+      ) : tasks.length === 0 ? (
+        <div className="card" style={{ textAlign: 'center', padding: '3.5rem 1.5rem' }}>
+          <CheckSquare size={44} color="var(--text-muted)" style={{ margin: '0 auto 1rem', opacity: 0.6 }} />
+          <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+            No onboarding tasks yet
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '460px', margin: '0 auto 1.5rem' }}>
+            Tasks are dynamically generated when company policies and onboarding guides are uploaded. You can also add a custom task.
+          </p>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <button className="btn btn-primary btn-sm" onClick={() => window.location.href = '/documents'}>
+              Upload Company Document
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setShowAddModal(true)}>
+              <Plus size={14} /> Add Custom Task
+            </button>
+          </div>
+        </div>
       ) : filteredTasks.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
           <CheckSquare size={40} color="var(--text-muted)" style={{ margin: '0 auto 1rem' }} />

@@ -5,18 +5,46 @@ def route_intent(state: AgentState) -> AgentState:
     """
     Classifies user intent and routes to the specialized agent:
     - hr_agent: HR policies, leaves, benefits, hours, handbook, rules
-    - it_agent: Software, tools, setup, VPN, git, accounts, hardware
+    - it_agent: Software, tools, setup, VPN, git, accounts, hardware, security
     - learning_agent: Training, courses, skills, learning paths
-    - onboarding_agent: Tasks, milestones, next best action, progress
-    """
-    query = (state.get("query") or "").lower()
+    - onboarding_agent: Tasks, milestones, next best action, progress, state tracking
 
-    # Keyword patterns for fast, robust routing
+    Also handles context resolution for follow-up queries ('Why?', 'Tell me more')
+    by checking previous turns in conversation_history.
+    """
+    raw_query = (state.get("query") or "").strip()
+    query = raw_query.lower()
+    history = state.get("conversation_history", []) or []
+
+    # Contextual query resolution for follow-up questions
+    followup_patterns = ["why", "why?", "why is that", "explain why", "tell me more", "where is it", "how so", "can you explain", "what else"]
+    is_followup = any(query == p or query.startswith(p + " ") or query.startswith(p + "?") for p in followup_patterns)
+
+    last_assistant_msg = ""
+    for msg in reversed(history):
+        if msg.get("sender") == "assistant":
+            last_assistant_msg = msg.get("text", "")
+            break
+
+    # If it's a follow-up like "why?", combine it with the previous context so agents and retrievers understand
+    effective_query = query
+    if is_followup and last_assistant_msg:
+        effective_query = f"{query} Regarding previous response: {last_assistant_msg[:200]}"
+        # If the last response was about onboarding tasks / next action, keep in onboarding agent
+        lower_last = last_assistant_msg.lower()
+        if any(w in lower_last for w in ["next best action", "priority", "task", "milestone", "day 1", "day 2", "security training", "setup"]):
+            state["intent"] = "onboarding_followup"
+            state["assigned_agent"] = "onboarding_agent"
+            state["tools_used"] = ["context_resolver"]
+            return state
+
+    # Keyword patterns for robust routing
     it_keywords = [
         "software", "install", "setup", "git", "github", "docker", "vscode",
         "ide", "python", "node", "npm", "vpn", "password", "1password", "hardware",
         "laptop", "ssh", "key", "tools", "access", "credentials", "jumpcloud", "okta",
-        "security", "mfa", "phishing", "wireguard", "compliance", "authenticator", "firewall"
+        "security", "mfa", "phishing", "wireguard", "compliance", "authenticator", "firewall",
+        "security training", "why do i need security training"
     ]
     
     hr_keywords = [
@@ -28,13 +56,13 @@ def route_intent(state: AgentState) -> AgentState:
     
     learning_keywords = [
         "learn", "learning", "course", "courses", "training", "skill", "skills",
-        "certif", "tutorial", "architecture", "study", "curriculum"
+        "certif", "tutorial", "architecture", "study", "curriculum", "what should i learn"
     ]
     
     onboarding_keywords = [
         "task", "tasks", "next", "action", "progress", "day 1", "day 2", "day 3",
         "roadmap", "pending", "complete", "milestone", "overdue", "todo", "checklist",
-        "what should i do", "today", "finish"
+        "what should i do", "what should i do next", "today", "finish", "what do i do next"
     ]
 
     # Evaluate matches
@@ -43,35 +71,41 @@ def route_intent(state: AgentState) -> AgentState:
     learn_score = sum(1 for k in learning_keywords if k in query)
     onboard_score = sum(1 for k in onboarding_keywords if k in query)
 
-    # If query is specifically about security policy, favor IT/Security Agent
-    if "security" in query:
-        it_score += 2
+    # Specific prioritization
+    if "security" in query and ("policy" in query or "training" in query or "install" in query or "mfa" in query):
+        it_score += 3
+
+    if "what should i do" in query or "next best action" in query or "what should i do next" in query or "what is next" in query:
+        onboard_score += 5
+
+    if "what should i learn" in query or "what course" in query:
+        learn_score += 5
 
     max_score = max(it_score, hr_score, learn_score, onboard_score)
 
     if max_score > 0:
-        if max_score == it_score:
+        if max_score == onboard_score:
+            assigned = "onboarding_agent"
+            intent = "onboarding_inquiry"
+        elif max_score == it_score:
             assigned = "it_agent"
             intent = "it_inquiry"
         elif max_score == hr_score:
             assigned = "hr_agent"
             intent = "hr_inquiry"
-        elif max_score == onboard_score:
-            assigned = "onboarding_agent"
-            intent = "onboarding_inquiry"
         else:
             assigned = "learning_agent"
             intent = "learning_inquiry"
     else:
-        # If user explicitly asks about roadmap, tasks, or what to do next
+        # Fallback heuristic
         if any(w in query for w in ["task", "today", "next", "do", "plan", "start"]):
             assigned = "onboarding_agent"
             intent = "general_onboarding_inquiry"
         else:
-            # Default to HR/Handbook Agent which searches general knowledge and prevents hallucination
             assigned = "hr_agent"
             intent = "general_policy_inquiry"
 
     state["intent"] = intent
     state["assigned_agent"] = assigned
+    state["tools_used"] = []
     return state

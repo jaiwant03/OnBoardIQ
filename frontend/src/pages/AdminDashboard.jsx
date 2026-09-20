@@ -65,10 +65,10 @@ const AdminDashboard = () => {
   }
 
   const kpis = analytics?.kpis || {
-    totalEmployees: 128,
-    activeOnboarding: 14,
-    averageCompletion: 76,
-    pendingTasks: 42
+    totalEmployees: 0,
+    activeOnboarding: 0,
+    averageCompletion: 0,
+    pendingTasks: 0
   };
 
   const categoryStats = analytics?.categoryStats || [];

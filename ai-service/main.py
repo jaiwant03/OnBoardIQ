@@ -36,6 +36,8 @@ async def on_startup():
     stats = vector_store.get_stats()
     print(f"[OnboardIQ AI Service] ChromaDB initialized with {stats['total_chunks']} chunks.")
 
+from agents.tools import evaluate_next_best_action
+
 # Request Models
 class ChatRequest(BaseModel):
     query: str
@@ -44,6 +46,10 @@ class ChatRequest(BaseModel):
     user_department: Optional[str] = "Engineering"
     user_experience: Optional[str] = "Fresher"
     conversation_history: Optional[List[Dict[str, str]]] = []
+    completed_tasks: Optional[List[str]] = []
+    pending_tasks: Optional[List[Dict[str, Any]]] = []
+    progress_percentage: Optional[float] = 0.0
+    skills: Optional[List[str]] = []
 
 class PlanRequest(BaseModel):
     role: str = "Software Developer"
@@ -89,6 +95,10 @@ async def chat_endpoint(req: ChatRequest):
         "user_department": req.user_department,
         "user_experience": req.user_experience,
         "conversation_history": req.conversation_history or [],
+        "completed_tasks": req.completed_tasks or [],
+        "pending_tasks": req.pending_tasks or [],
+        "progress_percentage": req.progress_percentage or 0.0,
+        "skills": req.skills or [],
         "intent": None,
         "assigned_agent": None,
         "context": None,
@@ -96,7 +106,8 @@ async def chat_endpoint(req: ChatRequest):
         "confidence": "Medium",
         "reasoning": None,
         "response": None,
-        "is_verified": False
+        "is_verified": False,
+        "tools_used": []
     }
 
     try:
@@ -117,7 +128,8 @@ async def chat_endpoint(req: ChatRequest):
             "sources": final_state.get("sources", []),
             "confidence": final_state.get("confidence", "High"),
             "reasoning": final_state.get("reasoning"),
-            "is_verified": final_state.get("is_verified", True)
+            "is_verified": final_state.get("is_verified", True),
+            "tools_used": final_state.get("tools_used", [])
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Agent workflow error: {str(e)}")
@@ -135,57 +147,15 @@ async def generate_onboarding_plan(req: PlanRequest):
 @app.post("/api/ai/next-action")
 async def get_next_best_action(req: NextActionRequest):
     """
-    Intelligently determines the single highest-priority Next Best Action
-    along with contextual reasoning why the employee should do this now.
+    Autonomous Next Best Action: Uses evaluate_next_best_action tool
+    with employee state and LLM reasoning to explain why this task is next.
     """
-    pending = req.pending_tasks
-    if not pending:
-        return {
-            "task_title": "All Onboarding Milestones Complete! 🎉",
-            "reason": "You have accomplished all foundational onboarding tasks. Check with your team lead for sprint assignments.",
-            "priority": "low",
-            "category": "General",
-            "progress_percentage": 100.0
-        }
-
-    # Find highest priority uncompleted task
-    # Sort by: in_progress first, then high priority, then earlier day
-    def task_sort_key(t):
-        status_weight = 0 if t.get("status") == "in_progress" else 1
-        prio_map = {"high": 0, "medium": 1, "low": 2}
-        prio_weight = prio_map.get(t.get("priority", "medium"), 1)
-        day_weight = t.get("dayNumber", 99)
-        return (status_weight, prio_weight, day_weight)
-
-    sorted_tasks = sorted(pending, key=task_sort_key)
-    top_task = sorted_tasks[0]
-
-    # Reasoning generation
-    title = top_task.get("title", "")
-    category = top_task.get("category", "")
-    
-    if "security" in title.lower() or "mfa" in title.lower():
-        reason = "Mandatory security policy requirement. Must be completed within your first 48 hours before staging and production access keys can be granted."
-    elif "git" in title.lower() or "ssh" in title.lower():
-        reason = "Required to authenticate with corporate repositories and begin opening Pull Requests."
-    elif "tooling" in title.lower() or "install" in title.lower():
-        reason = "Essential workstation dependency needed before you can run and test the application locally."
-    elif "architecture" in title.lower() or "project" in title.lower():
-        reason = "Foundational knowledge required before you can effectively take on your first sprint ticket."
-    elif "handbook" in title.lower() or "policy" in title.lower():
-        reason = "Important company guidelines regarding communication, hours, and employee benefits."
-    else:
-        reason = f"Identified as the highest priority pending milestone in your Day {top_task.get('dayNumber', 1)} checklist."
-
-    return {
-        "task_id": str(top_task.get("_id", top_task.get("id", ""))),
-        "task_title": title,
-        "reason": reason,
-        "priority": top_task.get("priority", "high"),
-        "category": category,
-        "dayNumber": top_task.get("dayNumber", 1),
-        "status": top_task.get("status", "not_started")
-    }
+    return evaluate_next_best_action(
+        pending_tasks=req.pending_tasks,
+        completed_tasks=req.completed_tasks,
+        role=req.role,
+        department=req.department
+    )
 
 @app.post("/api/ai/learning-path")
 async def generate_learning_path(req: PlanRequest):

@@ -6,8 +6,7 @@ import {
   AlertCircle,
   Database,
   Trash2,
-  Sparkles,
-  RefreshCw
+  Sparkles
 } from 'lucide-react';
 import { documentAPI } from '../services/api';
 import LoadingSkeleton from '../components/LoadingSkeleton';
@@ -88,18 +87,6 @@ const Documents = () => {
     }
   };
 
-  const handleSeedDocs = async () => {
-    try {
-      setLoading(true);
-      await documentAPI.seedDocuments();
-      await fetchDocuments();
-    } catch (err) {
-      console.error('Error seeding documents:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="page-container">
       <div className="documents-header">
@@ -108,14 +95,9 @@ const Documents = () => {
             Knowledge Center & Policies
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
-            Documents indexed into ChromaDB vector store for autonomous RAG retrieval and source verification.
+            Company documentation indexed into ChromaDB vector store for autonomous RAG retrieval, task generation, and verified answers.
           </p>
         </div>
-
-        <button className="btn btn-secondary btn-sm" onClick={handleSeedDocs}>
-          <RefreshCw size={14} />
-          <span>Reload Sample Policies</span>
-        </button>
       </div>
 
       {/* Upload Controls & Metadata */}
@@ -287,8 +269,8 @@ const Documents = () => {
               </tr>
             ) : documents.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', padding: '2.5rem' }}>
-                  No company documents uploaded yet. Upload a policy or click 'Reload Sample Policies'.
+                <td colSpan={7} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)' }}>
+                  No company documents uploaded yet. Upload a company policy or onboarding guide above to automatically index policies, extract actionable tasks, and build your curriculum.
                 </td>
               </tr>
             ) : (

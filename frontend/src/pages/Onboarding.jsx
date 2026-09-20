@@ -75,12 +75,26 @@ const Onboarding = () => {
         </p>
       </div>
 
-      <div className="roadmap-timeline-container">
-        {days.map((dayNum) => {
-          const dayTasks = grouped[dayNum] || [];
-          if (dayTasks.length === 0) return null;
+      {tasks.length === 0 ? (
+        <div className="card" style={{ textAlign: 'center', padding: '3.5rem 1.5rem', marginTop: '1.5rem' }}>
+          <CheckCircle2 size={44} color="var(--text-muted)" style={{ margin: '0 auto 1rem', opacity: 0.6 }} />
+          <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+            No Onboarding Roadmap Generated Yet
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '460px', margin: '0 auto 1.5rem' }}>
+            Upload company policies or onboarding handbooks in the Knowledge Center to automatically structure your role-specific Day 1 through Day 30 milestones.
+          </p>
+          <button className="btn btn-primary btn-sm" onClick={() => window.location.href = '/documents'}>
+            Upload Company Document
+          </button>
+        </div>
+      ) : (
+        <div className="roadmap-timeline-container">
+          {days.map((dayNum) => {
+            const dayTasks = grouped[dayNum] || [];
+            if (dayTasks.length === 0) return null;
 
-          const allDayCompleted = dayTasks.every((t) => t.status === 'completed');
+            const allDayCompleted = dayTasks.every((t) => t.status === 'completed');
 
           return (
             <div key={dayNum} className="roadmap-day-section">
@@ -181,6 +195,7 @@ const Onboarding = () => {
           );
         })}
       </div>
+      )}
     </div>
   );
 };

@@ -79,13 +79,6 @@ const Dashboard = () => {
     }
   };
 
-  const todayTasksList = [
-    { _id: '1', title: 'Complete HR registration', category: 'HR', time: '09:00 AM', status: 'completed' },
-    { _id: '2', title: 'Read employee handbook', category: 'General', time: '10:00 AM', status: 'completed' },
-    { _id: '3', title: 'Set-up company email', category: 'IT', time: '11:00 AM', status: 'completed' },
-    { _id: '4', title: 'Explore company policies', category: 'General', time: '01:00 PM', status: 'completed' }
-  ];
-
   const getCategoryBadgeClass = (cat) => {
     const lower = (cat || '').toLowerCase();
     if (lower === 'hr') return 'cat-badge-hr';
@@ -93,9 +86,10 @@ const Dashboard = () => {
     return 'cat-badge-general';
   };
 
-  const overallPercentage = progress?.overallPercentage ?? 100;
-  const completedCount = progress?.completedTasks ?? 6;
-  const totalCount = progress?.totalTasks ?? 6;
+  const overallPercentage = progress?.overallPercentage ?? 0;
+  const completedCount = progress?.completedTasks ?? 0;
+  const totalCount = progress?.totalTasks ?? 0;
+  const displayTasks = tasks.slice(0, 5);
 
   return (
     <div className="page-container dashboard-page-wrapper">
@@ -235,7 +229,13 @@ const Dashboard = () => {
               {completedCount} / {totalCount}
             </div>
             <div className="kpi-milestone-tag">Milestones Completed</div>
-            <div className="kpi-subtext">All milestones complete! 🎉</div>
+            <div className="kpi-subtext">
+              {totalCount === 0
+                ? 'Awaiting company documents'
+                : overallPercentage === 100
+                ? 'All milestones complete! 🎉'
+                : `${overallPercentage}% completed`}
+            </div>
           </div>
         </div>
 
@@ -298,32 +298,57 @@ const Dashboard = () => {
               </div>
             </div>
             <button className="panel-link-btn" onClick={() => navigate('/tasks')}>
-              <span>View All ({tasks.length || 6})</span>
+              <span>View All ({tasks.length})</span>
               <ArrowRight size={14} />
             </button>
           </div>
 
           <div className="tasks-rows-container">
-            {todayTasksList.map((t) => (
-              <div key={t._id} className="priority-task-row">
-                <div className="task-row-left">
-                  <div className="task-checked-circle">
-                    <Check size={12} strokeWidth={3} />
-                  </div>
-                  <span className="task-row-title-text">{t.title}</span>
-                </div>
-
-                <div className="task-row-right">
-                  <span className={`task-cat-pill ${getCategoryBadgeClass(t.category)}`}>
-                    {t.category}
-                  </span>
-                  <span className="task-time-pill">{t.time}</span>
-                  <button className="task-row-more-btn">
-                    <MoreVertical size={14} />
-                  </button>
-                </div>
+            {displayTasks.length === 0 ? (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <CheckSquare size={36} color="var(--text-muted)" style={{ margin: '0 auto 0.75rem', opacity: 0.6 }} />
+                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
+                  No onboarding tasks generated yet. Upload a company document in Knowledge Center to extract and assign your personalized milestones.
+                </p>
+                <button className="btn btn-primary btn-sm" onClick={() => navigate('/documents')}>
+                  Upload Document
+                </button>
               </div>
-            ))}
+            ) : (
+              displayTasks.map((t) => {
+                const isDone = t.status === 'completed';
+                return (
+                  <div key={t._id} className="priority-task-row">
+                    <div className="task-row-left">
+                      <button
+                        onClick={() => handleToggleTask(t._id, t.status)}
+                        className={`task-checked-circle ${isDone ? 'completed' : ''}`}
+                        style={{
+                          background: isDone ? 'var(--accent-primary)' : 'transparent',
+                          borderColor: isDone ? 'var(--accent-primary)' : 'var(--border-color)',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {isDone && <Check size={12} strokeWidth={3} color="#fff" />}
+                      </button>
+                      <span
+                        className={`task-row-title-text ${isDone ? 'completed' : ''}`}
+                        style={{ textDecoration: isDone ? 'line-through' : 'none', opacity: isDone ? 0.6 : 1 }}
+                      >
+                        {t.title}
+                      </span>
+                    </div>
+
+                    <div className="task-row-right">
+                      <span className={`task-cat-pill ${getCategoryBadgeClass(t.category)}`}>
+                        {t.category}
+                      </span>
+                      <span className="task-time-pill">Day {t.dayNumber || 1}</span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -341,52 +366,40 @@ const Dashboard = () => {
           </div>
 
           <div className="learning-stepper-list">
-            {/* Step 1: Onboarding Basics */}
-            <div className="stepper-item-row">
-              <div className="stepper-icon-node done">
-                <Check size={12} strokeWidth={3} />
+            {(!learningPath?.stages || learningPath.stages.length === 0) ? (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <GraduationCap size={36} color="var(--text-muted)" style={{ margin: '0 auto 0.75rem', opacity: 0.6 }} />
+                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
+                  No learning curriculum generated yet. Upload company documentation to dynamically generate an onboarding learning path.
+                </p>
+                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/documents')}>
+                  Upload Policy Document
+                </button>
               </div>
-              <div className="stepper-content">
-                <div className="stepper-heading">Onboarding Basics</div>
-                <div className="stepper-sub done">Completed</div>
-              </div>
-            </div>
-            <div className="stepper-connector done" />
+            ) : (
+              learningPath.stages.map((stage, idx) => {
+                const isDone = stage.status === 'completed';
+                const isActive = stage.status === 'in_progress';
+                const isLast = idx === learningPath.stages.length - 1;
 
-            {/* Step 2: Company Policies */}
-            <div className="stepper-item-row">
-              <div className="stepper-icon-node active">
-                <div className="stepper-active-dot" />
-              </div>
-              <div className="stepper-content">
-                <div className="stepper-heading">Company Policies</div>
-                <div className="stepper-sub active">In Progress</div>
-                <div className="stepper-progress-wrapper">
-                  <div className="stepper-progress-fill" style={{ width: '60%' }} />
-                  <span className="stepper-progress-percent">60%</span>
-                </div>
-              </div>
-            </div>
-            <div className="stepper-connector" />
-
-            {/* Step 3: HR Tools & Systems */}
-            <div className="stepper-item-row">
-              <div className="stepper-icon-node upcoming" />
-              <div className="stepper-content">
-                <div className="stepper-heading">HR Tools & Systems</div>
-                <div className="stepper-sub upcoming">Upcoming</div>
-              </div>
-            </div>
-            <div className="stepper-connector" />
-
-            {/* Step 4: People Management */}
-            <div className="stepper-item-row">
-              <div className="stepper-icon-node upcoming" />
-              <div className="stepper-content">
-                <div className="stepper-heading">People Management</div>
-                <div className="stepper-sub upcoming">Upcoming</div>
-              </div>
-            </div>
+                return (
+                  <React.Fragment key={stage.stage || idx}>
+                    <div className="stepper-item-row">
+                      <div className={`stepper-icon-node ${isDone ? 'done' : isActive ? 'active' : 'upcoming'}`}>
+                        {isDone ? <Check size={12} strokeWidth={3} /> : isActive ? <div className="stepper-active-dot" /> : null}
+                      </div>
+                      <div className="stepper-content">
+                        <div className="stepper-heading">{stage.title}</div>
+                        <div className={`stepper-sub ${isDone ? 'done' : isActive ? 'active' : 'upcoming'}`}>
+                          {isDone ? 'Completed' : isActive ? 'In Progress' : 'Upcoming'}
+                        </div>
+                      </div>
+                    </div>
+                    {!isLast && <div className={`stepper-connector ${isDone ? 'done' : ''}`} />}
+                  </React.Fragment>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -404,50 +417,34 @@ const Dashboard = () => {
           </div>
 
           <div className="schedule-items-list">
-            {/* Event 1 */}
-            <div className="schedule-event-item teal-stripe">
-              <span className="schedule-time">10:00 AM</span>
-              <div className="schedule-icon-box blue">
-                <Users size={16} color="#0284C7" />
+            {tasks.length === 0 ? (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <Calendar size={36} color="var(--text-muted)" style={{ margin: '0 auto 0.75rem', opacity: 0.6 }} />
+                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+                  No upcoming orientation sessions scheduled yet. Milestones will appear once documents are uploaded.
+                </p>
               </div>
-              <div className="schedule-info">
-                <h4 className="schedule-title">Team Introduction</h4>
-                <div className="schedule-location">
-                  <MapPin size={11} />
-                  <span>Conference Room A</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Event 2 */}
-            <div className="schedule-event-item purple-stripe">
-              <span className="schedule-time">02:00 PM</span>
-              <div className="schedule-icon-box blue">
-                <FileText size={16} color="#0284C7" />
-              </div>
-              <div className="schedule-info">
-                <h4 className="schedule-title">HR Orientation Session</h4>
-                <div className="schedule-location">
-                  <Video size={11} />
-                  <span>Online (Teams)</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Event 3 */}
-            <div className="schedule-event-item amber-stripe">
-              <span className="schedule-time">04:00 PM</span>
-              <div className="schedule-icon-box green">
-                <MessagesSquare size={16} color="#00A884" />
-              </div>
-              <div className="schedule-info">
-                <h4 className="schedule-title">Q&A with Team Lead</h4>
-                <div className="schedule-location">
-                  <Video size={11} />
-                  <span>Google Meet</span>
-                </div>
-              </div>
-            </div>
+            ) : (
+              tasks.filter(t => t.status !== 'completed').slice(0, 3).map((t, idx) => {
+                const stripes = ['teal-stripe', 'purple-stripe', 'amber-stripe'];
+                const stripeClass = stripes[idx % stripes.length];
+                return (
+                  <div key={t._id} className={`schedule-event-item ${stripeClass}`}>
+                    <span className="schedule-time">Day {t.dayNumber || 1}</span>
+                    <div className="schedule-icon-box blue">
+                      <FileText size={16} color="#0284C7" />
+                    </div>
+                    <div className="schedule-info">
+                      <h4 className="schedule-title">{t.title}</h4>
+                      <div className="schedule-location">
+                        <Clock size={11} />
+                        <span>Est. {t.estimatedMinutes || 30} mins • {t.priority?.toUpperCase()} Priority</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

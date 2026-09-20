@@ -67,8 +67,22 @@ const LearningPath = () => {
         </p>
       </div>
 
-      <div className="learning-stages-timeline">
-        {stages.map((stage, stageIdx) => {
+      {stages.length === 0 ? (
+        <div className="card" style={{ textAlign: 'center', padding: '3.5rem 1.5rem', marginTop: '1.5rem' }}>
+          <Compass size={44} color="var(--text-muted)" style={{ margin: '0 auto 1rem', opacity: 0.6 }} />
+          <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+            No Learning Path Generated Yet
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '460px', margin: '0 auto 1.5rem' }}>
+            Upload company technical documentation or training guides in the Knowledge Center to automatically synthesize your role-specific learning modules.
+          </p>
+          <button className="btn btn-primary btn-sm" onClick={() => window.location.href = '/documents'}>
+            Upload Company Document
+          </button>
+        </div>
+      ) : (
+        <div className="learning-stages-timeline">
+          {stages.map((stage, stageIdx) => {
           const isDone = stage.status === 'completed';
           const isActive = stage.status === 'in_progress';
           const isLocked = stage.status === 'locked';
@@ -165,6 +179,7 @@ const LearningPath = () => {
           );
         })}
       </div>
+      )}
     </div>
   );
 };
