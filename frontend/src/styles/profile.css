@@ -1,0 +1,946 @@
+/* ==========================================================================
+   Employee Profile Page Styles
+   Matching OnboardIQ Premium Enterprise Design
+   ========================================================================== */
+
+.profile-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* 1. Page Header */
+.profile-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.profile-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-pretitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #00A884;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.profile-main-title {
+  margin-bottom: 0.35rem;
+  line-height: 1.15;
+  display: flex;
+  align-items: center;
+}
+
+.profile-handwriting-wrap {
+  position: relative;
+  display: inline-block;
+  vertical-align: baseline;
+  padding-right: 0.2em;
+}
+
+.profile-cursive-heading {
+  font-family: var(--font-cursive, 'Alex Brush', cursive);
+  font-size: clamp(2.6rem, 4.3vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  display: inline-block;
+  padding: 0.05em 0.15em 0.05em 0.02em;
+  background: linear-gradient(135deg, #0284C7 0%, #00A884 45%, #7C3AED 95%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: writeProfile 7.5s cubic-bezier(0.25, 0.1, 0.25, 1) infinite,
+             spatialShimmerProfile 4s ease-in-out infinite alternate;
+  will-change: clip-path, opacity, background-position;
+}
+
+.handwriting-pen.pen-profile {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00A884;
+  box-shadow: 0 0 6px #00A884, 0 0 14px rgba(2, 132, 199, 0.85);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  will-change: left, top, opacity, transform;
+  animation: penProfileMotion 7.5s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+/* Progressive cursive writing reveal for 'Employee Profile' */
+@keyframes writeProfile {
+  0%, 10% {
+    opacity: 0;
+    clip-path: polygon(-5% -20%, 0% -20%, -12% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 0% -20%, -12% 120%, -5% 120%);
+  }
+  11% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 0% -20%, -12% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 0% -20%, -12% 120%, -5% 120%);
+  }
+  16% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 18% -20%, 6% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 18% -20%, 6% 120%, -5% 120%);
+  }
+  22% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 35% -20%, 23% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 35% -20%, 23% 120%, -5% 120%);
+  }
+  28% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 50% -20%, 38% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 50% -20%, 38% 120%, -5% 120%);
+  }
+  35% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 66% -20%, 54% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 66% -20%, 54% 120%, -5% 120%);
+  }
+  42% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 82% -20%, 70% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 82% -20%, 70% 120%, -5% 120%);
+  }
+  50% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 102% -20%, 90% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 102% -20%, 90% 120%, -5% 120%);
+  }
+  53% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 115% -20%, 105% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 115% -20%, 105% 120%, -5% 120%);
+  }
+  88% {
+    opacity: 1;
+    clip-path: polygon(-5% -20%, 115% -20%, 105% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 115% -20%, 105% 120%, -5% 120%);
+  }
+  93% {
+    opacity: 0;
+    clip-path: polygon(-5% -20%, 115% -20%, 105% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 115% -20%, 105% 120%, -5% 120%);
+  }
+  100% {
+    opacity: 0;
+    clip-path: polygon(-5% -20%, 0% -20%, -12% 120%, -5% 120%);
+    -webkit-clip-path: polygon(-5% -20%, 0% -20%, -12% 120%, -5% 120%);
+  }
+}
+
+/* Pen nib motion following cursive strokes of 'Employee Profile' */
+@keyframes penProfileMotion {
+  0%, 10% {
+    opacity: 0;
+    left: 0%;
+    top: 48%;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  11% {
+    opacity: 1;
+    left: 1%;
+    top: 45%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  16% {
+    opacity: 1;
+    left: 18%;
+    top: 58%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  22% {
+    opacity: 1;
+    left: 35%;
+    top: 62%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  28% {
+    opacity: 1;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  35% {
+    opacity: 1;
+    left: 66%;
+    top: 42%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  42% {
+    opacity: 1;
+    left: 82%;
+    top: 60%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    left: 99%;
+    top: 46%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  53% {
+    opacity: 1;
+    left: 101%;
+    top: 52%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  56% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  88%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes spatialShimmerProfile {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.profile-subtitle {
+  font-size: 0.88rem;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+.profile-edit-btn {
+  background: #00A884;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.25);
+  flex-shrink: 0;
+}
+
+.profile-edit-btn:hover {
+  background: #008769;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 168, 132, 0.35);
+}
+
+/* 2. Main 2-Column Grid */
+.profile-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  width: 100%;
+}
+
+.profile-col-left,
+.profile-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Left Column Cards
+   ========================================================================== */
+
+/* Card 1: Profile Hero Card */
+.profile-hero-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 1.85rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+}
+
+.profile-hero-content {
+  max-width: 480px;
+  z-index: 3;
+  position: relative;
+  width: 100%;
+}
+
+.profile-hero-top-flex {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+  margin-bottom: 1.15rem;
+}
+
+.profile-avatar-box {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #E6F8F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 168, 132, 0.12);
+}
+
+.profile-avatar-text {
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #00A884;
+}
+
+.profile-online-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #00A884;
+  border: 2.5px solid #FFFFFF;
+}
+
+.profile-hero-name-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-hero-name {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.profile-hero-role {
+  font-size: 0.92rem;
+  color: #64748B;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* Badges Row */
+.profile-meta-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.profile-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.profile-meta-pill.department {
+  background: #F0FDF9;
+  border: 1px solid #CCFBF1;
+  color: #0F766E;
+}
+
+.profile-meta-pill.experience {
+  background: #F0FDF4;
+  border: 1px solid #DCFCE7;
+  color: #15803D;
+}
+
+.profile-meta-pill.admin {
+  background: #F0FDF9;
+  border: 1px solid #CCFBF1;
+  color: #0F766E;
+}
+
+/* Quote in Hero */
+.profile-hero-quote {
+  padding-top: 0.9rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+.profile-quote-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1.35;
+}
+
+.profile-quote-author {
+  display: block;
+  font-size: 0.68rem;
+  color: #94A3B8;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 0.35rem;
+}
+
+/* Background Office Walkway Photo & Glass Typography */
+.profile-hero-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.profile-hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #FFFFFF 0%, rgba(255, 255, 255, 0.65) 25%, rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.25) 100%);
+}
+
+.profile-glass-sign {
+  position: absolute;
+  right: 1.75rem;
+  bottom: 1.5rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.glass-sign-line {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #475569;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* Card 2 & 3: Standard Panels */
+.profile-panel {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.panel-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.panel-header-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #E6F8F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.panel-header-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.panel-action-edit-btn {
+  background: transparent;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0F172A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.panel-action-edit-btn:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+}
+
+/* Personal Information Grid (2 Columns) */
+.personal-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem 2.5rem;
+}
+
+.info-item-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.78rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 0.92rem;
+  color: #0F172A;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.info-value.account-badge {
+  display: inline-block;
+  background: #EDE9FE;
+  color: #7C3AED;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+
+.info-value.with-calendar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* Learning Preferences Grid */
+.learning-pref-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.learning-pref-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.learning-pref-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #E6F8F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.learning-pref-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.learning-pref-label {
+  font-size: 0.76rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.learning-pref-value {
+  font-size: 0.92rem;
+  color: #0F172A;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   Right Column Cards
+   ========================================================================== */
+
+/* Card 1: Onboarding Health Score */
+.health-score-panel {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 1.5rem 1.6rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.health-score-header {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 1.25rem;
+}
+
+.health-score-main-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.health-score-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.health-score-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.health-score-stat-row strong {
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.health-score-subtext {
+  font-size: 0.8rem;
+  color: #64748B;
+  margin-top: 1.15rem;
+}
+
+.health-tip-banner {
+  background: #E6F8F2;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.health-tip-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #008769;
+  line-height: 1.3;
+}
+
+/* Card 2: Technical Skills */
+.skills-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.skill-badge-pill {
+  background: #F5F3FF;
+  border: 1px solid #EDE9FE;
+  color: #7C3AED;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.skill-remove-btn {
+  background: transparent;
+  border: none;
+  color: #A78BFA;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.skill-remove-btn:hover {
+  color: #6D28D9;
+}
+
+.add-skill-pill-btn {
+  background: #F8FAFC;
+  border: 1px dashed #CBD5E1;
+  color: #64748B;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.add-skill-pill-btn:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+/* Card 3: Quick Actions (3 Horizontal Tiles) */
+.quick-actions-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.quick-action-tile {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 0.85rem 0.6rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.quick-action-tile:hover {
+  border-color: #00A884;
+  background: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.08);
+}
+
+.tile-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-icon-box.blue {
+  background: #E0F2FE;
+}
+
+.tile-icon-box.green {
+  background: #E6F8F2;
+}
+
+.tile-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+}
+
+.tile-subtitle {
+  font-size: 0.68rem;
+  color: #64748B;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Edit Profile Modal
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.form-two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.modal-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.modal-field-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.modal-field-input {
+  border: 1px solid #CBD5E1;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  color: #0F172A;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-field-input:focus {
+  outline: none;
+  border-color: #00A884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
+}
+
+.modal-footer-btns {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid #E2E8F0;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .profile-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-hero-bg {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .personal-info-grid,
+  .learning-pref-grid,
+  .form-two-cols {
+    grid-template-columns: 1fr;
+  }
+  .profile-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .quick-actions-row {
+    grid-template-columns: 1fr;
+  }
+}

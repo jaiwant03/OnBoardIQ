@@ -1,133 +1,805 @@
-.learning-header {
-  margin-bottom: 2rem;
-}
+/* ==========================================================================
+   AI Learning Path & Skills Roadmap Styles
+   Modern, Impressive, Enterprise-Grade UI
+   ========================================================================== */
 
-.learning-stages-timeline {
+.learning-page-wrapper {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-.learning-stage-card {
+/* ==========================================================================
+   1. Hero Banner Card
+   ========================================================================== */
+.learning-hero-banner {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
+  border-radius: 22px;
+  padding: 2rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.learning-hero-banner::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 168, 132, 0.08) 0%, rgba(2, 132, 199, 0.04) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.learning-hero-left {
+  max-width: 680px;
+  z-index: 2;
+}
+
+.learning-pretitle-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #F0FDF4;
+  border: 1px solid #DCFCE7;
+  color: #15803D;
+  padding: 0.28rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.learning-main-title {
+  font-family: var(--font-heading);
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+}
+
+.learning-title-gradient {
+  background: linear-gradient(135deg, #00A884 0%, #0284C7 60%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.learning-subtitle {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 1.35rem;
+  max-width: 620px;
+}
+
+.learning-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+/* Hero Right Progress Card */
+.learning-hero-progress-widget {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 18px;
-  padding: 1.75rem;
-  transition: var(--transition-normal);
+  padding: 1.4rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.progress-widget-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.progress-widget-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #00A884;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progress-widget-value {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.progress-widget-subtext {
+  font-size: 0.78rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   2. KPI Metrics Strip (4 Cards)
+   ========================================================================== */
+.learning-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.learning-metric-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1.2rem 1.35rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.learning-metric-card:hover {
+  border-color: rgba(0, 168, 132, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 168, 132, 0.08);
+}
+
+.metric-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric-icon-box.green {
+  background: #E6F8F2;
+}
+
+.metric-icon-box.blue {
+  background: #E0F2FE;
+}
+
+.metric-icon-box.purple {
+  background: #EDE9FE;
+}
+
+.metric-icon-box.amber {
+  background: #FEF3C7;
+}
+
+.metric-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-number {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+  margin: 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #94A3B8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   3. Horizontal Stage Roadmap Tracker (Visual Stepper)
+   ========================================================================== */
+.roadmap-stepper-container {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1.15rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  overflow-x: auto;
+}
+
+.stepper-stage-node {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.4rem 0.65rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 200px;
+}
+
+.stepper-stage-node:hover {
+  background: #F8FAFC;
+}
+
+.stepper-node-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.stepper-node-circle.completed {
+  background: #00A884;
+  color: #FFFFFF;
+}
+
+.stepper-node-circle.active {
+  background: #E6F8F2;
+  border: 2px solid #00A884;
+  color: #00A884;
+  box-shadow: 0 0 0 4px rgba(0, 168, 132, 0.15);
+}
+
+.stepper-node-circle.upcoming {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #64748B;
+}
+
+.stepper-node-circle.locked {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #94A3B8;
+}
+
+.stepper-node-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stepper-node-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stepper-node-label.completed {
+  color: #008769;
+}
+
+.stepper-node-label.active {
+  color: #00A884;
+}
+
+.stepper-node-label.upcoming,
+.stepper-node-label.locked {
+  color: #94A3B8;
+}
+
+.stepper-node-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepper-connector-arrow {
+  color: #CBD5E1;
+  flex-shrink: 0;
+}
+
+/* Filter Controls Bar */
+.learning-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-pills-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill-btn {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill-btn:hover {
+  border-color: #00A884;
+  color: #008769;
+}
+
+.filter-pill-btn.active {
+  background: #E6F8F2;
+  border-color: #00A884;
+  color: #008769;
+  font-weight: 700;
+}
+
+.filter-count-badge {
+  display: inline-block;
+  background: rgba(0, 168, 132, 0.15);
+  color: #008769;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  margin-left: 0.35rem;
+}
+
+.learning-curriculum-badge-tag {
+  font-size: 0.8rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   4. Vertical Connected Timeline Stages
+   ========================================================================== */
+.learning-timeline-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 3rem;
+}
+
+/* Timeline Vertical Spine Line */
+.learning-timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  bottom: 2rem;
+  left: 1.15rem;
+  width: 3px;
+  background: #E2E8F0;
+  border-radius: 2px;
+}
+
+.timeline-stage-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.timeline-stage-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* Timeline Node Circle on the Spine */
+.timeline-stage-node-icon {
+  position: absolute;
+  top: 1.75rem;
+  left: -3rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 800;
+  z-index: 3;
+  box-shadow: 0 0 0 5px #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.timeline-stage-node-icon.completed {
+  background: #00A884;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 5px #FFFFFF, 0 4px 12px rgba(0, 168, 132, 0.25);
+}
+
+.timeline-stage-node-icon.active {
+  background: #E6F8F2;
+  border: 3px solid #00A884;
+  color: #00A884;
+  box-shadow: 0 0 0 5px #FFFFFF, 0 0 16px rgba(0, 168, 132, 0.35);
+}
+
+.timeline-stage-node-icon.upcoming {
+  background: #F1F5F9;
+  border: 2px solid #CBD5E1;
+  color: #64748B;
+}
+
+.timeline-stage-node-icon.locked {
+  background: #F8FAFC;
+  border: 2px solid #E2E8F0;
+  color: #94A3B8;
+}
+
+/* Modern Stage Card */
+.modern-stage-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 1.85rem 2rem;
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s ease;
 }
 
-.learning-stage-card:hover {
-  border-color: rgba(0, 168, 132, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.08);
-}
-
-.learning-stage-card.is-active {
+.modern-stage-card:hover {
   border-color: rgba(0, 168, 132, 0.4);
-  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 168, 132, 0.08);
 }
 
-.learning-stage-card.is-active::before {
+.modern-stage-card.is-active {
+  border-color: rgba(0, 168, 132, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 168, 132, 0.1);
+}
+
+.modern-stage-card.is-active::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #00A884 0%, #008769 100%);
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #00A884 0%, #0284C7 100%);
 }
 
-.stage-top-bar {
+.stage-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
   flex-wrap: wrap;
-  gap: 0.75rem;
 }
 
-.stage-badge-group {
+.stage-card-meta-left {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
+  flex-wrap: wrap;
 }
 
-.stage-indicator-pill {
-  padding: 0.25rem 0.65rem;
+.stage-tag-badge {
+  padding: 0.25rem 0.75rem;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 800;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.stage-title {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
+.stage-tag-badge.foundation {
+  background: #E0F2FE;
+  color: #0284C7;
+}
+
+.stage-tag-badge.current {
+  background: #E6F8F2;
+  color: #008769;
+}
+
+.stage-tag-badge.next {
+  background: #EDE9FE;
+  color: #7C3AED;
+}
+
+.stage-tag-badge.upcoming {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.stage-hours-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #F1F5F9;
+  color: #475569;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+}
+
+.stage-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
   font-weight: 700;
-  color: #0F172A;
-  margin-bottom: 0.4rem;
 }
 
-.stage-desc {
+.stage-status-badge.completed {
+  background: #F0FDF4;
+  border: 1px solid #DCFCE7;
+  color: #15803D;
+}
+
+.stage-status-badge.active {
+  background: #E6F8F2;
+  border: 1px solid #A7F3D0;
+  color: #008769;
+  box-shadow: 0 0 10px rgba(0, 168, 132, 0.15);
+}
+
+.stage-status-badge.upcoming {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
+}
+
+.stage-status-badge.locked {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #94A3B8;
+}
+
+.stage-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.01em;
+}
+
+.stage-card-desc {
   font-size: 0.9rem;
   color: #64748B;
   line-height: 1.5;
-  margin-bottom: 1.25rem;
-  max-width: 800px;
+  margin-bottom: 1.35rem;
+  max-width: 850px;
 }
 
-.modules-checklist {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0.75rem;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.module-item {
+/* Stage Progress Bar */
+.stage-progress-container {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  border-radius: var(--radius-sm);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.stage-progress-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: #F1F5F9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stage-progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #00A884 0%, #0284C7 100%);
+  transition: width 0.4s ease;
+}
+
+.stage-progress-text {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748B;
+  white-space: nowrap;
+}
+
+/* Modern Modules Grid */
+.modern-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 0.85rem;
+}
+
+.modern-module-item {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 0.95rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
   cursor: pointer;
-  transition: var(--transition-normal);
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.module-item:hover {
+.modern-module-item:hover {
   background: #FFFFFF;
+  border-color: #00A884;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 168, 132, 0.08);
 }
 
-.module-checkbox {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
+.modern-module-item.completed {
+  background: #F0FDF9;
+  border-color: #CCFBF1;
+}
+
+.module-custom-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
   border: 2px solid #CBD5E1;
   background: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: var(--transition-normal);
-}
-
-.module-checkbox.completed {
-  background: #00A884;
-  border-color: #00A884;
+  transition: all 0.15s ease;
   color: #FFFFFF;
 }
 
-.module-title {
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: #1E293B;
+.modern-module-item:hover .module-custom-checkbox {
+  border-color: #00A884;
 }
 
-.module-title.completed {
+.module-custom-checkbox.completed {
+  background: #00A884;
+  border-color: #00A884;
+}
+
+.module-info-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.module-item-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1E293B;
+  line-height: 1.35;
+  transition: all 0.15s ease;
+}
+
+.module-item-title.completed {
   text-decoration: line-through;
   color: #94A3B8;
+}
+
+.module-sub-tag {
+  font-size: 0.72rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Card Bottom Action Bar */
+.stage-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.35rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid #F1F5F9;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.stage-tip-note {
+  font-size: 0.78rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stage-ai-tutor-btn {
+  background: transparent;
+  border: 1px solid #E2E8F0;
+  color: #008769;
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stage-ai-tutor-btn:hover {
+  background: #E6F8F2;
+  border-color: #00A884;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .learning-hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .learning-hero-progress-widget {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .learning-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .learning-timeline-container {
+    padding-left: 0;
+  }
+  .learning-timeline-container::before {
+    display: none;
+  }
+  .timeline-stage-node-icon {
+    position: static;
+    margin-bottom: 0.75rem;
+  }
+  .learning-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .roadmap-stepper-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stepper-connector-arrow {
+    display: none;
+  }
 }
