@@ -86,23 +86,29 @@ If they ask 'why', explain the reasoning and prerequisites clearly based on thei
 Keep your response concise, structured, and professional.
 """
 
-    response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.2)
-
-    if not response or not response.strip() or "[AI Agent is currently unavailable" in response:
-        if next_action and pending:
+    # If this is specifically asking for the Next Best Action, provide the direct reasoned answer
+    if (is_next_action or is_why_followup) and next_action and pending:
+        response = (
+            f"Based on your current onboarding state ({progress_pct}% complete):\n\n"
+            f"🎯 **Next Best Action:** {next_action['task_title']}\n\n"
+            f"**Why this is recommended:** {next_action['reason']}\n\n"
+            f"You have completed {len(completed)} task(s) so far ({', '.join(completed[:3]) if completed else 'none'}). "
+            f"Completing '{next_action['task_title']}' is your next key milestone as a {role}."
+        )
+    elif not pending and completed:
+        response = f"🎉 Outstanding work, {name}! You have completed all {len(completed)} onboarding tasks assigned to you. Coordinate with your team lead for next sprint items!"
+    elif not pending and not completed:
+        response = (
+            f"Welcome, {name}! No active onboarding tasks have been assigned yet. "
+            f"Upload company onboarding documents in the Knowledge Center to automatically generate your personalized roadmap."
+        )
+    else:
+        # General query about roadmap/milestones: use LLM
+        response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.2)
+        if not response or not response.strip() or "[AI Agent is currently unavailable" in response:
             response = (
-                f"Based on your current onboarding state ({progress_pct}% complete):\n\n"
-                f"🎯 **Next Best Action:** {next_action['task_title']}\n\n"
-                f"**Why this is recommended:** {next_action['reason']}\n\n"
-                f"You have completed {len(completed)} task(s) so far ({', '.join(completed[:2])}). "
-                f"Completing '{next_action['task_title']}' is the next critical milestone for your role as {role}."
-            )
-        elif not pending and completed:
-            response = f"🎉 Great job, {name}! You have completed all {len(completed)} onboarding tasks assigned to you. Coordinate with your team lead for next sprint items!"
-        else:
-            response = (
-                f"Welcome, {name}! No active onboarding tasks have been assigned yet. "
-                f"Once company onboarding documents are uploaded, personalized tasks and milestones will appear automatically."
+                f"Welcome, {name}! You have completed {len(completed)} of {len(completed) + len(pending)} tasks ({progress_pct}%). "
+                f"Your next recommended milestone is '{next_action['task_title'] if next_action else 'N/A'}'."
             )
 
     state["response"] = response
