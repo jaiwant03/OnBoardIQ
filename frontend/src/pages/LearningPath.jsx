@@ -121,13 +121,15 @@ const LearningPath = () => {
   const totalHours = stages.reduce((acc, s) => acc + (s.estimatedHours || 0), 0);
   const currentStage = stages.find((s) => s.status === 'in_progress') || stages[0];
 
-  // Filtering
-  const filteredStages = stages.filter((s) => {
-    if (activeFilter === 'completed') return s.status === 'completed';
-    if (activeFilter === 'in_progress') return s.status === 'in_progress';
-    if (activeFilter === 'upcoming') return s.status === 'upcoming' || s.status === 'locked';
-    return true;
-  });
+  // Filtering with preserved original index
+  const filteredStages = stages
+    .map((s, originalIndex) => ({ ...s, originalIndex }))
+    .filter((s) => {
+      if (activeFilter === 'completed') return s.status === 'completed';
+      if (activeFilter === 'in_progress') return s.status === 'in_progress';
+      if (activeFilter === 'upcoming') return s.status === 'upcoming' || s.status === 'locked';
+      return true;
+    });
 
   return (
     <div className="page-container learning-page-wrapper">
@@ -354,7 +356,8 @@ const LearningPath = () => {
         </div>
       ) : (
         <div className="learning-timeline-container">
-          {filteredStages.map((stage, stageIdx) => {
+          {filteredStages.map((stage, i) => {
+            const stageIdx = stage.originalIndex ?? i;
             const isDone = stage.status === 'completed';
             const isActive = stage.status === 'in_progress';
             const isLocked = stage.status === 'locked';
