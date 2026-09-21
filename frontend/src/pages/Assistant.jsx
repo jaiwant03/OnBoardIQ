@@ -10,10 +10,13 @@ import {
   ShieldCheck,
   Info,
   HelpCircle,
-  Plus
+  Plus,
+  X,
+  History
 } from 'lucide-react';
 import { aiAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import SourceCard from '../components/SourceCard';
 import '../styles/assistant.css';
 
@@ -28,6 +31,7 @@ const SUGGESTED_PROMPTS = [
 
 const Assistant = () => {
   const { user } = useAuth();
+  const { showHistory, setShowHistory } = useUI();
   const [messages, setMessages] = useState([
     {
       sender: 'assistant',
@@ -164,38 +168,50 @@ const Assistant = () => {
 
   return (
     <div className="page-container" style={{ paddingBottom: '1rem' }}>
-      <div className="assistant-container">
-        {/* 1. Left: Conversation History Panel */}
-        <div className="assistant-history-panel">
-          <div className="history-header">
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-              History
-            </span>
-            <button className="btn btn-secondary btn-sm" onClick={handleNewChat} title="New Chat">
-              <Plus size={14} />
-              <span>New</span>
-            </button>
-          </div>
-
-          <div className="history-list">
-            {conversations.length === 0 ? (
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '2rem' }}>
-                No past sessions yet
-              </div>
-            ) : (
-              conversations.map((conv) => (
-                <div
-                  key={conv._id}
-                  className={`history-item ${activeConversationId === conv._id ? 'active' : ''}`}
-                  onClick={() => handleSelectConversation(conv)}
+      <div className={`assistant-container ${showHistory ? 'with-history' : 'large-view'}`}>
+        {/* 1. Left: Conversation History Panel (Hidden by default, opened via button near search) */}
+        {showHistory && (
+          <div className="assistant-history-panel animate-fade-in">
+            <div className="history-header">
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                History
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <button className="btn btn-secondary btn-sm" onClick={handleNewChat} title="New Chat">
+                  <Plus size={14} />
+                  <span>New</span>
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => setShowHistory(false)}
+                  title="Hide History"
+                  style={{ padding: '0.25rem 0.4rem', color: 'var(--text-muted)' }}
                 >
-                  <Bot size={14} />
-                  <span>{conv.title || 'Conversation'}</span>
+                  <X size={15} />
+                </button>
+              </div>
+            </div>
+
+            <div className="history-list">
+              {conversations.length === 0 ? (
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '2rem' }}>
+                  No past sessions yet
                 </div>
-              ))
-            )}
+              ) : (
+                conversations.map((conv) => (
+                  <div
+                    key={conv._id}
+                    className={`history-item ${activeConversationId === conv._id ? 'active' : ''}`}
+                    onClick={() => handleSelectConversation(conv)}
+                  >
+                    <Bot size={14} />
+                    <span>{conv.title || 'Conversation'}</span>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 2. Center: Chat Message Area */}
         <div className="assistant-chat-panel">
@@ -214,14 +230,27 @@ const Assistant = () => {
               </div>
             </div>
 
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={handleClearChat}
-              title="Clear active conversation"
-            >
-              <Trash2 size={14} />
-              <span>Clear</span>
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {!showHistory && (
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => setShowHistory(true)}
+                  title="Show chat history"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}
+                >
+                  <History size={14} />
+                  <span>History</span>
+                </button>
+              )}
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={handleClearChat}
+                title="Clear active conversation"
+              >
+                <Trash2 size={14} />
+                <span>Clear</span>
+              </button>
+            </div>
           </div>
 
           {/* Messages Feed */}

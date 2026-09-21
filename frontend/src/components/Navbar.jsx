@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, Menu } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { aiAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import '../styles/navbar.css';
 
 const Navbar = () => {
   const { user } = useAuth();
+  const { showHistory, toggleHistory, setShowHistory } = useUI();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [aiOnline, setAiOnline] = useState(true);
+
+  const handleMenuToggle = () => {
+    if (location.pathname !== '/assistant') {
+      setShowHistory(true);
+      navigate('/assistant');
+    } else {
+      toggleHistory();
+    }
+  };
 
   useEffect(() => {
     const fetchHealth = async () => {
@@ -44,10 +58,16 @@ const Navbar = () => {
     year: 'numeric'
   }).format(new Date());
 
+  const isAssistantPage = location.pathname === '/assistant';
+
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <button className="navbar-menu-toggle" title="Toggle Navigation">
+        <button
+          className={`navbar-menu-toggle ${showHistory && isAssistantPage ? 'active' : ''}`}
+          onClick={handleMenuToggle}
+          title={isAssistantPage ? (showHistory ? 'Hide Chat History' : 'Show Chat History') : 'View Chat History'}
+        >
           <Menu size={18} />
         </button>
 

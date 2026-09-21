@@ -38,6 +38,11 @@
   color: #0F172A;
 }
 
+.navbar-menu-toggle.active {
+  background: #E6F8F2;
+  color: #00A884;
+}
+
 .navbar-search {
   display: flex;
   align-items: center;

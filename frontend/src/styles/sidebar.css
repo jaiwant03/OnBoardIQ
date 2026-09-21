@@ -127,54 +127,6 @@
   color: #FFFFFF;
 }
 
-/* Botanical Promo Card */
-.sidebar-promo-card {
-  margin-top: auto;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #11574C 0%, #0C433A 100%);
-  border: 1px solid rgba(0, 229, 153, 0.25);
-  border-radius: 14px;
-  padding: 1.1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-}
-
-.promo-sprout-icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(0, 229, 153, 0.18);
-  border: 1px solid rgba(0, 229, 153, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.promo-card-content {
-  z-index: 2;
-}
-
-.promo-headline {
-  font-family: var(--font-heading);
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  line-height: 1.2;
-}
-
-.promo-subtext {
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: #A3D4CA;
-  margin-top: 0.3rem;
-  line-height: 1.3;
-}
-
 /* Sidebar Footer */
 .sidebar-footer {
   padding: 0.85rem 1rem;

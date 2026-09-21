@@ -10,8 +10,7 @@ import {
   User,
   BarChart3,
   LogOut,
-  ChevronRight,
-  Sprout
+  ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
@@ -125,21 +124,6 @@ const Sidebar = () => {
             <span>Admin Dashboard</span>
           </div>
         </NavLink>
-
-        {/* Deep Pine Green Botanical Promo Card */}
-        <div className="sidebar-promo-card">
-          <div className="promo-sprout-icon-wrap">
-            <Sprout size={20} color="#00E599" />
-          </div>
-          <div className="promo-card-content">
-            <h4 className="promo-headline">
-              Build<br />Grow<br />Belong
-            </h4>
-            <p className="promo-subtext">
-              Your journey<br />matters here.
-            </p>
-          </div>
-        </div>
       </nav>
 
       {/* User Profile Footer */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { UIProvider } from './context/UIContext';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 
@@ -60,109 +61,111 @@ const AppLayout = ({ children, title }) => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public Auth Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+      <UIProvider>
+        <Router>
+          <Routes>
+            {/* Public Auth Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-          {/* Root Redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* Root Redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Protected Application Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="Dashboard">
-                  <Dashboard />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected Application Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="Dashboard">
+                    <Dashboard />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/assistant"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="AI Assistant">
-                  <Assistant />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/assistant"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="AI Assistant">
+                    <Assistant />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/onboarding"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="My Onboarding">
-                  <Onboarding />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/onboarding"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="My Onboarding">
+                    <Onboarding />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/tasks"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="Onboarding Tasks">
-                  <Tasks />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="Onboarding Tasks">
+                    <Tasks />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/learning"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="Learning Path">
-                  <LearningPath />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/learning"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="Learning Path">
+                    <LearningPath />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/documents"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="Knowledge Center">
-                  <Documents />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/documents"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="Knowledge Center">
+                    <Documents />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <AppLayout title="Profile">
-                  <Profile />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <AppLayout title="My Profile">
+                    <Profile />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Admin Dashboard */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <AppLayout title="Admin Analytics">
-                  <AdminDashboard />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
+            {/* Admin Dashboard */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <AppLayout title="Admin Analytics">
+                    <AdminDashboard />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </Router>
+      </UIProvider>
     </AuthProvider>
   );
 }
