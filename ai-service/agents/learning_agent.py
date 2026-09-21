@@ -58,7 +58,7 @@ Provide an actionable, personalized learning recommendation tailored to this {ex
 Explain what topics they should prioritize first, why, and how it connects to their team's stack.
 """
 
-    response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.3)
+    response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.2, num_predict=400)
 
     if not response or not response.strip() or "[AI Agent is currently unavailable" in response:
         response = (

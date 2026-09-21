@@ -1,15 +1,18 @@
 from typing import List, Dict, Any, Tuple
+import re
 from rag.vector_store import vector_store
 from config import SIMILARITY_THRESHOLD
+from utils.fallback_synthesizer import clean_text_content
 
 def retrieve_verified_context(
     query: str, 
     department: str = "General", 
-    top_k: int = 3
+    top_k: int = 3,
+    max_context_chars: int = 2400
 ) -> Tuple[str, List[Dict[str, Any]], str]:
     """
     Retrieves relevant document chunks from ChromaDB, evaluates confidence,
-    and formats context with source verification.
+    cleans document artifacts, and formats budgeted context with source verification.
     
     Returns:
         (context_text, sources_list, overall_confidence)
@@ -36,14 +39,24 @@ def retrieve_verified_context(
     sources = []
     seen_sources = set()
     context_blocks = []
+    current_chars = 0
 
     for item in valid_results:
         meta = item["metadata"]
         src_file = meta.get("source") or meta.get("filename", "Company Document")
         section = meta.get("section", "General")
-        snippet = item["content"].replace(f"Document: {meta.get('filename')}\nSection: {section}\n\n", "")
         
-        # Deduplicate sources
+        # Remove embedding wrapper headers and clean PDF noise
+        raw_text = item["content"].replace(f"Document: {meta.get('filename')}\nSection: {section}\n\n", "")
+        cleaned_text = clean_text_content(raw_text)
+
+        # Create a clean, readable citation snippet
+        clean_snippet = cleaned_text.strip()
+        if len(clean_snippet) > 220:
+            # Cut at last clean word boundary
+            cutoff = clean_snippet[:220].rfind(" ")
+            clean_snippet = clean_snippet[:cutoff if cutoff > 120 else 220] + "..."
+
         source_key = f"{src_file}::{section}"
         if source_key not in seen_sources:
             seen_sources.add(source_key)
@@ -52,12 +65,18 @@ def retrieve_verified_context(
                 "section": section,
                 "confidence": confidence,
                 "similarity": item["similarity"],
-                "snippet": snippet[:200] + "..." if len(snippet) > 200 else snippet
+                "snippet": clean_snippet
             })
 
-        context_blocks.append(
-            f"--- SOURCE: {src_file} | SECTION: {section} ---\n{snippet}\n"
-        )
+        # Add to context if within context budget
+        remaining_budget = max_context_chars - current_chars
+        if remaining_budget > 200:
+            snippet_to_add = cleaned_text[:remaining_budget]
+            context_blocks.append(
+                f"[Source: {src_file} | Topic: {section}]\n{snippet_to_add}\n"
+            )
+            current_chars += len(snippet_to_add)
 
-    full_context = "\n".join(context_blocks)
+    full_context = "\n".join(context_blocks).strip()
     return (full_context, sources, confidence)
+

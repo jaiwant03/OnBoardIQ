@@ -104,7 +104,7 @@ Keep your response concise, structured, and professional.
         )
     else:
         # General query about roadmap/milestones: use LLM
-        response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.2)
+        response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.2, num_predict=350)
         if not response or not response.strip() or "[AI Agent is currently unavailable" in response:
             response = (
                 f"Welcome, {name}! You have completed {len(completed)} of {len(completed) + len(pending)} tasks ({progress_pct}%). "

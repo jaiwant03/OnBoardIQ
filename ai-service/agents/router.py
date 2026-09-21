@@ -44,7 +44,11 @@ def route_intent(state: AgentState) -> AgentState:
         "ide", "python", "node", "npm", "vpn", "password", "1password", "hardware",
         "laptop", "ssh", "key", "tools", "access", "credentials", "jumpcloud", "okta",
         "security", "mfa", "phishing", "wireguard", "compliance", "authenticator", "firewall",
-        "security training", "why do i need security training"
+        "security training", "why do i need security training",
+        "technology", "technologies", "tech stack", "tech", "stack", "frontend", "backend",
+        "database", "databases", "engineering", "framework", "frameworks", "languages",
+        "programming", "devops", "cloud", "aws", "react", "fastapi", "rest api", "apis",
+        "code", "coding"
     ]
     
     hr_keywords = [
@@ -72,6 +76,9 @@ def route_intent(state: AgentState) -> AgentState:
     onboard_score = sum(1 for k in onboarding_keywords if k in query)
 
     # Specific prioritization
+    if any(k in query for k in ["technolog", "tech stack", "stack", "engineering", "frontend", "backend", "database", "devops"]):
+        it_score += 4
+
     if "security" in query and ("policy" in query or "training" in query or "install" in query or "mfa" in query):
         it_score += 3
 
@@ -101,6 +108,12 @@ def route_intent(state: AgentState) -> AgentState:
         if any(w in query for w in ["task", "today", "next", "do", "plan", "start"]):
             assigned = "onboarding_agent"
             intent = "general_onboarding_inquiry"
+        elif any(w in query for w in ["tech", "code", "dev", "tool", "system", "setup", "engineer", "build"]):
+            assigned = "it_agent"
+            intent = "it_inquiry"
+        elif any(w in query for w in ["learn", "skill", "course", "train"]):
+            assigned = "learning_agent"
+            intent = "learning_inquiry"
         else:
             assigned = "hr_agent"
             intent = "general_policy_inquiry"

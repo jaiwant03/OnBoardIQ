@@ -100,7 +100,7 @@ Do NOT output markdown headers. Just provide the concise explanation.
         "You are the OnboardIQ Autonomous Reasoning Engine. Explain why a recommended onboarding task is the next best step."
     )
 
-    reason = call_ollama(prompt=prompt, system_prompt=system_prompt, temperature=0.2)
+    reason = call_ollama(prompt=prompt, system_prompt=system_prompt, temperature=0.2, num_predict=150)
 
     # High quality fallback if LLM is offline
     if not reason or not reason.strip() or "[AI Agent is currently unavailable" in reason:

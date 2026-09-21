@@ -1,6 +1,7 @@
 from agents.state import AgentState
 from agents.tools import search_company_knowledge
 from utils.llm_client import call_ollama
+from utils.fallback_synthesizer import synthesize_clean_fallback
 
 def hr_agent_node(state: AgentState) -> AgentState:
     """
@@ -39,10 +40,13 @@ def hr_agent_node(state: AgentState) -> AgentState:
 
     system_prompt = (
         "You are the OnboardIQ Enterprise HR Agent. Your responsibility is to answer the employee's question "
-        "ACCURATELY and FACTUALLY based ONLY on the provided verified company documents. "
-        "Strictly adhere to the facts in the text. Do not make up, assume, or extrapolate policies. "
-        "If the specific answer is not clearly present in the verified context, reply exactly: "
-        "'I couldn't find reliable information about this in the available company documents.' "
+        "ACCURATELY and FACTUALLY based ONLY on the provided verified company documents.\n"
+        "Guidelines:\n"
+        "1. Provide a direct, clear, and comprehensive explanation in proper complete sentences.\n"
+        "2. Organize policies cleanly using bold headers and bullet points where helpful.\n"
+        "3. Never output raw document headers, page numbers (such as '--- Page 1 ---'), or raw file syntax.\n"
+        "4. If the specific answer is not clearly present in the verified context, reply exactly: "
+        "'I couldn't find reliable information about this in the available company documents.'\n"
         "Cite numbers, days, and rules precisely as stated in the sources."
     )
 
@@ -55,15 +59,14 @@ Recent Conversation History:
 Verified Company Policy Context:
 {context}
 
-Provide a concise, direct, and helpful answer for the employee based strictly on the verified documents above.
+Answer the employee's question directly with a clean, clear, and well-structured explanation in proper complete sentences based strictly on the verified documents above.
 """
 
-    response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.1)
+    response = call_ollama(prompt=user_prompt, system_prompt=system_prompt, temperature=0.1, num_predict=400)
 
     # Extractive fallback if Ollama response is empty or offline
     if not response or not response.strip() or "[AI Agent is currently unavailable" in response:
-        top_snippet = sources[0]["snippet"]
-        response = f"According to {sources[0]['document']} ({sources[0]['section']}):\n\n{top_snippet}"
+        response = synthesize_clean_fallback(query=query, sources=sources, raw_context=context)
 
     # Check if the model stated that information is missing
     lower_resp = (response or "").lower()
