@@ -324,8 +324,8 @@ const Dashboard = () => {
                         onClick={() => handleToggleTask(t._id, t.status)}
                         className={`task-checked-circle ${isDone ? 'completed' : ''}`}
                         style={{
-                          background: isDone ? 'var(--accent-primary)' : 'transparent',
-                          borderColor: isDone ? 'var(--accent-primary)' : 'var(--border-color)',
+                          background: isDone ? '#00A884' : 'transparent',
+                          borderColor: isDone ? '#00A884' : '#CBD5E1',
                           cursor: 'pointer'
                         }}
                       >
