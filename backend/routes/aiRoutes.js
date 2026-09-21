@@ -7,6 +7,8 @@ const {
   toggleLearningModule,
   getHealth,
   getConversations,
+  getConversationById,
+  createConversation,
   clearConversation
 } = require('../controllers/aiController');
 const { protect } = require('../middleware/auth');
@@ -17,6 +19,8 @@ router.post('/next-action', protect, getNextAction);
 router.get('/learning-path', protect, getLearningPath);
 router.put('/learning-path/module', protect, toggleLearningModule);
 router.get('/conversations', protect, getConversations);
+router.get('/conversations/:id', protect, getConversationById);
+router.post('/conversations', protect, createConversation);
 router.delete('/conversations/:id', protect, clearConversation);
 
 module.exports = router;

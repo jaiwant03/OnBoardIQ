@@ -68,6 +68,8 @@ export const aiAPI = {
     api.put('/api/ai/learning-path/module', { stageIndex, moduleIndex }),
   getHealth: () => api.get('/api/ai/health'),
   getConversations: () => api.get('/api/ai/conversations'),
+  getConversation: (id) => api.get(`/api/ai/conversations/${id}`),
+  createConversation: (data) => api.post('/api/ai/conversations', data),
   clearConversation: (id) => api.delete(`/api/ai/conversations/${id}`)
 };
 

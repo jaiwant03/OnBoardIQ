@@ -1,11 +1,500 @@
-.onboarding-page-header {
-  margin-bottom: 2rem;
+/* ==========================================================================
+   Onboarding Journey Modern UI Stylesheet
+   ========================================================================== */
+
+.onboarding-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
+/* ==========================================================================
+   1. Hero Banner
+   ========================================================================== */
+.onboarding-hero-banner {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 2rem 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.03);
+  gap: 2rem;
+  background-image: radial-gradient(circle at 92% 15%, rgba(0, 168, 132, 0.08) 0%, rgba(2, 132, 199, 0.04) 45%, transparent 75%);
+}
+
+.onboarding-hero-left {
+  max-width: 680px;
+  z-index: 2;
+  flex: 1;
+}
+
+.onboarding-pretitle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+
+.onboarding-pretitle-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #E6F8F2;
+  color: #008769;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+  padding: 0.22rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.onboarding-user-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: #F1F5F9;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+}
+
+.onboarding-main-title {
+  font-family: var(--font-heading);
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.onboarding-title-gradient {
+  background: linear-gradient(135deg, #00A884 0%, #0284C7 50%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.onboarding-subtitle {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.55;
+  margin-bottom: 1.35rem;
+  max-width: 620px;
+}
+
+.onboarding-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+/* Right Circular Progress Card */
+.onboarding-hero-progress-widget {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 1.4rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.progress-widget-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.progress-widget-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #00A884;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progress-widget-value {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.progress-widget-subtext {
+  font-size: 0.78rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   2. KPI Metric Cards (4 Cards Grid)
+   ========================================================================== */
+.onboarding-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.15rem;
+}
+
+.onboarding-metric-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.onboarding-metric-card:hover {
+  border-color: #00A884;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 168, 132, 0.08);
+}
+
+.metric-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric-icon-box.green {
+  background: #E6F8F2;
+}
+
+.metric-icon-box.blue {
+  background: #E0F2FE;
+}
+
+.metric-icon-box.purple {
+  background: #F3E8FF;
+}
+
+.metric-icon-box.amber {
+  background: #FEF3C7;
+}
+
+.metric-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-number {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+  margin: 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #94A3B8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   3. Horizontal Day Stepper Roadmap Tracker
+   ========================================================================== */
+.onboarding-stepper-container {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1.15rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  overflow-x: auto;
+}
+
+.stepper-day-node {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 170px;
+}
+
+.stepper-day-node:hover {
+  background: #F8FAFC;
+}
+
+.stepper-day-node.active-tab {
+  background: #E6F8F2;
+  border: 1px solid rgba(0, 168, 132, 0.35);
+}
+
+.stepper-day-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.stepper-day-circle.completed {
+  background: #00A884;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.3);
+}
+
+.stepper-day-circle.active {
+  background: #E6F8F2;
+  border: 2px solid #00A884;
+  color: #00A884;
+  box-shadow: 0 0 0 4px rgba(0, 168, 132, 0.15);
+}
+
+.stepper-day-circle.upcoming {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #64748B;
+}
+
+.stepper-day-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stepper-day-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stepper-day-tag.completed {
+  color: #008769;
+}
+
+.stepper-day-tag.active {
+  color: #00A884;
+}
+
+.stepper-day-tag.upcoming {
+  color: #94A3B8;
+}
+
+.stepper-day-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepper-day-sub {
+  font-size: 0.7rem;
+  color: #64748B;
+}
+
+.stepper-connector-arrow {
+  color: #CBD5E1;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   4. Toolbar: Search, Filters, & Controls
+   ========================================================================== */
+.onboarding-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.onboarding-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 260px;
+}
+
+.onboarding-search-box input {
+  width: 100%;
+  padding: 0.45rem 0.85rem 0.45rem 2.2rem;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  background: #F8FAFC;
+  color: #0F172A;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.onboarding-search-box input:focus {
+  background: #FFFFFF;
+  border-color: #00A884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.12);
+}
+
+.search-icon-inside {
+  position: absolute;
+  left: 0.75rem;
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px;
+}
+
+.search-clear-btn:hover {
+  color: #0F172A;
+}
+
+.filter-pills-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill-btn {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.filter-pill-btn:hover {
+  border-color: #00A884;
+  color: #008769;
+}
+
+.filter-pill-btn.active {
+  background: #E6F8F2;
+  border-color: #00A884;
+  color: #008769;
+  font-weight: 700;
+}
+
+.filter-count-badge {
+  display: inline-block;
+  background: rgba(0, 168, 132, 0.15);
+  color: #008769;
+  font-size: 0.68rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-full);
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.toolbar-action-btn {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.toolbar-action-btn:hover {
+  background: #FFFFFF;
+  border-color: #00A884;
+  color: #008769;
+}
+
+/* ==========================================================================
+   5. Vertical Timeline & Roadmap Day Sections
+   ========================================================================== */
 .roadmap-timeline-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.75rem;
   position: relative;
 }
 
@@ -15,8 +504,9 @@
   top: 2rem;
   bottom: 2rem;
   left: 24px;
-  width: 2px;
-  background: linear-gradient(180deg, #00A884 0%, #0284C7 50%, #008769 100%);
+  width: 3px;
+  background: linear-gradient(180deg, #00A884 0%, #0284C7 50%, #7C3AED 100%);
+  border-radius: 3px;
 }
 
 .roadmap-day-section {
@@ -28,40 +518,47 @@
 .day-marker-node {
   width: 50px;
   height: 50px;
-  border-radius: var(--radius-full);
+  border-radius: 50%;
   background: #FFFFFF;
   border: 2px solid #00A884;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 800;
   color: #008769;
   font-size: 0.9rem;
   z-index: 2;
-  box-shadow: 0 0 14px rgba(0, 168, 132, 0.25);
+  box-shadow: 0 0 16px rgba(0, 168, 132, 0.25);
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .day-marker-node.completed {
   border-color: #00A884;
-  background: #00A884;
+  background: linear-gradient(135deg, #00A884 0%, #008769 100%);
   color: #FFFFFF;
-  box-shadow: 0 0 16px rgba(0, 168, 132, 0.4);
+  box-shadow: 0 0 18px rgba(0, 168, 132, 0.45);
+}
+
+.day-marker-node.in-progress {
+  border-color: #0284C7;
+  color: #0284C7;
+  box-shadow: 0 0 18px rgba(2, 132, 199, 0.35);
 }
 
 .day-content-card {
   flex: 1;
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 18px;
-  padding: 1.5rem;
+  border-radius: 20px;
+  padding: 1.6rem 1.75rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  transition: var(--transition-normal);
+  transition: all 0.2s ease;
 }
 
 .day-content-card:hover {
-  border-color: rgba(0, 168, 132, 0.35);
+  border-color: rgba(0, 168, 132, 0.4);
   box-shadow: 0 8px 24px rgba(0, 168, 132, 0.08);
 }
 
@@ -69,35 +566,416 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.day-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.day-header-title-flex {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .day-title {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+}
+
+.day-theme-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748B;
+  background: #F1F5F9;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+.day-progress-subtext {
+  font-size: 0.8rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.day-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Day Progress Bar */
+.day-progress-bar-container {
+  width: 140px;
+  height: 8px;
+  background: #F1F5F9;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.day-progress-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, #00A884 0%, #0284C7 100%);
+  transition: width 0.4s ease;
+}
+
+.day-collapse-btn {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.day-collapse-btn:hover {
+  background: #E6F8F2;
+  color: #008769;
+  border-color: #00A884;
+}
+
+/* ==========================================================================
+   6. Modern Task Grid & Task Items
+   ========================================================================== */
+.day-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.1rem;
+}
+
+.task-modern-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.85rem;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.task-modern-card:hover {
+  border-color: #00A884;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 168, 132, 0.08);
+}
+
+.task-modern-card.completed {
+  background: rgba(16, 185, 129, 0.03);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.task-modern-card.in-progress {
+  background: rgba(2, 132, 199, 0.03);
+  border-color: rgba(2, 132, 199, 0.3);
+}
+
+.task-top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.task-checkbox-modern {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 2px solid #CBD5E1;
+  background: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.2s ease;
+}
+
+.task-checkbox-modern:hover {
+  border-color: #00A884;
+  background: #E6F8F2;
+}
+
+.task-checkbox-modern.completed {
+  background: #00A884;
+  border-color: #00A884;
+  box-shadow: 0 2px 6px rgba(0, 168, 132, 0.3);
+}
+
+.task-info-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title-text {
+  font-size: 0.92rem;
   font-weight: 700;
+  color: #0F172A;
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.task-title-text.completed {
+  text-decoration: line-through;
+  color: #94A3B8;
+}
+
+.task-description-text {
+  font-size: 0.8rem;
+  color: #64748B;
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* Bottom Action Row */
+.task-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.65rem;
+  border-top: 1px solid #F1F5F9;
+  gap: 0.5rem;
+}
+
+.task-status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.task-status-pill.completed {
+  color: #059669;
+}
+
+.task-status-pill.in-progress {
+  color: #0284C7;
+}
+
+.task-status-pill.not-started {
+  color: #94A3B8;
+}
+
+.task-actions-flex {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.task-ai-help-btn {
+  background: #F0FDF4;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+  color: #008769;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.task-ai-help-btn:hover {
+  background: #00A884;
+  color: #FFFFFF;
+  border-color: #00A884;
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.25);
+}
+
+.task-toggle-btn {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.task-toggle-btn:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
   color: #0F172A;
 }
 
-.day-tasks-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1rem;
+/* ==========================================================================
+   7. Completion Celebration Banner
+   ========================================================================== */
+.onboarding-completion-banner {
+  background: linear-gradient(135deg, #E6F8F2 0%, #E0F2FE 50%, #F3E8FF 100%);
+  border: 1px solid rgba(0, 168, 132, 0.3);
+  border-radius: 18px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 168, 132, 0.08);
 }
 
-@media (max-width: 650px) {
+.completion-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.completion-trophy-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.15);
+  flex-shrink: 0;
+}
+
+.completion-banner-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 0.2rem;
+}
+
+.completion-banner-sub {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+/* ==========================================================================
+   8. Empty State Card
+   ========================================================================== */
+.onboarding-empty-card {
+  background: #FFFFFF;
+  border: 1px dashed #CBD5E1;
+  border-radius: 20px;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.empty-icon-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.empty-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 0.5rem;
+}
+
+.empty-description {
+  font-size: 0.9rem;
+  color: #64748B;
+  max-width: 480px;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   9. Responsive Design
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .onboarding-hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .onboarding-hero-progress-widget {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .onboarding-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .onboarding-metrics-grid {
+    grid-template-columns: 1fr;
+  }
   .roadmap-timeline-container::before {
-    left: 16px;
+    left: 18px;
   }
   .day-marker-node {
-    width: 36px;
-    height: 36px;
-    font-size: 0.75rem;
+    width: 38px;
+    height: 38px;
+    font-size: 0.78rem;
   }
   .roadmap-day-section {
-    gap: 0.75rem;
+    gap: 0.85rem;
+  }
+  .day-content-card {
+    padding: 1.15rem;
   }
   .day-tasks-grid {
     grid-template-columns: 1fr;
+  }
+  .onboarding-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .onboarding-search-box {
+    min-width: 100%;
+  }
+  .onboarding-completion-banner {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

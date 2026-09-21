@@ -18,12 +18,16 @@ const chat = async (req, res) => {
       conversation = await Conversation.findOne({ _id: conversationId, user: req.user._id });
     }
 
+    const cleanTitle = query.length > 42 ? query.slice(0, 40).trim() + '...' : query.trim();
+
     if (!conversation) {
       conversation = await Conversation.create({
         user: req.user._id,
-        title: query.slice(0, 40) + '...',
+        title: cleanTitle || 'New Chat',
         messages: []
       });
+    } else if (!conversation.title || conversation.title === 'New Conversation' || conversation.title === 'New Chat' || conversation.messages.length === 0) {
+      conversation.title = cleanTitle || conversation.title;
     }
 
     // Build recent history for context
@@ -82,13 +86,15 @@ const chat = async (req, res) => {
 
     res.json({
       conversationId: conversation._id,
+      conversationTitle: conversation.title,
       response: aiResult.response,
       agent: aiResult.agent,
       agent_id: aiResult.agent_id,
       sources: aiResult.sources || [],
       confidence: aiResult.confidence || 'High',
       reasoning: aiResult.reasoning,
-      is_verified: aiResult.is_verified
+      is_verified: aiResult.is_verified,
+      updatedAt: conversation.updatedAt
     });
   } catch (error) {
     console.error('[AI Controller Error]:', error);
@@ -167,9 +173,49 @@ const getHealth = async (req, res) => {
 const getConversations = async (req, res) => {
   try {
     const convos = await Conversation.find({ user: req.user._id })
-      .select('title updatedAt messages')
+      .select('title updatedAt messages createdAt')
       .sort({ updatedAt: -1 });
-    res.json(convos);
+
+    const formatted = convos.map(c => ({
+      _id: c._id,
+      title: c.title,
+      updatedAt: c.updatedAt,
+      createdAt: c.createdAt,
+      messageCount: c.messages ? c.messages.length : 0,
+      preview: c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1].text.slice(0, 60) : ''
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get single conversation with all messages
+// @route   GET /api/ai/conversations/:id
+const getConversationById = async (req, res) => {
+  try {
+    const convo = await Conversation.findOne({ _id: req.params.id, user: req.user._id });
+    if (!convo) {
+      return res.status(404).json({ message: 'Conversation not found' });
+    }
+    res.json(convo);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Create new empty conversation
+// @route   POST /api/ai/conversations
+const createConversation = async (req, res) => {
+  try {
+    const title = req.body?.title || 'New Chat';
+    const convo = await Conversation.create({
+      user: req.user._id,
+      title,
+      messages: []
+    });
+    res.status(201).json(convo);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -193,5 +239,7 @@ module.exports = {
   toggleLearningModule,
   getHealth,
   getConversations,
+  getConversationById,
+  createConversation,
   clearConversation
 };

@@ -3,8 +3,10 @@ import React, { createContext, useContext, useState } from 'react';
 const UIContext = createContext();
 
 export const UIProvider = ({ children }) => {
-  // Chat history is hidden by default for a clean, spacious large view
-  const [showHistory, setShowHistory] = useState(false);
+  // Chat history is visible by default on desktop screens for easy navigation
+  const [showHistory, setShowHistory] = useState(
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
 
   const toggleHistory = () => setShowHistory((prev) => !prev);
 
