@@ -8,7 +8,7 @@ def retrieve_verified_context(
     query: str, 
     department: str = "General", 
     top_k: int = 3,
-    max_context_chars: int = 2400
+    max_context_chars: int = 1600
 ) -> Tuple[str, List[Dict[str, Any]], str]:
     """
     Retrieves relevant document chunks from ChromaDB, evaluates confidence,
