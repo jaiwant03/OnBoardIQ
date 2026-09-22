@@ -232,6 +232,28 @@ const clearConversation = async (req, res) => {
   }
 };
 
+// @desc    Update conversation (e.g. rename title)
+// @route   PUT /api/ai/conversations/:id
+const updateConversation = async (req, res) => {
+  try {
+    const { title } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
+    const convo = await Conversation.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      { title: title.trim(), updatedAt: new Date() },
+      { new: true }
+    );
+    if (!convo) {
+      return res.status(404).json({ message: 'Conversation not found' });
+    }
+    res.json(convo);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   chat,
   getNextAction,
@@ -241,5 +263,6 @@ module.exports = {
   getConversations,
   getConversationById,
   createConversation,
+  updateConversation,
   clearConversation
 };

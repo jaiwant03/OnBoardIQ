@@ -70,6 +70,7 @@ export const aiAPI = {
   getConversations: () => api.get('/api/ai/conversations'),
   getConversation: (id) => api.get(`/api/ai/conversations/${id}`),
   createConversation: (data) => api.post('/api/ai/conversations', data),
+  updateConversation: (id, data) => api.put(`/api/ai/conversations/${id}`, data),
   clearConversation: (id) => api.delete(`/api/ai/conversations/${id}`)
 };
 

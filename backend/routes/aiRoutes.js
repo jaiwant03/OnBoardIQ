@@ -9,6 +9,7 @@ const {
   getConversations,
   getConversationById,
   createConversation,
+  updateConversation,
   clearConversation
 } = require('../controllers/aiController');
 const { protect } = require('../middleware/auth');
@@ -21,6 +22,7 @@ router.put('/learning-path/module', protect, toggleLearningModule);
 router.get('/conversations', protect, getConversations);
 router.get('/conversations/:id', protect, getConversationById);
 router.post('/conversations', protect, createConversation);
+router.put('/conversations/:id', protect, updateConversation);
 router.delete('/conversations/:id', protect, clearConversation);
 
 module.exports = router;
