@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -18,9 +18,28 @@ import '../styles/sidebar.css';
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    };
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showUserMenu]);
 
   const handleLogout = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
+    setShowUserMenu(false);
     logout();
     navigate('/login');
   };
@@ -127,8 +146,50 @@ const Sidebar = () => {
       </nav>
 
       {/* User Profile Footer */}
-      <div className="sidebar-footer">
-        <div className="user-profile-preview" onClick={() => navigate('/profile')}>
+      <div className="sidebar-footer" ref={userMenuRef}>
+        {showUserMenu && (
+          <div className="sidebar-account-popover">
+            <div className="sidebar-popover-header">
+              <div className="sidebar-popover-user-title">{user?.name || 'Jaiwant Karrun SA'}</div>
+              <div className="sidebar-popover-user-email">{user?.email || 'user@company.com'}</div>
+            </div>
+
+            <div className="sidebar-popover-divider" />
+
+            <div className="sidebar-popover-actions">
+              <button
+                type="button"
+                className="sidebar-popover-btn"
+                onClick={() => {
+                  setShowUserMenu(false);
+                  navigate('/profile');
+                }}
+              >
+                <User size={15} />
+                <span>View Profile</span>
+              </button>
+
+              <button
+                type="button"
+                className="sidebar-popover-btn logout"
+                onClick={handleLogout}
+              >
+                <LogOut size={15} />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`user-profile-preview ${showUserMenu ? 'active' : ''}`}
+          onClick={() => setShowUserMenu((prev) => !prev)}
+          role="button"
+          tabIndex={0}
+          aria-haspopup="true"
+          aria-expanded={showUserMenu}
+          title="Account options"
+        >
           <div className="user-avatar-circle">
             {getInitials(user?.name)}
           </div>

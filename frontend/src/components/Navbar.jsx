@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Bell, Menu } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, Bell, Menu, User, LogOut } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { aiAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -7,11 +7,13 @@ import { useUI } from '../context/UIContext';
 import '../styles/navbar.css';
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { showHistory, toggleHistory, setShowHistory } = useUI();
   const location = useLocation();
   const navigate = useNavigate();
   const [aiOnline, setAiOnline] = useState(true);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const accountMenuRef = useRef(null);
 
   const handleMenuToggle = () => {
     if (location.pathname !== '/assistant') {
@@ -20,6 +22,28 @@ const Navbar = () => {
     } else {
       toggleHistory();
     }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target)) {
+        setShowAccountMenu(false);
+      }
+    };
+    if (showAccountMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showAccountMenu]);
+
+  const handleLogout = () => {
+    setShowAccountMenu(false);
+    logout();
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -92,8 +116,59 @@ const Navbar = () => {
           <span className="notification-badge-count">1</span>
         </button>
 
-        <div className="navbar-user-avatar">
-          {getInitials(user?.name)}
+        {/* Account Menu & Logout */}
+        <div className="navbar-account-container" ref={accountMenuRef}>
+          <button
+            type="button"
+            className={`navbar-user-avatar-btn ${showAccountMenu ? 'active' : ''}`}
+            onClick={() => setShowAccountMenu((prev) => !prev)}
+            title="Account & Logout"
+            aria-haspopup="true"
+            aria-expanded={showAccountMenu}
+          >
+            <div className="navbar-user-avatar">
+              {getInitials(user?.name)}
+            </div>
+          </button>
+
+          {showAccountMenu && (
+            <div className="navbar-account-dropdown">
+              <div className="navbar-dropdown-header">
+                <div className="navbar-dropdown-avatar">
+                  {getInitials(user?.name)}
+                </div>
+                <div className="navbar-dropdown-user-info">
+                  <span className="navbar-dropdown-name">{user?.name || 'User'}</span>
+                  <span className="navbar-dropdown-email">{user?.email || 'user@company.com'}</span>
+                </div>
+              </div>
+
+              <div className="navbar-dropdown-divider" />
+
+              <div className="navbar-dropdown-menu">
+                <button
+                  type="button"
+                  className="navbar-dropdown-item"
+                  onClick={() => {
+                    setShowAccountMenu(false);
+                    navigate('/profile');
+                  }}
+                >
+                  <User size={15} />
+                  <span>Profile</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="navbar-dropdown-item logout"
+                  onClick={handleLogout}
+                >
+                  <LogOut size={15} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Date Widget */}

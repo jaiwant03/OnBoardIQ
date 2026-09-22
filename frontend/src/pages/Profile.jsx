@@ -23,7 +23,8 @@ import {
   Edit3,
   Plus,
   X,
-  Save
+  Save,
+  LogOut
 } from 'lucide-react';
 import { employeeAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -33,8 +34,13 @@ import officeHeroImg from '../assets/office_hero.jpg';
 import '../styles/profile.css';
 
 const Profile = () => {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -198,10 +204,16 @@ const Profile = () => {
           </p>
         </div>
 
-        <button className="profile-edit-btn" onClick={handleOpenEdit}>
-          <Edit3 size={15} />
-          <span>Edit Profile</span>
-        </button>
+        <div className="profile-header-actions">
+          <button className="profile-edit-btn" onClick={handleOpenEdit}>
+            <Edit3 size={15} />
+            <span>Edit Profile</span>
+          </button>
+          <button className="profile-logout-btn" onClick={handleLogout} title="Log out of account">
+            <LogOut size={15} />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
 
       {saveSuccess && (

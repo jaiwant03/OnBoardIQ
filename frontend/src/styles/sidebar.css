@@ -129,12 +129,104 @@
 
 /* Sidebar Footer */
 .sidebar-footer {
+  position: relative;
   padding: 0.85rem 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: #08372F;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* Sidebar Bottom Account Popover */
+.sidebar-account-popover {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 10px;
+  right: 10px;
+  background: #0C433A;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  padding: 0.6rem;
+  z-index: 200;
+  backdrop-filter: blur(12px);
+  animation: sidebarPopoverSlideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes sidebarPopoverSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.sidebar-popover-header {
+  padding: 0.45rem 0.55rem 0.55rem;
+}
+
+.sidebar-popover-user-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-popover-user-email {
+  font-size: 0.72rem;
+  color: #A3C9C1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-popover-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.35rem 0;
+}
+
+.sidebar-popover-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sidebar-popover-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #E2ECE9;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.sidebar-popover-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.sidebar-popover-btn.logout {
+  color: #FCA5A5;
+}
+
+.sidebar-popover-btn.logout:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #FFFFFF;
 }
 
 .user-profile-preview {
@@ -144,13 +236,20 @@
   gap: 0.65rem;
   cursor: pointer;
   min-width: 0;
-  padding: 0.25rem 0.4rem;
+  padding: 0.35rem 0.45rem;
   border-radius: var(--radius-sm);
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  outline: none;
 }
 
-.user-profile-preview:hover {
+.user-profile-preview:hover,
+.user-profile-preview.active {
   background: rgba(255, 255, 255, 0.08);
+}
+
+.user-profile-preview.active .user-profile-arrow {
+  transform: rotate(-90deg);
+  color: #00FFAA;
 }
 
 .user-avatar-circle {
@@ -193,6 +292,7 @@
 .user-profile-arrow {
   color: #7CA89E;
   flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-logout-btn {

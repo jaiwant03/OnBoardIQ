@@ -227,6 +227,13 @@
   line-height: 1.4;
 }
 
+.profile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
 .profile-edit-btn {
   background: #00A884;
   color: #FFFFFF;
@@ -248,6 +255,35 @@
   background: #008769;
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(0, 168, 132, 0.35);
+}
+
+.profile-logout-btn {
+  background: #FFF1F2;
+  color: #E11D48;
+  border: 1px solid #FECDD3;
+  border-radius: 10px;
+  padding: 0.65rem 1.15rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(225, 29, 72, 0.08);
+  flex-shrink: 0;
+}
+
+.profile-logout-btn:hover {
+  background: #FFE4E6;
+  color: #BE123C;
+  border-color: #FDA4AF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.16);
+}
+
+.profile-logout-btn:active {
+  transform: translateY(0);
 }
 
 /* 2. Main 2-Column Grid */
