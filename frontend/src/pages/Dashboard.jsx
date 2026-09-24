@@ -27,6 +27,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 import { taskAPI, progressAPI, aiAPI } from '../services/api';
 import ProgressRing from '../components/ProgressRing';
 import officeHeroImg from '../assets/office_hero.jpg';
@@ -35,6 +36,7 @@ import '../styles/dashboard.css';
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
 
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(null);
@@ -65,6 +67,7 @@ const Dashboard = () => {
   }, []);
 
   const handleToggleTask = async (taskId, currentStatus) => {
+    const targetTask = tasks.find((t) => t._id === taskId);
     const newStatus = currentStatus === 'completed' ? 'not_started' : 'completed';
     try {
       const res = await taskAPI.updateTask(taskId, { status: newStatus });
@@ -74,6 +77,12 @@ const Dashboard = () => {
       if (res.data.progress) {
         setProgress(res.data.progress);
       }
+      addNotification({
+        title: newStatus === 'completed' ? 'Priority Task Completed 🎉' : 'Task Status Updated',
+        message: `"${targetTask?.title || 'Task'}" marked as ${newStatus === 'completed' ? 'Completed' : 'Pending'}.`,
+        type: 'task',
+        link: '/onboarding'
+      });
     } catch (err) {
       console.error('Error toggling task status:', err);
     }

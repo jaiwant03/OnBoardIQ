@@ -89,6 +89,11 @@ const GlobalSearch = () => {
     }
   };
 
+  // Preload search datasets on initial mount
+  useEffect(() => {
+    loadSearchData();
+  }, []);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
