@@ -42,6 +42,26 @@ const DAY_THEMES = {
   5: 'First Milestone Review & Contribution'
 };
 
+// Highlight matching search words in text
+const highlightMatch = (text, query) => {
+  if (!text || !query || !query.trim()) return text;
+  const terms = query
+    .trim()
+    .split(/[\s,]+/)
+    .filter(Boolean)
+    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  if (terms.length === 0) return text;
+  const regex = new RegExp(`(${terms.join('|')})`, 'gi');
+  const parts = String(text).split(regex);
+  return parts.map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} className="search-highlight-text">{part}</mark>
+    ) : (
+      part
+    )
+  );
+};
+
 const Onboarding = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -206,18 +226,31 @@ const Onboarding = () => {
   // Grouped tasks by day with applied search and filters
   const groupedTasks = useMemo(() => {
     const grouped = {};
+    const searchTokens = searchQuery
+      .toLowerCase()
+      .trim()
+      .split(/[\s,]+/)
+      .filter(Boolean);
+
     days.forEach((d) => {
       grouped[d] = tasks.filter((t) => {
         const matchesDay = (t.dayNumber || 1) === d;
         if (!matchesDay) return false;
 
-        // Search Filter
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase();
-          const matchesTitle = (t.title || '').toLowerCase().includes(q);
-          const matchesDesc = (t.description || '').toLowerCase().includes(q);
-          const matchesCat = (t.category || '').toLowerCase().includes(q);
-          if (!matchesTitle && !matchesDesc && !matchesCat) return false;
+        // Search Filter: Multi-token search across title, description, category, priority, doc & theme
+        if (searchTokens.length > 0) {
+          const dayTheme = DAY_THEMES[t.dayNumber || 1] || '';
+          const dayStr = `day ${t.dayNumber || 1} d${t.dayNumber || 1}`;
+          const priorityStr = `${t.priority || ''} priority`;
+          const categoryStr = `${t.category || ''}`;
+          const sourceStr = `${t.sourceDocument || ''}`;
+          const titleStr = `${t.title || ''}`;
+          const descStr = `${t.description || ''}`;
+
+          const fullCorpus = `${titleStr} ${descStr} ${categoryStr} ${priorityStr} ${sourceStr} ${dayStr} ${dayTheme}`.toLowerCase();
+
+          const allTokensMatch = searchTokens.every((token) => fullCorpus.includes(token));
+          if (!allTokensMatch) return false;
         }
 
         // Category Filter
@@ -229,7 +262,7 @@ const Onboarding = () => {
         if (statusFilter !== 'all') {
           if (statusFilter === 'completed' && t.status !== 'completed') return false;
           if (statusFilter === 'in_progress' && t.status !== 'in_progress') return false;
-          if (statusFilter === 'not_started' && t.status === 'completed') return false;
+          if (statusFilter === 'not_started' && t.status !== 'not_started') return false;
         }
 
         return true;
@@ -237,6 +270,11 @@ const Onboarding = () => {
     });
     return grouped;
   }, [days, tasks, searchQuery, categoryFilter, statusFilter]);
+
+  // Total filtered tasks matching current search & filters
+  const totalFilteredTasks = useMemo(() => {
+    return Object.values(groupedTasks).reduce((sum, dayArr) => sum + dayArr.length, 0);
+  }, [groupedTasks]);
 
   // Categories extracted from tasks
   const availableCategories = useMemo(() => {
@@ -535,6 +573,28 @@ const Onboarding = () => {
         </div>
       </div>
 
+      {/* Active Search & Filter Banner */}
+      {searchQuery.trim() && (
+        <div className="search-active-banner">
+          <div className="search-active-info">
+            <Search size={14} className="search-active-icon" />
+            <span>
+              Found <strong>{totalFilteredTasks}</strong> {totalFilteredTasks === 1 ? 'milestone' : 'milestones'} matching "<strong>{searchQuery.trim()}</strong>"
+              {categoryFilter !== 'all' && ` in ${categoryFilter}`}
+              {statusFilter !== 'all' && ` (${statusFilter.replace('_', ' ')})`}
+            </span>
+          </div>
+          <button
+            className="btn-clear-search-pill"
+            onClick={() => setSearchQuery('')}
+            title="Clear search"
+          >
+            <X size={13} />
+            <span>Clear Search</span>
+          </button>
+        </div>
+      )}
+
       {/* 5. 100% Completion Celebration Banner */}
       {overallPercentage === 100 && totalTasks > 0 && (
         <div className="onboarding-completion-banner">
@@ -557,7 +617,7 @@ const Onboarding = () => {
         </div>
       )}
 
-      {/* 6. Empty State if No Tasks Exist */}
+      {/* 6. Empty State if No Tasks Exist in System */}
       {totalTasks === 0 ? (
         <div className="onboarding-empty-card">
           <div className="empty-icon-circle">
@@ -573,6 +633,32 @@ const Onboarding = () => {
             <span>Upload Company Document</span>
           </button>
         </div>
+      ) : totalFilteredTasks === 0 ? (
+        /* Empty State specifically when search or filter returns 0 results */
+        <div className="onboarding-empty-card" style={{ padding: '3.5rem 2rem' }}>
+          <div className="empty-icon-circle" style={{ background: '#F1F5F9' }}>
+            <Search size={32} color="#64748B" />
+          </div>
+          <h3 className="empty-title">
+            No milestones found matching "{searchQuery || categoryFilter || statusFilter}"
+          </h3>
+          <p className="empty-description">
+            We couldn't find any onboarding milestones matching your current search.
+            Try checking for spelling, using broader keywords, or resetting your active filters.
+          </p>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setSearchQuery('');
+              setCategoryFilter('all');
+              setStatusFilter('all');
+              setActiveDayTab('all');
+            }}
+          >
+            <X size={15} />
+            <span>Clear Search &amp; Filters</span>
+          </button>
+        </div>
       ) : (
         /* 7. Roadmap Timeline & Day Sections */
         <div className="roadmap-timeline-container">
@@ -583,6 +669,11 @@ const Onboarding = () => {
             }
 
             const dayTasks = groupedTasks[dayNum] || [];
+            // When search or filter is active, hide empty day sections
+            if ((searchQuery.trim() || categoryFilter !== 'all' || statusFilter !== 'all') && dayTasks.length === 0) {
+              return null;
+            }
+
             const allDayTasks = tasks.filter((t) => (t.dayNumber || 1) === dayNum);
             if (allDayTasks.length === 0) return null;
 
@@ -702,12 +793,12 @@ const Onboarding = () => {
                                     <div
                                       className={`task-title-text ${isDone ? 'completed' : ''}`}
                                     >
-                                      {task.title}
+                                      {highlightMatch(task.title, searchQuery)}
                                     </div>
 
                                     {task.description && (
                                       <p className="task-description-text">
-                                        {task.description}
+                                        {highlightMatch(task.description, searchQuery)}
                                       </p>
                                     )}
 

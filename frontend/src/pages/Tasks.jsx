@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, CheckSquare, Search, Filter } from 'lucide-react';
+import { Plus, CheckSquare, Search, Filter, X } from 'lucide-react';
 import { taskAPI } from '../services/api';
 import TaskCard from '../components/TaskCard';
 import LoadingSkeleton from '../components/LoadingSkeleton';
@@ -8,6 +8,7 @@ import '../styles/tasks.css';
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -77,6 +78,13 @@ const Tasks = () => {
     if (activeFilter === 'in_progress' && t.status !== 'in_progress') return false;
     if (activeFilter === 'not_started' && t.status !== 'not_started') return false;
     if (categoryFilter !== 'all' && t.category !== categoryFilter) return false;
+
+    if (searchQuery.trim()) {
+      const searchTokens = searchQuery.toLowerCase().trim().split(/[\s,]+/).filter(Boolean);
+      const corpus = `${t.title || ''} ${t.description || ''} ${t.category || ''} ${t.priority || ''} ${t.sourceDocument || ''} day ${t.dayNumber || ''}`.toLowerCase();
+      if (!searchTokens.every((tok) => corpus.includes(tok))) return false;
+    }
+
     return true;
   });
 
@@ -101,33 +109,50 @@ const Tasks = () => {
         </button>
       </div>
 
-      {/* Filter Tabs */}
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-        <div className="tasks-filter-bar">
-          <button
-            className={`filter-tab-btn ${activeFilter === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('all')}
-          >
-            All Tasks ({tasks.length})
-          </button>
-          <button
-            className={`filter-tab-btn ${activeFilter === 'in_progress' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('in_progress')}
-          >
-            In Progress ({tasks.filter((t) => t.status === 'in_progress').length})
-          </button>
-          <button
-            className={`filter-tab-btn ${activeFilter === 'not_started' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('not_started')}
-          >
-            Pending ({tasks.filter((t) => t.status === 'not_started').length})
-          </button>
-          <button
-            className={`filter-tab-btn ${activeFilter === 'completed' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('completed')}
-          >
-            Completed ({tasks.filter((t) => t.status === 'completed').length})
-          </button>
+      {/* Filter Tabs & Search Bar */}
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="onboarding-search-box" style={{ minWidth: '220px', maxWidth: '300px' }}>
+            <Search size={15} className="search-icon-inside" />
+            <input
+              type="text"
+              placeholder="Search tasks, keywords..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="search-clear-btn" onClick={() => setSearchQuery('')}>
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          <div className="tasks-filter-bar">
+            <button
+              className={`filter-tab-btn ${activeFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('all')}
+            >
+              All Tasks ({tasks.length})
+            </button>
+            <button
+              className={`filter-tab-btn ${activeFilter === 'in_progress' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('in_progress')}
+            >
+              In Progress ({tasks.filter((t) => t.status === 'in_progress').length})
+            </button>
+            <button
+              className={`filter-tab-btn ${activeFilter === 'not_started' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('not_started')}
+            >
+              Pending ({tasks.filter((t) => t.status === 'not_started').length})
+            </button>
+            <button
+              className={`filter-tab-btn ${activeFilter === 'completed' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('completed')}
+            >
+              Completed ({tasks.filter((t) => t.status === 'completed').length})
+            </button>
+          </div>
         </div>
 
         <select

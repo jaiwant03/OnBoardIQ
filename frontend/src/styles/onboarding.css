@@ -412,10 +412,68 @@
   cursor: pointer;
   font-size: 0.8rem;
   padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-clear-btn:hover {
   color: #0F172A;
+}
+
+/* Search Active Result Banner */
+.search-active-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 12px;
+  padding: 0.65rem 1.15rem;
+  font-size: 0.84rem;
+  color: #166534;
+  margin-top: -0.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.search-active-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-active-icon {
+  color: #15803D;
+  flex-shrink: 0;
+}
+
+.btn-clear-search-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-clear-search-pill:hover {
+  background: #BBF7D0;
+  color: #14532D;
+}
+
+/* Highlighted match in task cards */
+.search-highlight-text {
+  background: rgba(0, 229, 153, 0.35);
+  color: #064E3B;
+  padding: 0 3px;
+  border-radius: 3px;
+  font-weight: 700;
 }
 
 .filter-pills-group {
