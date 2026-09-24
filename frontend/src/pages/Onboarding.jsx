@@ -75,8 +75,20 @@ const Onboarding = () => {
   };
 
   const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchTasks();
+    try {
+      setRefreshing(true);
+      const res = await taskAPI.syncTasks();
+      if (res.data?.tasks) {
+        setTasks(res.data.tasks);
+      } else {
+        await fetchTasks();
+      }
+    } catch (err) {
+      console.error('Error syncing roadmap tasks:', err);
+      await fetchTasks();
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const handleToggleTask = async (taskId, currentStatus) => {

@@ -53,7 +53,8 @@ export const taskAPI = {
   getTasks: (params) => api.get('/api/tasks', { params }),
   createTask: (data) => api.post('/api/tasks', data),
   updateTask: (id, data) => api.put(`/api/tasks/${id}`, data),
-  deleteTask: (id) => api.delete(`/api/tasks/${id}`)
+  deleteTask: (id) => api.delete(`/api/tasks/${id}`),
+  syncTasks: () => api.post('/api/tasks/sync')
 };
 
 export const progressAPI = {

@@ -4,6 +4,7 @@ const OnboardingTask = require('../models/OnboardingTask');
 const LearningPath = require('../models/LearningPath');
 const OnboardingProgress = require('../models/OnboardingProgress');
 const aiServiceClient = require('../services/aiServiceClient');
+const documentTaskSync = require('../services/documentTaskSync');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'onboardiq_jwt_secret_key_2026', {
@@ -46,81 +47,8 @@ const register = async (req, res) => {
       preferredLearningStyle: preferredLearningStyle || 'Hands-on Projects & Code',
       userType: accountType
     });
-
-const Document = require('../models/Document');
-
-    // Only assign tasks and learning path if company documents have actually been uploaded!
-    const existingDocs = await Document.find({ status: 'indexed' });
-    if (existingDocs.length > 0) {
-      const templateTasks = await OnboardingTask.find({ sourceDocument: { $ne: '' } });
-      const uniqueMap = new Map();
-      for (const t of templateTasks) {
-        if (!uniqueMap.has(t.title)) {
-          uniqueMap.set(t.title, t);
-        }
-      }
-      if (uniqueMap.size > 0) {
-        const userTasks = Array.from(uniqueMap.values()).map((t) => ({
-          user: user._id,
-          title: t.title,
-          description: t.description,
-          category: t.category,
-          dayNumber: t.dayNumber,
-          priority: t.priority,
-          status: 'not_started',
-          estimatedMinutes: t.estimatedMinutes,
-          sourceDocument: t.sourceDocument
-        }));
-        await OnboardingTask.insertMany(userTasks);
-      }
-
-      const existingLP = await LearningPath.findOne({ stages: { $exists: true, $not: { $size: 0 } } });
-      if (existingLP && existingLP.stages && existingLP.stages.length > 0) {
-        await LearningPath.create({
-          user: user._id,
-          role: user.role,
-          stages: existingLP.stages.map((s) => ({
-            stage: s.stage,
-            stageLabel: s.stageLabel,
-            status: s.status,
-            title: s.title,
-            description: s.description,
-            estimatedHours: s.estimatedHours,
-            modules: (s.modules || []).map((m) => ({ title: m.title, completed: false }))
-          }))
-        });
-      } else {
-        await LearningPath.create({
-          user: user._id,
-          role: user.role,
-          stages: []
-        });
-      }
-    } else {
-      // 100% clean zero state: No documents uploaded yet, so 0 tasks and empty learning path!
-      await LearningPath.create({
-        user: user._id,
-        role: user.role,
-        stages: []
-      });
-    }
-
-    // Initialize clean progress record
-    const allTasks = await OnboardingTask.find({ user: user._id });
-    const completed = allTasks.filter((t) => t.status === 'completed').length;
-    const inProgress = allTasks.filter((t) => t.status === 'in_progress').length;
-    const remaining = allTasks.length - completed;
-    const percentage = allTasks.length > 0 ? Math.round((completed / allTasks.length) * 100) : 0;
-
-    await OnboardingProgress.create({
-      user: user._id,
-      overallPercentage: percentage,
-      totalTasks: allTasks.length,
-      completedTasks: completed,
-      remainingTasks: remaining,
-      inProgressTasks: inProgress,
-      overdueTasks: 0
-    });
+    // Synchronize tasks and learning path from uploaded documents if present
+    await documentTaskSync.syncUserTasks(user._id);
 
     res.status(201).json({
       _id: user._id,
