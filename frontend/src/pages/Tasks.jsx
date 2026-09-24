@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Plus, CheckSquare, Search, Filter, X } from 'lucide-react';
 import { taskAPI } from '../services/api';
+import { useNotification } from '../context/NotificationContext';
 import TaskCard from '../components/TaskCard';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import '../styles/tasks.css';
 
 const Tasks = () => {
+  const location = useLocation();
+  const { addNotification } = useNotification();
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +21,15 @@ const Tasks = () => {
   const [newTaskCategory, setNewTaskCategory] = useState('Engineering');
   const [newTaskPriority, setNewTaskPriority] = useState('medium');
   const [newTaskDay, setNewTaskDay] = useState(1);
+
+  // Sync with Global Search query parameter ?q=
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const qParam = params.get('q');
+    if (qParam !== null) {
+      setSearchQuery(qParam);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     fetchTasks();
@@ -34,20 +48,34 @@ const Tasks = () => {
   };
 
   const handleToggleStatus = async (taskId, newStatus) => {
+    const targetTask = tasks.find((t) => t._id === taskId);
     try {
       const res = await taskAPI.updateTask(taskId, { status: newStatus });
       setTasks((prev) =>
         prev.map((t) => (t._id === taskId ? res.data.task : t))
       );
+      addNotification({
+        title: newStatus === 'completed' ? 'Task Completed 🎉' : 'Task Status Updated',
+        message: `"${targetTask?.title || 'Task'}" marked as ${newStatus.replace('_', ' ')}.`,
+        type: 'task',
+        link: '/tasks'
+      });
     } catch (err) {
       console.error('Failed to update task:', err);
     }
   };
 
   const handleDeleteTask = async (taskId) => {
+    const targetTask = tasks.find((t) => t._id === taskId);
     try {
       await taskAPI.deleteTask(taskId);
       setTasks((prev) => prev.filter((t) => t._id !== taskId));
+      addNotification({
+        title: 'Task Removed',
+        message: `"${targetTask?.title || 'Task'}" removed from tasks list.`,
+        type: 'task',
+        link: '/tasks'
+      });
     } catch (err) {
       console.error('Failed to delete task:', err);
     }
@@ -65,8 +93,17 @@ const Tasks = () => {
         dayNumber: Number(newTaskDay)
       });
       setTasks((prev) => [...prev, res.data.task]);
+      const createdTitle = newTaskTitle;
+      const createdDay = newTaskDay;
       setNewTaskTitle('');
       setShowAddModal(false);
+
+      addNotification({
+        title: 'New Task Created ✨',
+        message: `Added "${createdTitle}" for Day ${createdDay} (${newTaskCategory}).`,
+        type: 'task',
+        link: '/tasks'
+      });
     } catch (err) {
       console.error('Failed to create task:', err);
     }

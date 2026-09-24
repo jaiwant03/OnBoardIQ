@@ -9,10 +9,12 @@ import {
   Sparkles
 } from 'lucide-react';
 import { documentAPI } from '../services/api';
+import { useNotification } from '../context/NotificationContext';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import '../styles/documents.css';
 
 const Documents = () => {
+  const { addNotification } = useNotification();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -59,6 +61,12 @@ const Documents = () => {
 
       const res = await documentAPI.uploadDocument(formData);
       setUploadStage('done');
+      addNotification({
+        title: 'Document Uploaded & Indexed 📄',
+        message: `"${file.name}" indexed for autonomous RAG retrieval and task extraction.`,
+        type: 'document',
+        link: '/documents'
+      });
       setTimeout(() => {
         setUploading(false);
         setUploadStage('');
@@ -79,9 +87,16 @@ const Documents = () => {
   };
 
   const handleDelete = async (id) => {
+    const docToDelete = documents.find((d) => d._id === id);
     try {
       await documentAPI.deleteDocument(id);
       setDocuments((prev) => prev.filter((d) => d._id !== id));
+      addNotification({
+        title: 'Document Removed',
+        message: `"${docToDelete?.title || docToDelete?.filename || 'Document'}" removed from knowledge base.`,
+        type: 'document',
+        link: '/documents'
+      });
     } catch (err) {
       console.error('Error deleting document:', err);
     }

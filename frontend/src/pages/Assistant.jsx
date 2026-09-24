@@ -25,6 +25,7 @@ import {
 import { aiAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
+import { useNotification } from '../context/NotificationContext';
 import SourceCard from '../components/SourceCard';
 import '../styles/assistant.css';
 
@@ -106,6 +107,7 @@ const Assistant = () => {
   const { user } = useAuth();
   const location = useLocation();
   const { showHistory, setShowHistory } = useUI();
+  const { addNotification } = useNotification();
 
   const getWelcomeMessage = useCallback(
     () => ({
@@ -182,20 +184,24 @@ const Assistant = () => {
     return () => window.removeEventListener('keydown', handleGlobalShortcuts);
   }, []);
 
-  // Handle incoming initialQuery from navigation state (e.g. from Onboarding or LearningPath)
+  // Handle incoming initialQuery from navigation state or Global Search URL ?q=
   useEffect(() => {
-    if (location.state?.initialQuery && !initialQueryProcessed.current) {
+    const searchParams = new URLSearchParams(location.search);
+    const queryFromUrl = searchParams.get('q');
+    const queryFromState = location.state?.initialQuery;
+    const query = queryFromUrl || queryFromState;
+
+    if (query && !initialQueryProcessed.current) {
       initialQueryProcessed.current = true;
-      const query = location.state.initialQuery;
-      // Clear location state so refresh doesn't resend
-      window.history.replaceState({}, document.title);
+      // Clear URL params / location state so refresh doesn't resend
+      window.history.replaceState({}, document.title, window.location.pathname);
       // Start a fresh new chat session with this query
       handleNewChat();
       setTimeout(() => {
         handleSendMessage(query);
-      }, 100);
+      }, 150);
     }
-  }, [location.state]);
+  }, [location.state, location.search]);
 
   useEffect(() => {
     scrollToBottom();
@@ -376,6 +382,13 @@ const Assistant = () => {
       };
 
       setMessages((prev) => [...prev, aiResponse]);
+
+      addNotification({
+        title: 'AI Mentor Response Ready 🤖',
+        message: `Answered: "${textToSend.slice(0, 45)}${textToSend.length > 45 ? '...' : ''}" with verified policy sources.`,
+        type: 'assistant',
+        link: '/assistant'
+      });
 
       // Re-fetch conversation history so the updated title and latest chat appears at the top
       await fetchConversations(false);

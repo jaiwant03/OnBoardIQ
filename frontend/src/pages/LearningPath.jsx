@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext';
 import {
   Compass,
   CheckCircle2,
@@ -28,10 +29,23 @@ import '../styles/learning.css';
 const LearningPath = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { addNotification } = useNotification();
 
   const [learningPath, setLearningPath] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
+
+  // Handle URL query parameters from Global Search
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const stageParam = params.get('stage');
+    if (stageParam !== null && !loading) {
+      setTimeout(() => {
+        scrollToStage(Number(stageParam));
+      }, 350);
+    }
+  }, [location.search, loading]);
 
   useEffect(() => {
     fetchLearningPath();
@@ -50,6 +64,9 @@ const LearningPath = () => {
   };
 
   const handleToggleModule = async (stageIdx, modIdx) => {
+    const currentModule = learningPath?.stages?.[stageIdx]?.modules?.[modIdx];
+    const willBeCompleted = !currentModule?.completed;
+
     try {
       // Optimistic update
       setLearningPath((prev) => {
@@ -59,7 +76,7 @@ const LearningPath = () => {
         const newModules = [...newStage.modules];
         newModules[modIdx] = {
           ...newModules[modIdx],
-          completed: !newModules[modIdx].completed
+          completed: willBeCompleted
         };
         newStage.modules = newModules;
         newStages[stageIdx] = newStage;
@@ -70,6 +87,13 @@ const LearningPath = () => {
       if (res.data) {
         setLearningPath(res.data);
       }
+
+      addNotification({
+        title: willBeCompleted ? 'Module Completed 🎓' : 'Module In Progress',
+        message: `"${currentModule?.title || 'Learning Module'}" marked as ${willBeCompleted ? 'Mastered' : 'In Progress'}.`,
+        type: 'learning',
+        link: '/learning'
+      });
     } catch (err) {
       console.error('Failed to toggle module:', err);
       fetchLearningPath();

@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UIProvider } from './context/UIContext';
+import { NotificationProvider } from './context/NotificationContext';
+import NotificationToast from './components/NotificationToast';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 
@@ -61,9 +63,11 @@ const AppLayout = ({ children, title }) => {
 function App() {
   return (
     <AuthProvider>
-      <UIProvider>
-        <Router>
-          <Routes>
+      <NotificationProvider>
+        <UIProvider>
+          <Router>
+            <NotificationToast />
+            <Routes>
             {/* Public Auth Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -166,8 +170,9 @@ function App() {
           </Routes>
         </Router>
       </UIProvider>
-    </AuthProvider>
-  );
+    </NotificationProvider>
+  </AuthProvider>
+);
 }
 
 export default App;

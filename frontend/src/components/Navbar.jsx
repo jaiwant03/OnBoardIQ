@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { aiAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
+import GlobalSearch from './GlobalSearch';
+import NotificationDropdown from './NotificationDropdown';
 import '../styles/navbar.css';
 
 const Navbar = () => {
@@ -95,14 +97,7 @@ const Navbar = () => {
           <Menu size={18} />
         </button>
 
-        <div className="navbar-search">
-          <Search size={15} color="#94A3B8" />
-          <input
-            type="text"
-            className="navbar-search-input"
-            placeholder="Search policies, tasks, learning resources..."
-          />
-        </div>
+        <GlobalSearch />
       </div>
 
       <div className="navbar-right">
@@ -111,10 +106,7 @@ const Navbar = () => {
           <span>{aiOnline ? 'AI Agent Online' : 'AI Standby'}</span>
         </div>
 
-        <button className="navbar-icon-btn" title="Notifications">
-          <Bell size={18} />
-          <span className="notification-badge-count">1</span>
-        </button>
+        <NotificationDropdown />
 
         {/* Account Menu & Logout */}
         <div className="navbar-account-container" ref={accountMenuRef}>

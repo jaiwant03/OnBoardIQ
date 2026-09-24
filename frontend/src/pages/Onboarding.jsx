@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext';
 import {
   CheckCircle2,
   Clock,
@@ -65,6 +66,8 @@ const highlightMatch = (text, query) => {
 const Onboarding = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { addNotification } = useNotification();
 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +79,19 @@ const Onboarding = () => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [collapsedDays, setCollapsedDays] = useState({});
+
+  // Sync with URL query parameters from Global Search
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const qParam = params.get('q');
+    const dayParam = params.get('day');
+    if (qParam !== null) {
+      setSearchQuery(qParam);
+    }
+    if (dayParam) {
+      setActiveDayTab(dayParam);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     fetchTasks();
@@ -103,6 +119,12 @@ const Onboarding = () => {
       } else {
         await fetchTasks();
       }
+      addNotification({
+        title: 'Roadmap Synchronized',
+        message: 'Onboarding milestones, tasks, and curriculum synced with enterprise documents.',
+        type: 'sync',
+        link: '/onboarding'
+      });
     } catch (err) {
       console.error('Error syncing roadmap tasks:', err);
       await fetchTasks();
@@ -112,6 +134,7 @@ const Onboarding = () => {
   };
 
   const handleToggleTask = async (taskId, currentStatus) => {
+    const targetTask = tasks.find((t) => t._id === taskId);
     const newStatus = currentStatus === 'completed' ? 'not_started' : 'completed';
     try {
       // Optimistic update
@@ -129,6 +152,12 @@ const Onboarding = () => {
           prev.map((t) => (t._id === taskId ? res.data.task : t))
         );
       }
+      addNotification({
+        title: newStatus === 'completed' ? 'Task Completed 🎉' : 'Task Status Updated',
+        message: `"${targetTask?.title || 'Milestone Task'}" marked as ${newStatus === 'completed' ? 'Completed' : 'Pending'}.`,
+        type: 'task',
+        link: '/onboarding'
+      });
     } catch (err) {
       console.error('Error updating task status:', err);
       fetchTasks(); // Revert on failure
@@ -136,6 +165,7 @@ const Onboarding = () => {
   };
 
   const handleSetStatus = async (taskId, newStatus) => {
+    const targetTask = tasks.find((t) => t._id === taskId);
     try {
       setTasks((prev) =>
         prev.map((t) =>
@@ -151,6 +181,12 @@ const Onboarding = () => {
           prev.map((t) => (t._id === taskId ? res.data.task : t))
         );
       }
+      addNotification({
+        title: 'Task Status Updated',
+        message: `"${targetTask?.title || 'Milestone Task'}" status set to ${newStatus.replace('_', ' ')}.`,
+        type: 'task',
+        link: '/onboarding'
+      });
     } catch (err) {
       console.error('Error updating task status:', err);
       fetchTasks();
