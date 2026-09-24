@@ -55,62 +55,13 @@ const uploadDocument = async (req, res) => {
         doc.chunkCount = indexResult.chunks_indexed;
         await doc.save();
 
-        // 1. DYNAMIC ONBOARDING TASKS GENERATION FROM UPLOADED DOCUMENT
-        const extractedTasks = indexResult.extracted_tasks || [];
-        let createdTasksCount = 0;
-
-        if (extractedTasks.length > 0 && req.user) {
-          // Find all users who should receive these document-derived tasks (the uploader and all active employees)
-          const targetUsers = await User.find({
-            $or: [{ _id: req.user._id }, { userType: 'employee' }]
-          });
-
-          for (const targetUser of targetUsers) {
-            const taskDocs = extractedTasks.map((t) => ({
-              user: targetUser._id,
-              title: t.title,
-              description: t.description || `Action item from ${doc.originalName}`,
-              category: t.category || doc.category || 'General',
-              dayNumber: Number(t.dayNumber) || 1,
-              priority: t.priority || 'medium',
-              status: 'not_started',
-              estimatedMinutes: Number(t.estimatedMinutes) || 30,
-              sourceDocument: doc.originalName
-            }));
-
-            await OnboardingTask.insertMany(taskDocs);
-            await recalculateProgress(targetUser._id);
-            createdTasksCount += taskDocs.length;
-          }
-        }
-
-        // 2. DYNAMIC LEARNING PATH GENERATION FROM UPLOADED DOCUMENT
-        const extractedLP = indexResult.extracted_learning_path;
-        if (extractedLP && extractedLP.stages && extractedLP.stages.length > 0 && req.user) {
-          const targetUsers = await User.find({
-            $or: [{ _id: req.user._id }, { userType: 'employee' }]
-          });
-
-          for (const targetUser of targetUsers) {
-            const existingLP = await LearningPath.findOne({ user: targetUser._id });
-            if (existingLP) {
-              // Append or update stages derived from this document
-              existingLP.stages = extractedLP.stages;
-              await existingLP.save();
-            } else {
-              await LearningPath.create({
-                user: targetUser._id,
-                role: targetUser.role,
-                stages: extractedLP.stages
-              });
-            }
-          }
-        }
+        // Dynamically update onboarding tasks and learning curriculum across users
+        await documentTaskSync.syncAllUsers({ force: true });
 
         return res.status(201).json({
-          message: `Document indexed successfully. Generated ${extractedTasks.length} onboarding tasks and updated learning curriculum.`,
+          message: `Document indexed successfully. Onboarding tasks and learning curriculum updated.`,
           document: doc,
-          tasksGenerated: extractedTasks.length
+          chunksIndexed: doc.chunkCount
         });
       } else {
         doc.status = 'failed';
@@ -171,33 +122,17 @@ const deleteDocument = async (req, res) => {
 
     // Remove tasks generated from this specific document
     await OnboardingTask.deleteMany({ sourceDocument: doc.originalName });
-
-    // Recalculate progress for users
-    if (req.user) {
-      await recalculateProgress(req.user._id);
-    }
-
-    // If no documents remain in the database, clear learning paths and tasks
-    const remainingDocsCount = await Document.countDocuments({ _id: { $ne: doc._id } });
-    if (remainingDocsCount === 0) {
-      await OnboardingTask.deleteMany({});
-      await LearningPath.deleteMany({});
-      await OnboardingProgress.updateMany(
-        {},
-        {
-          overallPercentage: 0,
-          totalTasks: 0,
-          completedTasks: 0,
-          remainingTasks: 0,
-          inProgressTasks: 0,
-          overdueTasks: 0
-        }
-      );
-      // Also clear ChromaDB vector store
-      await aiServiceClient.clearVectorStore();
-    }
-
     await Document.findByIdAndDelete(req.params.id);
+
+    // If no documents remain in the database, clear learning paths and tasks completely!
+    const remainingDocsCount = await Document.countDocuments({});
+    if (remainingDocsCount === 0) {
+      await documentTaskSync.cleanIfNoDocuments();
+    } else {
+      // Recalculate progress for remaining documents
+      await documentTaskSync.syncAllUsers({ force: true });
+    }
+
     res.json({ message: 'Document and its associated onboarding data removed successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
