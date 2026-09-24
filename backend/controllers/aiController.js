@@ -3,6 +3,7 @@ const OnboardingTask = require('../models/OnboardingTask');
 const LearningPath = require('../models/LearningPath');
 const OnboardingProgress = require('../models/OnboardingProgress');
 const aiServiceClient = require('../services/aiServiceClient');
+const documentTaskSync = require('../services/documentTaskSync');
 
 // @desc    Chat with AI Assistant (LangGraph + RAG + Source Verification)
 // @route   POST /api/ai/chat
@@ -129,6 +130,7 @@ const getNextAction = async (req, res) => {
 // @route   GET /api/ai/learning-path
 const getLearningPath = async (req, res) => {
   try {
+    await documentTaskSync.syncUserTasks(req.user._id);
     const lp = await LearningPath.findOne({ user: req.user._id });
     res.json(lp || { stages: [] });
   } catch (error) {

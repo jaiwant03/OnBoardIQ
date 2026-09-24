@@ -90,6 +90,18 @@ const indexDocument = async (docData) => {
   }
 };
 
+const extractTasks = async (docData) => {
+  try {
+    const res = await aiClient.post('/api/ai/extract-tasks', docData, {
+      timeout: 30000
+    });
+    return res.data;
+  } catch (error) {
+    console.error('[AI Client] Extract tasks error:', error.message);
+    throw error;
+  }
+};
+
 const clearVectorStore = async () => {
   try {
     const res = await aiClient.post('/api/ai/clear-vector-store', {}, { timeout: 10000 });
@@ -107,6 +119,7 @@ module.exports = {
   getNextBestAction,
   generateLearningPath,
   indexDocument,
+  extractTasks,
   clearVectorStore
 };
 

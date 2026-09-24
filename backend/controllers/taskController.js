@@ -1,30 +1,10 @@
 const OnboardingTask = require('../models/OnboardingTask');
 const OnboardingProgress = require('../models/OnboardingProgress');
+const documentTaskSync = require('../services/documentTaskSync');
 
 // Helper to recalculate user's progress
 const recalculateProgress = async (userId) => {
-  const tasks = await OnboardingTask.find({ user: userId });
-  const total = tasks.length;
-  const completed = tasks.filter(t => t.status === 'completed').length;
-  const inProgress = tasks.filter(t => t.status === 'in_progress').length;
-  const remaining = total - completed;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-  const progress = await OnboardingProgress.findOneAndUpdate(
-    { user: userId },
-    {
-      overallPercentage: percentage,
-      totalTasks: total,
-      completedTasks: completed,
-      remainingTasks: remaining,
-      inProgressTasks: inProgress,
-      overdueTasks: 0,
-      updatedAt: new Date()
-    },
-    { new: true, upsert: true }
-  );
-
-  return progress;
+  return await documentTaskSync.recalculateProgress(userId);
 };
 
 // @desc    Get all onboarding tasks for user
@@ -38,8 +18,24 @@ const getTasks = async (req, res) => {
     if (status) filter.status = status;
     if (day) filter.dayNumber = Number(day);
 
+    // Auto-sync: Ensure tasks exist if documents exist; clean if no documents
+    await documentTaskSync.syncUserTasks(req.user._id);
+
     const tasks = await OnboardingTask.find(filter).sort({ dayNumber: 1, createdAt: 1 });
     res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Explicitly re-sync tasks with all uploaded documents
+// @route   POST /api/tasks/sync
+const syncTasks = async (req, res) => {
+  try {
+    const result = await documentTaskSync.syncUserTasks(req.user._id, { force: true });
+    const tasks = await OnboardingTask.find({ user: req.user._id }).sort({ dayNumber: 1, createdAt: 1 });
+    const progress = await recalculateProgress(req.user._id);
+    res.json({ message: 'Roadmap and tasks synced with uploaded documents', tasks, progress, result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -122,4 +118,4 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { getTasks, createTask, updateTask, deleteTask };
+module.exports = { getTasks, createTask, updateTask, deleteTask, syncTasks };

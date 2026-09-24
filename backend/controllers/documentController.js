@@ -6,31 +6,11 @@ const LearningPath = require('../models/LearningPath');
 const OnboardingProgress = require('../models/OnboardingProgress');
 const User = require('../models/User');
 const aiServiceClient = require('../services/aiServiceClient');
+const documentTaskSync = require('../services/documentTaskSync');
 
 // Helper to recalculate user's progress
 const recalculateProgress = async (userId) => {
-  const tasks = await OnboardingTask.find({ user: userId });
-  const total = tasks.length;
-  const completed = tasks.filter((t) => t.status === 'completed').length;
-  const inProgress = tasks.filter((t) => t.status === 'in_progress').length;
-  const remaining = total - completed;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-  const progress = await OnboardingProgress.findOneAndUpdate(
-    { user: userId },
-    {
-      overallPercentage: percentage,
-      totalTasks: total,
-      completedTasks: completed,
-      remainingTasks: remaining,
-      inProgressTasks: inProgress,
-      overdueTasks: 0,
-      updatedAt: new Date()
-    },
-    { new: true, upsert: true }
-  );
-
-  return progress;
+  return await documentTaskSync.recalculateProgress(userId);
 };
 
 // @desc    Upload & index a new company document

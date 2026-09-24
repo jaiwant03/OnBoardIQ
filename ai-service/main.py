@@ -11,7 +11,7 @@ from rag.vector_store import vector_store
 from rag.document_loader import extract_text_from_file
 from rag.text_splitter import chunk_document
 from utils.seed_documents import seed_sample_policies
-from utils.document_extractor import extract_onboarding_data_from_document
+from utils.document_extractor import extract_onboarding_data_from_document, extract_heuristic_tasks_and_learning
 from agents.graph import agent_graph
 from agents.state import AgentState
 
@@ -72,6 +72,14 @@ class IndexDocumentRequest(BaseModel):
     department: str = "General"
     category: str = "General"
     doc_id: Optional[str] = None
+
+class ExtractTasksRequest(BaseModel):
+    file_path: Optional[str] = None
+    raw_text: Optional[str] = None
+    filename: str
+    department: Optional[str] = "General"
+    category: Optional[str] = "General"
+    fast: Optional[bool] = False
 
 # Endpoints
 @app.get("/health")
@@ -216,6 +224,44 @@ async def index_document(req: IndexDocumentRequest):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
+
+@app.post("/api/ai/extract-tasks")
+async def extract_tasks_endpoint(req: ExtractTasksRequest):
+    """
+    Extracts actionable onboarding tasks and learning curriculum stages from a file or text
+    without modifying ChromaDB embeddings.
+    """
+    try:
+        if req.raw_text:
+            text = req.raw_text
+        elif req.file_path:
+            text = extract_text_from_file(req.file_path)
+        else:
+            raise HTTPException(status_code=400, detail="Either file_path or raw_text must be provided.")
+
+        if req.fast:
+            extracted_data = extract_heuristic_tasks_and_learning(
+                text=text,
+                filename=req.filename,
+                department=req.department or "General",
+                category=req.category or "General"
+            )
+        else:
+            extracted_data = extract_onboarding_data_from_document(
+                text=text,
+                filename=req.filename,
+                department=req.department or "General",
+                category=req.category or "General"
+            )
+
+        return {
+            "status": "success",
+            "filename": req.filename,
+            "tasks": extracted_data.get("tasks", []),
+            "learning_path": extracted_data.get("learning_path", {"stages": []})
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Task extraction failed: {str(e)}")
 
 @app.post("/api/ai/clear-vector-store")
 async def clear_vector_store_endpoint():
